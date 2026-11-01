@@ -1,0 +1,1635 @@
+/* ==========================================================================
+   FACTORY AREA — foglio di stile principale
+   --------------------------------------------------------------------------
+   Indice
+   1.  Font
+   2.  Variabili (colori, misure, curve di animazione)
+   3.  Base
+   4.  Tipografia
+   5.  Navigazione (desktop + menu mobile)
+   6.  Footer
+   7.  Home: hero, edizioni impilate, intro, call to action
+   8.  Elenco eventi e card
+   9.  Pagina edizione
+   10. Pagina About
+   11. Pagina Contatti e modulo
+   12. Pagina 404
+   13. Cursore personalizzato
+   14. Animazioni di comparsa
+   15. Responsive (tablet <= 1199px, telefono <= 809px)
+   16. Movimento ridotto (accessibilità)
+   ========================================================================== */
+
+
+/* 1. FONT ------------------------------------------------------------------
+   Inter (licenza SIL OFL) ospitato nel sito: niente richieste a Google Fonts. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/inter-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/inter-latin-ext-wght-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/inter-latin-wght-italic.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+
+/* 2. VARIABILI -------------------------------------------------------------- */
+:root {
+  /* Colori */
+  --bg: #141517;
+  --fg: #ffffff;
+  --fg-70: rgba(255, 255, 255, 0.7);
+  --fg-50: rgba(255, 255, 255, 0.5);
+  --fg-30: rgba(255, 255, 255, 0.3);
+
+  /* Font */
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  /* Misure */
+  --gutter: 16px;       /* margine laterale delle pagine */
+  --max: 1600px;        /* larghezza massima dei contenuti */
+
+  /* Curve di animazione.
+     Le "spring" riproducono le molle di Framer (bounce 0 / 0.1 / 0.2 / 0.3).
+     Valori di riserva per i browser che non supportano linear(). */
+  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+  --spring-0: cubic-bezier(0.22, 1, 0.36, 1);
+  --spring-1: cubic-bezier(0.22, 1, 0.36, 1);
+  --spring-2: cubic-bezier(0.3, 1.25, 0.5, 1);
+  --spring-3: cubic-bezier(0.3, 1.45, 0.5, 1);
+}
+
+@supports (transition-timing-function: linear(0, 1)) {
+  :root {
+    --spring-0: linear(0, 0.0278, 0.0942, 0.1803, 0.2738, 0.3669, 0.4551, 0.5358, 0.6079, 0.6711, 0.7258, 0.7725, 0.8122, 0.8455, 0.8734, 0.8966, 0.9157, 0.9315, 0.9445, 0.9551, 0.9637, 0.9708, 0.9765, 0.9811, 0.9848, 0.9878, 0.9903, 0.9922, 0.9938, 0.995, 0.996, 0.9968, 0.9975, 0.998, 0.9984, 0.9987, 1);
+    --spring-1: linear(0, 0.0241, 0.0838, 0.1641, 0.2543, 0.3469, 0.4369, 0.5212, 0.5979, 0.6662, 0.7259, 0.7773, 0.821, 0.8576, 0.888, 0.9129, 0.9332, 0.9494, 0.9623, 0.9725, 0.9804, 0.9864, 0.991, 0.9944, 0.9968, 0.9986, 0.9998, 1.0006, 1.0011, 1.0014, 1.0015, 1.0015, 1.0015, 1.0013, 1.0012, 1.0011, 1);
+    --spring-2: linear(0, 0.0273, 0.0954, 0.1873, 0.2906, 0.3961, 0.4978, 0.5917, 0.6755, 0.7484, 0.8101, 0.8612, 0.9025, 0.9353, 0.9605, 0.9795, 0.9932, 1.0028, 1.0091, 1.0128, 1.0147, 1.0152, 1.0147, 1.0137, 1.0123, 1.0107, 1.0091, 1.0076, 1.0061, 1.0049, 1.0038, 1.0028, 1.0021, 1.0015, 1.001, 1.0006, 1);
+    --spring-3: linear(0, 0.0328, 0.1149, 0.2254, 0.3486, 0.4728, 0.5901, 0.6953, 0.7859, 0.8609, 0.9206, 0.9662, 0.9995, 1.0221, 1.0362, 1.0436, 1.046, 1.0447, 1.0411, 1.0361, 1.0305, 1.0248, 1.0193, 1.0144, 1.0102, 1.0067, 1.0039, 1.0017, 1.0001, 0.9991, 0.9984, 0.998, 0.9979, 0.9979, 0.9981, 0.9983, 1);
+  }
+}
+
+
+/* 3. BASE ------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  color: var(--fg);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.3;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+p, h1, h2, h3, h4, dl, dd, figure {
+  margin: 0;
+  font-weight: inherit;
+  font-size: inherit;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+em {
+  font-style: italic;
+}
+
+:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Link "Vai al contenuto" per chi naviga con la tastiera */
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 200;
+  padding: 10px 16px;
+  border-radius: 100px;
+  background: var(--fg);
+  color: #000;
+  font-size: 16px;
+  font-weight: 600;
+  transform: translateY(-200%);
+  transition: transform 0.2s;
+}
+.skip-link:focus {
+  transform: none;
+}
+
+/* Lenis (scroll fluido) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Blocco dello scroll quando il menu mobile è aperto */
+html.is-locked,
+html.is-locked body {
+  overflow: hidden;
+}
+
+
+/* 4. TIPOGRAFIA -------------------------------------------------------------
+   Gli stili corrispondono a quelli del sito Framer. */
+.t-h2 {            /* titoli grandi: Events, titolo edizione, Chi siamo… */
+  font-size: 60px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 400;
+}
+
+.t-hero {          /* testo sopra la foto della home */
+  font-size: 40px;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+}
+
+.t-display {       /* testi giganti della home */
+  font-size: 80px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 400;
+}
+
+.t-body {          /* testo normale grande */
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-weight: 400;
+}
+
+.t-small {         /* etichette e link piccoli */
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-weight: 400;
+}
+
+.c-70 {
+  color: var(--fg-70);
+}
+
+
+/* 5. NAVIGAZIONE ------------------------------------------------------------ */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.nav__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 8px 11px;
+}
+
+.nav__logo,
+.nav__links,
+.nav__toggle {
+  pointer-events: auto;
+}
+
+.nav__logo {
+  display: block;
+  padding-top: 5px;
+  font-size: 70px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  transition:
+    color 0.2s ease,
+    font-size 0.5s var(--spring-0),
+    font-weight 0.5s var(--spring-0),
+    letter-spacing 0.5s var(--spring-0);
+}
+
+.nav__logo:hover {
+  color: var(--fg-70);
+}
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding-top: 15px;
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition: padding 0.5s var(--spring-0);
+}
+
+/* Nel sito originale "Tickets" è un po' più vicino a "Contatti" */
+.nav__links .nav__link--tickets {
+  margin-left: -14px;
+}
+
+.nav__link {
+  display: block;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.nav__link:hover {
+  color: var(--fg-70);
+}
+
+/* Stato "compatto": dopo un po' di scroll (pagine interne, desktop) */
+.nav.is-small .nav__logo {
+  font-size: 42px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.nav.is-small .nav__link {
+  text-decoration: underline;
+}
+
+.nav__toggle {
+  display: none;
+}
+
+.nav__menu {
+  display: none;
+}
+
+
+/* 6. FOOTER ----------------------------------------------------------------- */
+.footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 410px;
+  padding: 20px var(--gutter) 15px;
+  background: var(--bg);
+}
+
+.footer__cols {
+  display: flex;
+  align-items: flex-start;
+  gap: 128px;
+}
+
+.footer__col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer__title,
+.footer__list a {
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.footer__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.footer__list a {
+  color: var(--fg-70);
+  transition: color 0.2s ease;
+}
+
+.footer__list a:hover {
+  color: var(--fg-50);
+}
+
+.footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin-top: 40px;
+}
+
+.footer__legal,
+.footer__copy {
+  font-size: 16px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--fg-70);
+}
+
+.footer__copy {
+  margin-left: auto;
+}
+
+.footer__legal a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+
+/* 7. HOME ------------------------------------------------------------------- */
+
+/* Hero: foto a tutto schermo con testo in basso.
+   La foto è "sticky": resta ferma e le sezioni successive le scorrono sopra. */
+.hero__media {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  display: block;
+  height: 100vh;
+  margin-bottom: -100vh;
+  overflow: hidden;
+}
+
+.hero {
+  position: relative;
+  z-index: 1;
+  height: 100vh;
+  height: 100svh;
+  pointer-events: none;
+}
+
+.hero__parallax {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+.hero__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero__content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  padding: 0 20px 64px;
+  pointer-events: none;
+}
+
+.hero__text {
+  max-width: 62.5%;
+  /* animazione di comparsa: righe che arrivano dal basso, sfocate */
+  --ty: 20px;
+  --tb: 10px;
+  --tdur: 1.2s;
+}
+
+.hero__content {
+  --ry: 20px;
+  --re: var(--spring-2);
+  --rdelay: 0.2s;
+}
+
+/* Edizioni impilate: le foto restano ferme e si sovrappongono scorrendo */
+.stack {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 65px;
+  background: var(--bg);
+}
+
+.stack__card {
+  position: sticky;
+  top: var(--top, 0px);
+  z-index: 1;
+  display: block;
+  height: 100vh;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.stack__inner {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 0;
+  transition: border-radius 1s var(--spring-0) 0.1s;
+}
+
+.stack.is-active .stack__inner {
+  border-radius: 8px;
+}
+
+.stack__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.stack__label {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 var(--gutter);
+  transform: translateY(-50%);
+}
+
+.stack__line {
+  width: 0;
+  height: 1px;
+  background: var(--fg);
+  transition: width 1s var(--spring-0) 0.1s;
+}
+
+.stack.is-active .stack__line {
+  width: 100%;
+}
+
+/* Intro "Factory Area è un progetto indipendente…" */
+.intro {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 50px;
+  padding: 20px var(--gutter) 340px;
+  background: var(--bg);
+}
+
+.intro__text .word {
+  white-space: nowrap;
+}
+
+/* Link con linea sotto ("Più informazioni") */
+.link-line {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--fg-70);
+  transition: color 0.4s var(--spring-2);
+}
+
+.link-line::after {
+  content: "";
+  height: 1px;
+  background: var(--fg-30);
+  transition: background-color 0.4s var(--spring-2);
+}
+
+.link-line:hover {
+  color: var(--fg);
+}
+
+.link-line:hover::after {
+  background: var(--fg-70);
+}
+
+/* Call to action "Siamo sempre disponibili…" */
+.cta {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 445px;
+  padding: 0 var(--gutter);
+  background: var(--bg);
+}
+
+.cta__link {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.cta__text {
+  display: block;
+  font-size: 80px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 500;
+  opacity: 0.7;
+  transition: opacity 0.5s var(--spring-2);
+}
+
+.cta__hint {
+  display: block;
+  position: absolute;
+  top: calc(100% + 22px);
+  left: 0;
+  right: 0;
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.5s var(--spring-2),
+    transform 0.5s var(--spring-2);
+}
+
+.cta__link:hover .cta__text,
+.cta__link:focus-visible .cta__text {
+  opacity: 1;
+}
+
+.cta__link:hover .cta__hint,
+.cta__link:focus-visible .cta__hint {
+  opacity: 1;
+  transform: none;
+}
+
+
+/* 8. ELENCO EVENTI E CARD ----------------------------------------------------- */
+.page {
+  width: 100%;
+  max-width: calc(var(--max) + 2 * var(--gutter));
+  margin: 0 auto;
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+}
+
+.events {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: 150px;
+}
+
+.page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 30px 10px;
+}
+
+/* Card di un'edizione (usata in Eventi e in "Next Projects") */
+.work {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 60px;
+}
+
+.work__media {
+  position: relative;
+  aspect-ratio: 1.45 / 1;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #1d1e21;
+}
+
+.work__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s var(--spring-2);
+}
+
+.work:hover .work__img {
+  transform: scale(1.03);
+}
+
+.work__info {
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* 9. PAGINA EDIZIONE ---------------------------------------------------------- */
+.banner {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  height: 750px;
+  overflow: hidden;
+}
+
+.banner__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.edition {
+  position: relative;
+  z-index: 1;
+  padding-top: 25px;
+  background: var(--bg);
+}
+
+.edition__wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.edition__intro {
+  display: flex;
+  align-items: flex-start;
+  padding: 10px 0 60px;
+}
+
+.edition__title,
+.edition__info {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.edition__info {
+  display: flex;
+  flex-direction: column;
+  gap: 65px;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.details__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 4px;
+}
+
+.details__row dt,
+.details__row dd {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.details__row dt {
+  color: var(--fg-70);
+}
+
+.prose {
+  font-size: 16px;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.photo {
+  overflow: hidden;
+  border-radius: 5px;
+  background: #1d1e21;
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo--wide {
+  aspect-ratio: 1393 / 835;
+}
+
+.photo--tall {
+  aspect-ratio: 692 / 955;
+}
+
+.edition__split {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.edition__split > * {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.edition__sticky {
+  position: sticky;
+  top: 60px;
+}
+
+.next {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding-top: 180px;
+}
+
+.next__label {
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+}
+
+.next__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+
+/* 10. PAGINA ABOUT ------------------------------------------------------------ */
+.about {
+  display: flex;
+  flex-direction: column;
+  gap: 400px;
+  padding-top: 200px;
+  padding-bottom: 30px;
+}
+
+.about__section {
+  display: flex;
+  align-items: flex-start;
+}
+
+.about__title,
+.about__body {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.about__title {
+  position: sticky;
+  top: 85px;
+}
+
+.about__body {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+.about__body--tight {
+  gap: 40px;
+}
+
+.partners {
+  font-size: 60px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 400;
+}
+
+.partners li {
+  display: block;
+}
+
+/* Blocco con i dati dell'ente (Factory+ ETS) */
+.org {
+  display: flex;
+  flex-direction: column;
+  font-size: 18px;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.org__row {
+  display: flex;
+  gap: 10px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.org__row:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.org dt {
+  flex: 0 0 34%;
+  color: var(--fg-70);
+}
+
+.org dd {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+}
+
+/* Pagine di testo (informativa privacy) */
+.legal {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  padding-top: 200px;
+  padding-bottom: 160px;
+}
+
+.legal__body {
+  max-width: 760px;
+  font-size: 18px;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  color: var(--fg-70);
+}
+
+.legal__body h2 {
+  margin: 48px 0 12px;
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 500;
+  color: var(--fg);
+}
+
+.legal__body p + p {
+  margin-top: 12px;
+}
+
+.legal__body strong {
+  font-weight: 500;
+  color: var(--fg);
+}
+
+.legal__body a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.legal__updated {
+  font-size: 14px;
+  color: var(--fg-50);
+}
+
+
+/* 11. CONTATTI E MODULO ------------------------------------------------------- */
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: 180px;
+  padding-top: 200px;
+  padding-bottom: 180px;
+}
+
+.split-block {
+  display: block;
+}
+
+.split-block + .split-block {
+  margin-top: 1em;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form__row {
+  display: flex;
+  gap: 20px;
+}
+
+.field {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.field__label {
+  display: block;
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+}
+
+.field__control {
+  position: relative;
+  display: block;
+}
+
+.field__input {
+  display: block;
+  width: 100%;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
+  outline: none;
+  transition: border-color 0.3s cubic-bezier(0.25, 0, 0.5, 1);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.field__input::placeholder {
+  color: var(--fg-30);
+  opacity: 1;
+}
+
+.field__input:focus {
+  border-bottom-color: var(--fg);
+}
+
+.field__input--lg {
+  font-size: 17px;
+}
+
+textarea.field__input {
+  height: 255px;
+  padding-top: 8px;
+  resize: vertical;
+}
+
+.field__line {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  background: var(--fg-50);
+  pointer-events: none;
+  transition: width 1s var(--spring-0) 0.3s;
+}
+
+.form.is-in .field__line,
+html:not(.anim) .field__line {
+  width: 100%;
+}
+
+.honeypot {
+  position: absolute !important;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.form__privacy {
+  font-size: 14px;
+  line-height: 1.3;
+  color: var(--fg-50);
+}
+
+.form__privacy a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.btn-submit {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--fg);
+  color: #000;
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 600;
+  transition:
+    background-color 0.4s var(--spring-2),
+    color 0.4s var(--spring-2),
+    opacity 0.3s;
+}
+
+.btn-submit:hover,
+.btn-submit:active {
+  background: var(--fg-30);
+  color: var(--fg);
+}
+
+.btn-submit[disabled] {
+  cursor: default;
+}
+
+.btn-submit .btn-submit__spinner {
+  display: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.btn-submit.is-loading .btn-submit__text {
+  display: none;
+}
+
+.btn-submit.is-loading .btn-submit__spinner {
+  display: block;
+}
+
+.btn-submit.is-success {
+  background: var(--fg);
+  color: #000;
+}
+
+.btn-submit.is-error {
+  background: rgba(255, 34, 68, 0.15);
+  color: var(--fg);
+}
+
+.form__status {
+  min-height: 1.3em;
+  font-size: 14px;
+  color: var(--fg-70);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* 12. PAGINA 404 -------------------------------------------------------------- */
+.notfound {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-top: 150px;
+  padding-bottom: 120px;
+}
+
+
+/* 13. CURSORE PERSONALIZZATO --------------------------------------------------
+   Compare passando sopra le card delle edizioni ("Explore")
+   e sopra la call to action della home (freccia). */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.cursor__item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transform: scale(0.5);
+  transform-origin: 0 100%;
+  transition:
+    opacity 0.25s ease,
+    transform 0.6s var(--spring-3);
+}
+
+.cursor[data-variant="explore"] .cursor__item--explore,
+.cursor[data-variant="contact"] .cursor__item--contact {
+  opacity: 1;
+  transform: none;
+}
+
+.cursor__item--explore {
+  padding: 10px 16px;
+  border-radius: 100px;
+  background: rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  box-shadow:
+    0 0.6px 2px -1.2px rgba(0, 0, 0, 0.12),
+    0 2.3px 7.8px -2.3px rgba(0, 0, 0, 0.11),
+    0 10px 34px -3.5px rgba(0, 0, 0, 0.05);
+  color: var(--fg);
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.cursor__item--contact {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--fg);
+  color: #000;
+  transform: scale(0);
+  transform-origin: 50% 50%;
+}
+
+.cursor__item--contact svg {
+  width: 32px;
+  height: 32px;
+}
+
+
+/* 14. ANIMAZIONI DI COMPARSA ---------------------------------------------------
+   Gli elementi partono nascosti solo se il JavaScript è attivo
+   e l'utente non ha chiesto di ridurre i movimenti (classe .anim su <html>). */
+.anim [data-reveal] {
+  opacity: 0;
+  transform: translate3d(var(--rx, 0px), var(--ry, 40px), 0) scale(var(--rs, 1));
+  filter: blur(var(--rb, 0px));
+}
+
+.anim [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+  filter: blur(0);
+  transition:
+    opacity var(--rd, 1s) var(--re, var(--spring-0)) var(--rdelay, 0s),
+    transform var(--rd, 1s) var(--re, var(--spring-0)) var(--rdelay, 0s),
+    filter var(--rd, 1s) var(--re, var(--spring-0)) var(--rdelay, 0s);
+}
+
+/* Testi animati a pezzi (righe, parole o lettere) */
+.anim [data-split]:not(.is-split):not(.is-done) {
+  opacity: 0;
+}
+
+.tok {
+  display: inline-block;
+}
+
+.line {
+  display: block;
+}
+
+.anim [data-split] .tok,
+.anim [data-split] .line {
+  opacity: 0;
+  transform: translate3d(0, var(--ty, 20px), 0) scale(var(--ts, 1));
+  filter: blur(var(--tb, 0px));
+}
+
+.anim [data-split].is-in .tok,
+.anim [data-split].is-in .line {
+  opacity: 1;
+  transform: none;
+  filter: blur(0);
+  transition:
+    opacity var(--tdur, 1s) var(--tease, var(--spring-0)) var(--td, 0s),
+    transform var(--tdur, 1s) var(--tease, var(--spring-0)) var(--td, 0s),
+    filter var(--tdur, 1s) var(--tease, var(--spring-0)) var(--td, 0s);
+}
+
+/* Testo che "si accende" scorrendo (home) */
+.reveal-scroll .ch {
+  opacity: var(--o, 1);
+}
+
+.anim .reveal-scroll .ch {
+  opacity: var(--o, 0.1);
+}
+
+/* Foto della hero: comparsa all'apertura della pagina */
+.anim .hero__img {
+  opacity: 0;
+  transform: translate3d(0, 40px, 0) scale(1.2);
+}
+
+.anim .hero__img.is-in {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 1.2s var(--spring-1),
+    transform 1.2s var(--spring-1);
+}
+
+/* Voci del menu mobile */
+.anim .nav__menu a {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+}
+
+.anim .nav.is-open .nav__menu a {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 1s var(--spring-2) var(--d, 0.3s),
+    transform 1s var(--spring-2) var(--d, 0.3s);
+}
+
+
+/* 15. RESPONSIVE ---------------------------------------------------------------- */
+
+/* Tablet: 810px – 1199px */
+@media (max-width: 1199.98px) {
+  .t-h2 { font-size: 48px; }
+  .t-hero { font-size: 32px; }
+  .t-display { font-size: 64px; }
+  .cta__text { font-size: 64px; }
+  .partners { font-size: 48px; }
+
+  /* Navigazione: logo piccolo e pulsante "Menu" */
+  .nav__bar {
+    padding: 8px 17px;
+  }
+
+  .nav__logo,
+  .nav.is-small .nav__logo {
+    padding-top: 8px;
+    font-size: 26px;
+    line-height: 1.1;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+
+  .nav__links {
+    display: none;
+  }
+
+  .nav__toggle {
+    display: block;
+    padding-top: 10px;
+    font-size: 18px;
+    line-height: 1.2;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .nav.is-open {
+    bottom: 0;
+    background: var(--bg);
+    pointer-events: auto;
+    transition: background-color 0.4s ease;
+  }
+
+  .nav__menu {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    padding: 97px var(--gutter) 40px;
+    pointer-events: auto;
+  }
+
+  .nav__menu[hidden] {
+    display: none;
+  }
+
+  .nav__menu a {
+    display: block;
+    font-size: 40px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-weight: 400;
+    transition: color 0.2s ease;
+  }
+
+  .nav__menu a:hover {
+    color: var(--fg-70);
+  }
+
+  /* Home */
+  .hero__content {
+    padding: 0 16px 16px;
+  }
+
+  .hero__text {
+    max-width: 90%;
+  }
+
+  .intro {
+    padding: 50px var(--gutter) 300px;
+  }
+
+  .footer {
+    min-height: 310px;
+  }
+
+  /* Edizione */
+  .banner {
+    height: 500px;
+  }
+
+  .next {
+    padding-top: 140px;
+  }
+
+  /* About */
+  .about {
+    gap: 300px;
+    padding-top: 150px;
+    padding-bottom: 25px;
+  }
+
+  /* Contatti */
+  .contact {
+    gap: 160px;
+    padding-top: 160px;
+  }
+}
+
+/* Telefono: fino a 809px */
+@media (max-width: 809.98px) {
+  .t-h2 { font-size: 40px; }
+  .t-hero { font-size: 26px; }
+  .t-display { font-size: 40px; }
+  .cta__text { font-size: 50px; }
+
+  .nav__bar {
+    padding: 8px 27px;
+  }
+
+  /* Home */
+  .hero__content {
+    padding: 0 15px 15px;
+    --rdelay: 0.1s;
+  }
+
+  .hero__text {
+    max-width: none;
+    --tb: 0px;
+    --tease: var(--spring-1);
+  }
+
+  .stack__card {
+    top: var(--top-m, 0px);
+  }
+
+  .intro {
+    padding: 20px var(--gutter) 200px;
+  }
+
+  .cta {
+    min-height: 280px;
+    padding: 40px var(--gutter);
+  }
+
+  /* Footer */
+  .footer {
+    min-height: 0;
+    gap: 80px;
+  }
+
+  .footer__cols {
+    gap: 0;
+  }
+
+  .footer__col {
+    flex: 1 1 0;
+  }
+
+  .footer__bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 0;
+  }
+
+  .footer__copy {
+    margin-left: 0;
+  }
+
+  /* Eventi */
+  .events {
+    gap: 25px;
+    padding-top: 100px;
+  }
+
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .work__media {
+    border-radius: 3px;
+  }
+
+  /* Edizione */
+  .banner {
+    height: 316px;
+  }
+
+  .edition__intro {
+    flex-direction: column;
+    gap: 55px;
+    padding: 20px 0 50px;
+  }
+
+  .edition__title,
+  .edition__info {
+    flex: none;
+    width: 100%;
+  }
+
+  .prose {
+    font-size: 18px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .photo--wide,
+  .photo--tall {
+    aspect-ratio: auto;
+    height: 300px;
+  }
+
+  .edition__split {
+    flex-direction: column;
+    gap: 50px;
+    padding-bottom: 40px;
+  }
+
+  .edition__split > * {
+    flex: none;
+    width: 100%;
+  }
+
+  .edition__split--reverse {
+    flex-direction: column-reverse;
+    padding-bottom: 50px;
+  }
+
+  .edition__sticky {
+    position: static;
+  }
+
+  .next {
+    padding-top: 100px;
+  }
+
+  .next__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Come nel sito originale, su telefono si vede un solo progetto */
+  .next__grid > :nth-child(n + 2) {
+    display: none;
+  }
+
+  /* About */
+  .about {
+    gap: 200px;
+    padding-top: 100px;
+    padding-bottom: 20px;
+  }
+
+  .about__section {
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .about__title,
+  .about__body {
+    flex: none;
+    width: 100%;
+  }
+
+  .about__title {
+    position: static;
+    padding-bottom: 25px;
+  }
+
+  .about__body {
+    gap: 30px;
+  }
+
+  .about__body--tight {
+    gap: 40px;
+  }
+
+  .partners {
+    font-size: 26px;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    font-weight: 600;
+  }
+
+  .org__row {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .legal {
+    gap: 40px;
+    padding-top: 100px;
+    padding-bottom: 120px;
+  }
+
+  /* Contatti */
+  .contact {
+    gap: 150px;
+    padding-top: 100px;
+    padding-bottom: 200px;
+  }
+
+  .form__row {
+    flex-direction: column;
+  }
+}
+
+
+/* 16. MOVIMENTO RIDOTTO ----------------------------------------------------------
+   Se nel sistema è attiva l'opzione "riduci movimento" le animazioni
+   vengono disattivate e i contenuti sono subito visibili. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .stack__card {
+    transform: none !important;
+  }
+}

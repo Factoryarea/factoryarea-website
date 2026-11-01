@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contatti | Factory Area Festival</title>
+  <meta name="description" content="Proponi un progetto o una collaborazione a Factory Area Festival.">
+  <link rel="canonical" href="https://factoryarea.it/contatti/">
+  <meta name="theme-color" content="#141517">
+  <meta name="robots" content="max-image-preview:large">
+
+  <!-- Anteprima sui social -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Factory Area Festival">
+  <meta property="og:locale" content="it_IT">
+  <meta property="og:title" content="Contatti | Factory Area Festival">
+  <meta property="og:description" content="Proponi un progetto o una collaborazione a Factory Area Festival.">
+  <meta property="og:url" content="https://factoryarea.it/contatti/">
+  <meta property="og:image" content="https://factoryarea.it/assets/img/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Contatti | Factory Area Festival">
+  <meta name="twitter:description" content="Proponi un progetto o una collaborazione a Factory Area Festival.">
+  <meta name="twitter:image" content="https://factoryarea.it/assets/img/og-image.png">
+
+  <!-- Icone -->
+  <link rel="icon" href="../assets/img/favicon-dark.png">
+  <link rel="icon" href="../assets/img/favicon-light.png" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="../assets/img/favicon-dark.png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+
+  <link rel="preload" href="../assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script>
+    /* Attiva le animazioni (se il browser non chiede di ridurre i movimenti) */
+    (function () {
+      var d = document.documentElement;
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        d.classList.add("anim");
+        setTimeout(function () { if (!window.__faReady) d.classList.remove("anim"); }, 4000);
+      }
+    })();
+  </script>
+  <script src="../assets/js/lenis.min.js" defer></script>
+  <script src="../assets/js/main.js" defer></script>
+</head>
+<body class="page-contact">
+  <a class="skip-link" href="#contenuto">Vai al contenuto</a>
+
+  <!-- ================= NAVIGAZIONE ================= -->
+  <header class="nav" data-nav data-shrink>
+    <div class="nav__bar">
+      <a class="nav__logo" href="../" data-split="word" data-trigger="load" data-stagger="0.05" style="--ty:10px;--tb:10px;--tdur:1s">Factory Area</a>
+      <nav class="nav__links" aria-label="Menu principale">
+        <a class="nav__link" href="../eventi/" data-split="word" data-trigger="load" style="--ty:10px;--tb:10px;--tdur:.4s" data-delay="0.1">Eventi</a>
+        <a class="nav__link" href="../about-us/" data-split="word" data-trigger="load" style="--ty:10px;--tb:10px;--tdur:.4s" data-delay="0.1">About</a>
+        <a class="nav__link" href="../contatti/" aria-current="page" data-split="word" data-trigger="load" style="--ty:10px;--tb:10px;--tdur:.4s" data-delay="0.1">Contatti</a>
+        <a class="nav__link nav__link--tickets" href="https://xceed.me/it/catanzaro/club/complesso-monumentale-del-san-giovanni" target="_blank" rel="noopener" data-split="word" data-trigger="load" style="--ty:10px;--tb:10px;--tdur:.4s" data-delay="0.2">Tickets</a>
+      </nav>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="menu-mobile">Menu</button>
+    </div>
+    <nav class="nav__menu" id="menu-mobile" aria-label="Menu" hidden>
+      <a href="../eventi/" style="--d:.3s">Eventi</a>
+      <a href="../about-us/" style="--d:.36s">Noi</a>
+      <a href="../contatti/" style="--d:.39s">Contatti</a>
+      <a href="https://xceed.me/it/catanzaro/club/complesso-monumentale-del-san-giovanni" target="_blank" rel="noopener" style="--d:.42s">Biglietti</a>
+    </nav>
+  </header>
+
+  <main id="contenuto" class="page contact" data-reveal data-trigger="load" style="--ry:20px;--re:var(--spring-2);--rdelay:.2s">
+
+    <h1 class="t-h2" data-split="line" data-trigger="load" data-stagger="0.06" data-delay="0.3" style="--ty:40px;--tdur:1s;--tease:cubic-bezier(.25,1,.5,1)">
+      <span class="split-block">La nostra intenzione è quella di creare una rete di collaborazione con i vari operatori culturali interessati al progetto.</span>
+      <span class="split-block">Inviaci un messaggio per proporre un progetto.</span>
+    </h1>
+
+    <section aria-label="Modulo di contatto">
+      <!--
+        MODULO CONTATTI
+        I messaggi vengono inviati tramite Web3Forms (gratuito).
+        1. Vai su https://web3forms.com, inserisci l'email che deve ricevere i messaggi
+           e copia la "Access Key" che ti arriva per email.
+        2. Incollala qui sotto al posto di INSERISCI-LA-TUA-CHIAVE-WEB3FORMS.
+      -->
+      <form class="form" data-contact-form action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="INSERISCI-LA-TUA-CHIAVE-WEB3FORMS">
+        <input type="hidden" name="subject" value="Nuovo messaggio dal sito factoryarea.it">
+        <input type="hidden" name="from_name" value="Sito Factory Area">
+        <input type="checkbox" name="botcheck" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <div class="form__row">
+          <label class="field">
+            <span class="field__label">Nome</span>
+            <span class="field__control">
+              <input class="field__input" type="text" name="name" placeholder="Il tuo nome" required autocomplete="name">
+              <span class="field__line" aria-hidden="true"></span>
+            </span>
+          </label>
+          <label class="field">
+            <span class="field__label">Email</span>
+            <span class="field__control">
+              <input class="field__input field__input--lg" type="email" name="email" placeholder="La tua mail" required autocomplete="email">
+              <span class="field__line" aria-hidden="true"></span>
+            </span>
+          </label>
+        </div>
+
+        <label class="field">
+          <span class="field__label">Messaggio</span>
+          <span class="field__control">
+            <textarea class="field__input field__input--lg" name="message" placeholder="Scrivi qui il tuo messaggio"></textarea>
+            <span class="field__line" aria-hidden="true"></span>
+          </span>
+        </label>
+
+        <button class="btn-submit" type="submit">
+          <span class="btn-submit__text">Invia</span>
+          <span class="btn-submit__spinner" aria-hidden="true"></span>
+        </button>
+        <p class="form__status" role="status" aria-live="polite"></p>
+        <p class="form__privacy">Inviando il messaggio dichiari di aver letto l'<a href="../privacy/">informativa privacy</a>.</p>
+      </form>
+    </section>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer">
+    <div class="footer__cols">
+      <div class="footer__col">
+        <p class="footer__title">Sitemap</p>
+        <ul class="footer__list">
+          <li><a href="../eventi/">Eventi</a></li>
+          <li><a href="../about-us/">About</a></li>
+          <li><a href="../contatti/">Contatti</a></li>
+          <li><a href="https://xceed.me/it/catanzaro/club/complesso-monumentale-del-san-giovanni" target="_blank" rel="noopener">Tickets</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <p class="footer__title">Social</p>
+        <ul class="footer__list">
+          <li><a href="https://www.instagram.com/factoryarea" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://open.spotify.com/show/7eSPHnYkYD0GSq333V9OXO" target="_blank" rel="noopener">Spotify</a></li>
+          <li><a href="https://www.youtube.com/@factoryarea" target="_blank" rel="noopener">YouTube</a></li>
+          <li><a href="https://www.linkedin.com/company/factoryarea/" target="_blank" rel="noopener">LinkedIn</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p class="footer__legal">Factory Area Festival è un progetto di Factory+ ETS · Via Gregorio Mattei 3, 88100 Catanzaro (CZ) · C.F. 97105210799 · P. IVA 03942250790 · RUNTS rep. n. 0118188 · <a href="../privacy/">Privacy</a></p>
+      <p class="footer__copy">Factory+ ETS <span data-year>2026</span>. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
