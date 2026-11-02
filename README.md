@@ -243,7 +243,7 @@ Poi apri <http://localhost:8000>.
   utili anche per la verifica di Google Workspace for Nonprofits.
 - Novembre 2026: logo ufficiale al posto della scritta, barra di navigazione sfocata con
   pulsante Tickets, video nella home, footer con dati legali e recapiti, anteprima social
-  con il logo, pagina Contatti e modulo eliminati, pagina 2026 in preparazione; poi colore
+  con il logo, pagina Contatti e modulo eliminati, pagina 2026; poi colore
   blu elettrico al posto del grigio-nero, favicon con il "+", video ingrandito e più nitido.
 
 ---
