@@ -1,7 +1,8 @@
 # Factory Area — sito ufficiale
 
-Codice sorgente del sito **factoryarea.it**, ricostruito dal vecchio sito Framer
-(`factoryareafestival.framer.website`) con stessi contenuti, link e animazioni.
+Codice sorgente del sito **factoryarea.it** di Factory Area Festival (Factory+ ETS),
+nato dal vecchio sito Framer (`factoryareafestival.framer.website`) con gli stessi
+contenuti, link e animazioni.
 
 È un sito **statico**: solo HTML, CSS e JavaScript, senza framework e senza installazioni.
 È pubblicato gratis con **GitHub Pages**. A ogni modifica salvata su GitHub il sito
@@ -12,31 +13,32 @@ si aggiorna da solo in un paio di minuti.
 ## Struttura
 
 ```
-index.html                 Home
-eventi/index.html          Elenco delle edizioni
+index.html                 Home (video, edizioni impilate, intro)
+eventi/index.html          Elenco delle edizioni pubblicate
+eventi/sestaed/            Edizione 2026: pagina in preparazione, nascosta (vedi sotto)
 eventi/quintaed/           Edizione 2025 (Factory Area Festival 5)
 eventi/quartaed/           Edizione 2024
 eventi/terzaed/            Edizione 2023
 eventi/secondaed/          Edizione 2022
 eventi/primaed/            Edizione 2021
-about-us/index.html        Chi siamo, valori, partner
-contatti/index.html        Testo e modulo contatti
+about-us/index.html        Chi siamo, valori, partner, dati di Factory+ ETS
 privacy/index.html         Informativa privacy
 404.html                   Pagina "non trovata"
 
 assets/css/style.css       Tutto lo stile (colori, misure, animazioni CSS)
-assets/js/main.js          Animazioni, menu mobile, cursore, modulo contatti
+assets/js/main.js          Animazioni, barra di navigazione, menu mobile, video, cursore
 assets/js/lenis.min.js     Libreria per lo scroll fluido (licenza MIT)
 assets/fonts/              Font Inter (licenza SIL OFL), ospitato nel sito
-assets/img/                Foto, icone e immagine di anteprima per i social
+assets/img/                Foto delle edizioni, logo, icone, anteprima social
+assets/video/              Video della home e immagine di copertina del video
 
-scripts/scarica_immagini.py      Scarica e ottimizza le foto dal vecchio sito Framer
+favicon.ico, site.webmanifest    Icone del sito
 .github/workflows/pubblica.yml   Pubblicazione automatica su GitHub Pages
 CNAME, robots.txt, sitemap.xml   Dominio e indicizzazione
 ```
 
-Gli indirizzi sono gli stessi del sito Framer (`/eventi`, `/eventi/quintaed`,
-`/about-us`, `/contatti`), così i link già condivisi continuano a funzionare.
+Gli indirizzi delle pagine sono gli stessi del sito Framer (`/eventi`, `/eventi/quintaed`,
+`/about-us`), così i link già condivisi continuano a funzionare.
 
 ---
 
@@ -50,14 +52,23 @@ clicca la matita ✏️, modifica e premi **Commit changes**. Il sito si aggiorn
 | Testi della home | `index.html` |
 | Testi di un'edizione | `eventi/<edizione>/index.html` |
 | Chi siamo, valori, partner | `about-us/index.html` |
-| Testo dei contatti | `contatti/index.html` |
 | Informativa privacy | `privacy/index.html` |
-| Dati di Factory+ ETS (C.F., P. IVA, RUNTS, sede) | footer di ogni pagina, sezione "Factory+ ETS" in `about-us/index.html`, `privacy/index.html` e dati strutturati per Google in `index.html` e `about-us/index.html` |
-| Colori e font | variabili all'inizio di `assets/css/style.css` |
+| Dati di Factory+ ETS (C.F., P. IVA, RUNTS, sede, PEC, email) | footer di ogni pagina, sezione "Factory+ ETS" in `about-us/index.html`, `privacy/index.html` e dati strutturati per Google in `index.html` e `about-us/index.html` |
+| Link dei biglietti (Tickets) | barra di navigazione di ogni pagina (compare due volte: computer e telefono) |
+| Colori, font, margini | variabili all'inizio di `assets/css/style.css` |
 
-**Menu e footer** sono ripetuti in ogni pagina. Se cambi un link (per esempio quello
-dei biglietti, che inizia con `https://xceed.me/...`) va cambiato in tutte le pagine:
-su GitHub puoi cercarlo con la ricerca del repository.
+**Barra di navigazione e footer** sono ripetuti in ogni pagina. Se cambi un link (per
+esempio quello dei biglietti, che inizia con `https://xceed.me/...`) va cambiato in tutte
+le pagine: su GitHub puoi cercarlo con la ricerca del repository.
+
+I link verso altri siti si aprono in una nuova scheda e hanno sempre
+`target="_blank" rel="noopener noreferrer"`: copia questi attributi se ne aggiungi di nuovi.
+
+### Footer
+
+In alto ci sono quattro colonne di link: per ora è usata solo "Social". Per aggiungere
+un gruppo di link copia il blocco `<div class="footer__col">…</div>` dentro
+`footer__cols`. Lo spazio in basso a destra (`footer__badges`) è libero per eventuali loghi.
 
 ### Foto
 
@@ -65,8 +76,8 @@ Le foto delle edizioni sono in `assets/img/edizioni/<anno>/`:
 
 | File | Dove compare |
 | --- | --- |
-| `copertina` | foto grande in cima alla pagina dell'edizione, anteprima nell'elenco eventi (la copertina 2025 è anche la foto della home) |
-| `foto-1` | prima foto larga nella pagina dell'edizione e foto dell'anno in home |
+| `copertina` | foto grande in cima alla pagina dell'edizione, anteprima nell'elenco eventi (la copertina 2025 è anche la foto del 2025 in home) |
+| `foto-1` | prima foto larga nella pagina dell'edizione e foto dell'anno in home (dal 2024 in giù) |
 | `foto-2` | foto verticale accanto al secondo testo |
 | `foto-3` | seconda foto larga |
 | `foto-4` | foto verticale accanto al terzo testo |
@@ -76,32 +87,69 @@ Ogni foto esiste in due misure: `-1024.jpg` (lato lungo 1024 px, per i telefoni)
 caricare due JPEG con lo stesso nome e le stesse misure. Se cambiano le proporzioni,
 aggiorna anche `width` e `height` nel tag `<img>`.
 
+### Video della home
+
+I file sono in `assets/video/`:
+
+- `hero.mp4`: versione orizzontale (computer, tablet);
+- `hero-verticale.mp4`: ritaglio 3:4 al centro, più leggero, per i telefoni;
+- `hero-poster.jpg`: primo fotogramma, mostrato mentre il video carica e a chi ha
+  attivato "riduci movimento" o il risparmio dati.
+
+Il video parte da solo e senza audio (i browser lo permettono solo così), va in loop
+e si ferma quando la hero è coperta dalle sezioni successive. Il pulsante in basso a
+destra lo mette in pausa. Per cambiarlo, sostituisci i tre file tenendo gli stessi nomi:
+MP4 H.264 senza audio, al massimo 1920 px di larghezza e pochi MB.
+
+### Logo e icone
+
+- `assets/img/logo-factory.svg`: logo ufficiale (dal press kit 2026), già ritagliato.
+  Nella barra è inserito direttamente nel codice delle pagine, per poterlo colorare.
+- `assets/img/logo-factory-nero.png`: logo nero su bianco, usato nei dati per Google.
+- `favicon.ico`, `assets/img/favicon.svg`, `apple-touch-icon.png`, `icon-192.png`,
+  `icon-512.png`: icone del sito (la "F" del logo).
+
+### Anteprima quando si condivide un link
+
+L'immagine è `assets/img/og-factoryarea.png` (1200×630 px, logo su fondo scuro).
+WhatsApp, Facebook e LinkedIn la tengono in memoria per qualche giorno. Per aggiornarla
+subito: Facebook → <https://developers.facebook.com/tools/debug/> ("Recupera di nuovo");
+LinkedIn → <https://www.linkedin.com/post-inspector/>. WhatsApp si aggiorna da solo col tempo.
+
 ---
 
-## Aggiungere una nuova edizione (es. 2026)
+## Pagina 2026
 
-1. Copia la cartella `eventi/quintaed/` in una nuova cartella, per esempio `eventi/sestaed/`,
-   e aggiorna titolo, venue, data, lineup e i tre testi.
-2. Carica le foto in `assets/img/edizioni/2026/` con i nomi della tabella sopra.
-3. In `eventi/index.html` aggiungi la nuova card in cima alla griglia e aggiorna il
-   numero tra parentesi.
-4. In `index.html` aggiungi il nuovo anno in cima alle foto impilate (`.stack__card`).
-   Puoi anche aggiornare la foto della hero.
-5. Aggiorna i blocchi "Next Projects" delle altre edizioni e aggiungi il nuovo indirizzo
-   in `sitemap.xml`.
+`eventi/sestaed/` è pronta ma **nascosta**: testi e foto sono segnaposto
+(`[Testo 1 da inserire…]`, immagini grigie in `assets/img/edizioni/2026/`), non è
+collegata da nessuna parte e ha `noindex`, quindi Google non la mostra.
+
+Per pubblicarla, con testi e foto definitivi:
+
+1. In `eventi/sestaed/index.html` sostituisci i segnaposto, cambia il `<title>` e la
+   `description`, e nella riga `<meta name="robots" …>` metti
+   `index, follow, max-image-preview:large`.
+2. In `eventi/index.html` aggiungi la card in cima alla griglia e aggiorna il numero
+   tra parentesi.
+3. In `index.html` aggiungi il 2026 in cima alle foto impilate (`.stack__card`) e
+   punta la hero alla nuova edizione.
+4. Aggiorna i blocchi "Next Projects" delle altre edizioni e aggiungi l'indirizzo in
+   `sitemap.xml`.
+
+## Aggiungere una nuova edizione (es. 2027)
+
+Come sopra: copia la cartella di un'edizione (per esempio `eventi/sestaed/` in
+`eventi/settimaed/`), carica le foto in `assets/img/edizioni/2027/` con i nomi della
+tabella "Foto" e segui i passi 2-4.
 
 ---
 
 ## Pubblicazione su GitHub Pages
 
 1. Il repository deve essere **pubblico** (requisito del piano gratuito di GitHub).
-2. Vai in **Settings → Pages** e alla voce *Source* scegli **GitHub Actions**.
+2. In **Settings → Pages** la voce *Source* è **GitHub Actions**.
 3. A ogni modifica parte da solo il flusso **"Pubblica il sito"** (scheda *Actions*).
-   La prima volta scarica anche le foto dal vecchio sito Framer e le salva in
-   `assets/img`. Fino ad allora non cancellare il progetto su Framer.
-4. Sempre in **Settings → Pages**, alla voce *Custom domain* scrivi `factoryarea.it`
-   e premi **Save**.
-5. Quando il dominio funziona, spunta **Enforce HTTPS**.
+4. In **Settings → Pages** il *Custom domain* è `factoryarea.it`, con **Enforce HTTPS**.
 
 Consigliato: verifica il dominio anche nelle impostazioni del tuo account GitHub
 (*Settings → Pages → Add a domain*). GitHub ti dà un record TXT da aggiungere su
@@ -143,17 +191,15 @@ come sono: non hanno nulla a che fare con i record del sito.
 
 ---
 
-## Modulo contatti
+## SEO
 
-GitHub Pages non può ricevere messaggi, quindi il modulo usa **Web3Forms**:
-gratuito fino a 250 messaggi al mese e senza registrazione.
-
-1. Vai su <https://web3forms.com>, inserisci l'email che deve ricevere i messaggi e
-   copia la *Access Key* che ti arriva per email.
-2. In `contatti/index.html` sostituisci `INSERISCI-LA-TUA-CHIAVE-WEB3FORMS` con la chiave.
-
-La chiave può stare nel codice pubblico: serve solo a indirizzare i messaggi alla tua
-casella. Contro lo spam c'è un campo nascosto (honeypot).
+- Ogni pagina ha titolo, descrizione, indirizzo canonico e anteprima social propri.
+- Dati strutturati (schema.org): ente (`NGO`) e sito (`WebSite`) in home e About,
+  ogni edizione come `Festival` con date, luogo e artisti, percorso (`BreadcrumbList`).
+- `sitemap.xml` elenca solo le pagine pubblicate; `robots.txt` la indica ai motori di ricerca.
+- Consigliato: aggiungi il sito a Google Search Console
+  (<https://search.google.com/search-console>, proprietà "Dominio" `factoryarea.it`) e
+  invia la sitemap `https://factoryarea.it/sitemap.xml`.
 
 ---
 
@@ -170,21 +216,22 @@ Poi apri <http://localhost:8000>.
 
 ---
 
-## Correzioni rispetto al sito Framer
+## Modifiche rispetto al sito Framer
 
 - Il link "2021" della home apriva l'edizione 2025: ora apre l'edizione 2021.
 - Tolto "FreeLab" (residuo del template) dai titoli delle pagine. Ogni pagina ha
   titolo e descrizione propri.
 - Corretti alcuni refusi: "Fcatory" → "Factory", "Osservatorio Marree" → "Maree",
   "che reinterpretato" → "che ha reinterpretato", "è un'opera" → "e un'opera",
-  "l'evento,Sewo" → "l'evento, Sewo", "Inviaci una messaggio" → "un messaggio".
+  "l'evento,Sewo" → "l'evento, Sewo".
 - Su telefono il testo della home veniva tagliato: ora si legge per intero.
-- La pagina contatti usa un solo testo per tutti gli schermi (Framer ne mostrava due
-  diversi tra computer e telefono).
 - Aggiunti testi alternativi alle foto (prima "Yellow Flower", "Orange Flower"…).
 - Corrette le date delle edizioni 1, 2 e 3 (2021, 2022 e 2023: su Framer risultavano tutte nel 2025).
 - Aggiunti i dati ufficiali di Factory+ ETS (footer, pagina About) e la pagina Privacy,
   utili anche per la verifica di Google Workspace for Nonprofits.
+- Novembre 2026: logo ufficiale al posto della scritta, barra di navigazione sfocata con
+  pulsante Tickets, video nella home, footer con dati legali e recapiti, anteprima social
+  con il logo, pagina Contatti e modulo eliminati, pagina 2026 in preparazione.
 
 ---
 
@@ -192,13 +239,16 @@ Poi apri <http://localhost:8000>.
 
 - **Animazioni** (in `assets/js/main.js` e `assets/css/style.css`): scroll fluido
   (Lenis), testi che compaiono riga per riga o lettera per lettera, foto della home che
-  restano ferme e si impilano rimpicciolendosi, testo che si "accende" scorrendo, logo
-  che si riduce scorrendo nelle pagine interne, cursore "Explore" e freccia, menu mobile
-  a tutto schermo.
-- Se nel sistema è attiva l'opzione **riduci movimento**, le animazioni si disattivano
-  e i contenuti sono subito visibili.
+  restano ferme e si impilano rimpicciolendosi, testo che si "accende" scorrendo,
+  cursore "Explore", menu mobile a tutto schermo.
+- **Barra di navigazione**: 16 px sopra e sotto, margini laterali uguali alle pagine
+  (32 px su computer e tablet, 16 px su telefono, variabile `--gutter`). In home è
+  trasparente sopra il video e diventa sfocata appena si scorre.
+- Se nel sistema è attiva l'opzione **riduci movimento**, le animazioni si disattivano,
+  il video non parte da solo e i contenuti sono subito visibili.
 - Il font è ospitato nel sito: nessuna richiesta a Google Fonts.
 - Il sito non usa cookie né strumenti di tracciamento. Se in futuro aggiungete
-  statistiche (es. Google Analytics), andranno riviste privacy e banner cookie.
+  statistiche (es. Google Analytics) o contenuti incorporati (es. post Instagram),
+  andranno riviste privacy e banner cookie.
 - Licenze: Inter (SIL Open Font License, `assets/fonts/OFL-Inter.txt`), Lenis (MIT,
   `assets/js/LICENSE-lenis.txt`).

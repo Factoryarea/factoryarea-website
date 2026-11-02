@@ -3,10 +3,10 @@
    --------------------------------------------------------------------------
    1. Scroll fluido (Lenis)
    2. Testi animati (righe / parole / lettere) e comparse
-   3. Navigazione: stato compatto e menu mobile
+   3. Navigazione: barra sfocata e menu mobile
    4. Effetti legati allo scroll (hero, edizioni impilate, testo che si accende)
-   5. Cursore personalizzato
-   6. Modulo contatti
+   5. Video della home
+   6. Cursore personalizzato
    7. Anno nel footer
    Nessuna dipendenza oltre a Lenis (assets/js/lenis.min.js).
    ========================================================================== */
@@ -212,26 +212,21 @@
         }
       });
 
-      // Foto della hero: parte quando l'immagine è pronta
-      var heroImg = document.querySelector(".hero__img");
-      if (heroImg) {
+      // Video (o foto) della hero: compare quando l'immagine di copertina è pronta
+      var heroMedia = document.querySelector(".hero__video, .hero__img");
+      if (heroMedia) {
         var start = function () {
-          heroImg.classList.add("is-in");
+          heroMedia.classList.add("is-in");
         };
-        var ready = heroImg.decode ? heroImg.decode() : Promise.resolve();
+        var ready;
+        if (heroMedia.tagName === "VIDEO") {
+          var poster = new Image();
+          poster.src = heroMedia.getAttribute("poster");
+          ready = poster.decode ? poster.decode() : Promise.resolve();
+        } else {
+          ready = heroMedia.decode ? heroMedia.decode() : Promise.resolve();
+        }
         Promise.race([ready, new Promise(function (r) { setTimeout(r, 1500); })]).then(start, start);
-      }
-
-      // Linee sotto i campi del modulo
-      var form = document.querySelector(".form");
-      if (form) {
-        var formObserver = new IntersectionObserver(function (entries) {
-          if (entries[0].isIntersecting) {
-            form.classList.add("is-in");
-            formObserver.disconnect();
-          }
-        });
-        formObserver.observe(form);
       }
     });
   }
@@ -240,21 +235,20 @@
      3. NAVIGAZIONE
      ------------------------------------------------------------------------ */
   var nav = document.querySelector("[data-nav]");
-  var navShrink = nav && nav.hasAttribute("data-shrink");
   var toggle = nav && nav.querySelector(".nav__toggle");
   var menu = nav && nav.querySelector(".nav__menu");
   var menuOpen = false;
 
+  // In home la barra è trasparente sopra il video e diventa sfocata appena si scorre
   function updateNav(y) {
-    if (!navShrink) return;
-    // Come nel sito Framer: diventa compatta dopo il 10% dell'altezza dello schermo
-    nav.classList.toggle("is-small", mqDesktop.matches && y >= window.innerHeight * 0.1);
+    if (nav) nav.classList.toggle("is-scrolled", y > 8);
   }
 
   function setMenu(open) {
     if (!menu || open === menuOpen) return;
     menuOpen = open;
     toggle.setAttribute("aria-expanded", String(open));
+    toggle.textContent = open ? "Chiudi" : "Menu";
     if (open) {
       menu.hidden = false;
       void menu.offsetWidth;
@@ -392,6 +386,7 @@
 
     if (stack) stack.classList.toggle("is-active", y >= layout.stackTop - 1);
 
+    if (videoUpdate) videoUpdate(y);
     if (cursorUpdate) cursorUpdate(dt);
     requestAnimationFrame(frame);
   }
@@ -402,7 +397,67 @@
   fontsReady.then(measure);
 
   /* ------------------------------------------------------------------------
-     5. CURSORE PERSONALIZZATO
+     5. VIDEO DELLA HOME
+     ------------------------------------------------------------------------
+     Parte da solo, senza audio e in loop. Non parte se l'utente chiede di
+     ridurre i movimenti o di risparmiare dati: resta l'immagine di copertina.
+     Si ferma quando la hero è coperta dalle sezioni successive o la scheda
+     non è visibile. Il pulsante in basso a destra lo mette in pausa. */
+  var videoUpdate = null;
+  var heroVideo = document.querySelector("[data-hero-video]");
+  var videoToggle = document.querySelector("[data-video-toggle]");
+
+  if (heroVideo) {
+    var saveData = !!(navigator.connection && navigator.connection.saveData);
+    var userPaused = reduceMotion || saveData;
+    var heroVisible = true;
+
+    var setToggle = function () {
+      if (!videoToggle) return;
+      videoToggle.hidden = false;
+      videoToggle.classList.toggle("is-paused", userPaused);
+      videoToggle.setAttribute("aria-label", userPaused ? "Riproduci il video" : "Metti in pausa il video");
+    };
+
+    var syncVideo = function () {
+      var shouldPlay = !userPaused && heroVisible && !document.hidden;
+      if (shouldPlay && heroVideo.paused) {
+        heroVideo.preload = "auto";
+        var playing = heroVideo.play();
+        if (playing && playing.catch) {
+          playing.catch(function () {
+            // Riproduzione automatica bloccata (es. risparmio energetico): resta la copertina
+            userPaused = true;
+            setToggle();
+          });
+        }
+      } else if (!shouldPlay && !heroVideo.paused) {
+        heroVideo.pause();
+      }
+      setToggle();
+    };
+
+    if (videoToggle) {
+      videoToggle.addEventListener("click", function () {
+        userPaused = !userPaused;
+        syncVideo();
+      });
+    }
+    document.addEventListener("visibilitychange", syncVideo);
+
+    videoUpdate = function (y) {
+      var visible = y < (layout.vh || window.innerHeight) * 1.05;
+      if (visible !== heroVisible) {
+        heroVisible = visible;
+        syncVideo();
+      }
+    };
+
+    syncVideo();
+  }
+
+  /* ------------------------------------------------------------------------
+     6. CURSORE PERSONALIZZATO
      ------------------------------------------------------------------------ */
   var cursorUpdate = null;
 
@@ -410,11 +465,7 @@
     var cursor = document.createElement("div");
     cursor.className = "cursor";
     cursor.setAttribute("aria-hidden", "true");
-    cursor.innerHTML =
-      '<div class="cursor__item cursor__item--explore">Explore</div>' +
-      '<div class="cursor__item cursor__item--contact">' +
-      '<svg viewBox="0 0 24 24" fill="currentColor"><path transform="translate(5.5 5.5)" d="M1 0v2h8.59L0 11.59 1.41 13 11 3.41V12h2V0z"/></svg>' +
-      "</div>";
+    cursor.innerHTML = '<div class="cursor__item cursor__item--explore">Explore</div>';
     document.body.appendChild(cursor);
 
     var exploreEl = cursor.querySelector(".cursor__item--explore");
@@ -430,12 +481,8 @@
         var variant = target.getAttribute("data-cursor");
         offX = num(target.getAttribute("data-cursor-x"), 20);
         offY = num(target.getAttribute("data-cursor-y"), 60);
-        if (variant === "explore") {
-          exploreEl.textContent = target.getAttribute("data-cursor-label") || "Explore";
-          height = 44;
-        } else {
-          height = 52;
-        }
+        exploreEl.textContent = target.getAttribute("data-cursor-label") || "Explore";
+        height = 44;
         cursor.setAttribute("data-variant", variant);
       } else {
         cursor.removeAttribute("data-variant");
@@ -479,68 +526,6 @@
   }
 
   requestAnimationFrame(frame);
-
-  /* ------------------------------------------------------------------------
-     6. MODULO CONTATTI
-     ------------------------------------------------------------------------
-     Il modulo invia i dati a un servizio gratuito (Web3Forms o Formspree).
-     La configurazione è nella pagina contatti/index.html. */
-  var contactForm = document.querySelector("[data-contact-form]");
-  if (contactForm) {
-    var button = contactForm.querySelector(".btn-submit");
-    var buttonText = button.querySelector(".btn-submit__text");
-    var status = contactForm.querySelector(".form__status");
-    var defaultLabel = buttonText.textContent;
-
-    var showState = function (state, label, message) {
-      button.classList.remove("is-loading", "is-success", "is-error");
-      if (state) button.classList.add("is-" + state);
-      buttonText.textContent = label || defaultLabel;
-      if (status) status.textContent = message || "";
-    };
-
-    contactForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var keyField = contactForm.querySelector('[name="access_key"]');
-      var action = contactForm.getAttribute("action") || "";
-      var notConfigured = !action || (keyField && /INSERISCI/i.test(keyField.value)) || /INSERISCI/i.test(action);
-      if (notConfigured) {
-        showState("error", "Modulo non ancora attivo", "Il modulo non è ancora collegato: vedi la guida nel README.");
-        return;
-      }
-      showState("loading");
-      button.disabled = true;
-
-      fetch(action, {
-        method: "POST",
-        body: new FormData(contactForm),
-        headers: { Accept: "application/json" }
-      })
-        .then(function (res) {
-          return res
-            .json()
-            .catch(function () {
-              return {};
-            })
-            .then(function (data) {
-              if (!res.ok || data.success === false) throw new Error("send failed");
-            });
-        })
-        .then(function () {
-          contactForm.reset();
-          showState("success", "Grazie!", "Messaggio inviato: ti risponderemo al più presto.");
-        })
-        .catch(function () {
-          showState("error", "Qualcosa è andato storto", "Invio non riuscito. Riprova tra qualche minuto.");
-        })
-        .then(function () {
-          button.disabled = false;
-          setTimeout(function () {
-            if (!button.classList.contains("is-loading")) showState(null, null, status ? status.textContent : "");
-          }, 4000);
-        });
-    });
-  }
 
   /* ------------------------------------------------------------------------
      7. ANNO NEL FOOTER

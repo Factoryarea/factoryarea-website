@@ -6,27 +6,32 @@
   <title>Chi siamo | Factory Area Festival</title>
   <meta name="description" content="Factory Area Festival è un progetto di Factory+ ETS nato in Calabria nel 2021: missione, valori, partner e dati dell&#x27;ente.">
   <link rel="canonical" href="https://factoryarea.it/about-us/">
+  <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#141517">
-  <meta name="robots" content="max-image-preview:large">
 
-  <!-- Anteprima sui social -->
+  <!-- Anteprima quando il link viene condiviso (WhatsApp, Facebook, LinkedIn, X…) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Factory Area Festival">
   <meta property="og:locale" content="it_IT">
   <meta property="og:title" content="Chi siamo | Factory Area Festival">
   <meta property="og:description" content="Factory Area Festival è un progetto di Factory+ ETS nato in Calabria nel 2021: missione, valori, partner e dati dell&#x27;ente.">
   <meta property="og:url" content="https://factoryarea.it/about-us/">
-  <meta property="og:image" content="https://factoryarea.it/assets/img/og-image.png">
+  <meta property="og:image" content="https://factoryarea.it/assets/img/og-factoryarea.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Logo Factory+ di Factory Area Festival">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Chi siamo | Factory Area Festival">
   <meta name="twitter:description" content="Factory Area Festival è un progetto di Factory+ ETS nato in Calabria nel 2021: missione, valori, partner e dati dell&#x27;ente.">
-  <meta name="twitter:image" content="https://factoryarea.it/assets/img/og-image.png">
+  <meta name="twitter:image" content="https://factoryarea.it/assets/img/og-factoryarea.png">
+  <meta name="twitter:image:alt" content="Logo Factory+ di Factory Area Festival">
 
   <!-- Icone -->
-  <link rel="icon" href="../assets/img/favicon-dark.png">
-  <link rel="icon" href="../assets/img/favicon-light.png" media="(prefers-color-scheme: light)">
-  <link rel="icon" href="../assets/img/favicon-dark.png" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="../favicon.ico" sizes="32x32">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
 
   <link rel="preload" href="../assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../assets/css/style.css">
@@ -46,11 +51,16 @@
   {
     "@context": "https://schema.org",
     "@type": "NGO",
+    "@id": "https://factoryarea.it/#ente",
     "name": "Factory+ ETS",
-    "alternateName": ["Associazione culturale Factory+", "Factory Area Festival"],
-    "description": "Ente del Terzo Settore che organizza Factory Area Festival, festival multidisciplinare in Calabria.",
+    "alternateName": [
+      "Associazione culturale Factory+",
+      "Factory Area Festival"
+    ],
+    "description": "Ente del Terzo Settore che organizza Factory Area Festival, festival multidisciplinare di musica e arte in Calabria.",
     "url": "https://factoryarea.it/",
-    "logo": "https://factoryarea.it/assets/img/apple-touch-icon.png",
+    "logo": "https://factoryarea.it/assets/img/logo-factory-nero.png",
+    "email": "associazionefactorycatanzaro@gmail.com",
     "taxID": "97105210799",
     "vatID": "IT03942250790",
     "address": {
@@ -69,27 +79,51 @@
     ]
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://factoryarea.it/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Chi siamo",
+        "item": "https://factoryarea.it/about-us/"
+      }
+    ]
+  }
+  </script>
 </head>
 <body class="page-about">
   <a class="skip-link" href="#contenuto">Vai al contenuto</a>
 
-  <!-- ================= NAVIGAZIONE ================= -->
-  <header class="nav" data-nav data-shrink>
+  <!-- ================= NAVIGAZIONE =================
+       Barra con sfondo sfocato. In home resta trasparente sopra il video
+       finché non si scorre la pagina (attributo data-overlay). -->
+  <header class="nav" data-nav>
     <div class="nav__bar">
-      <a class="nav__logo" href="../" data-split="word" data-trigger="load" data-stagger="0.05" style="--ty:10px;--tb:10px;--tdur:1s">Factory Area</a>
+      <a class="nav__logo" href="../" aria-label="Factory Area Festival, vai alla home" data-reveal data-trigger="load" style="--ry:10px;--rb:6px;--rd:.8s;--rdelay:0s">
+        <svg class="nav__logo-svg" viewBox="784.94 705.36 1264.77 279.21" fill="currentColor" aria-hidden="true" focusable="false"><polygon points="784.94 705.36 784.94 930.53 804.74 930.53 804.74 776.5 796.55 774.29 796.55 759.06 804.74 761.34 804.74 722.16 907.94 722.16 907.94 705.36 784.94 705.36"/><path d="M810.94,764.08l78.91,22,2.64,14.09-81.55-22v-14.09Z"/><path d="M914.19,886.13c0-12,3.8-21.75,11.4-29.25,7.6-7.5,19.3-11.95,35.1-13.35l61.8-5.7c-1.8-30-16.6-45-44.4-45-12.6,0-23.1,3.25-31.5,9.75-8.4,6.5-12.6,16.95-12.6,31.35h-19.8c0-15.8,5.65-29.4,16.95-40.8,11.3-11.4,26.95-17.1,46.95-17.1s35.95,6.25,47.25,18.75c11.3,12.5,16.95,28.55,16.95,48.15v67.8h21.9v16.8h-25.2c-11,0-16.5-5.5-16.5-16.5v-9l3-15h-6c-3.2,12.6-9.4,23-18.6,31.2-9.2,8.2-21.9,12.3-38.1,12.3-10,0-18.45-1.5-25.35-4.5-6.9-3-11.9-7-15-12-3.1-5-5.25-9.7-6.45-14.1-1.2-4.4-1.8-9-1.8-13.8ZM933.99,884.33c0,9.4,2.7,16.65,8.1,21.75,5.4,5.1,12.9,7.65,22.5,7.65,17.4,0,31.4-5.6,42-16.8,10.6-11.2,15.9-25.3,15.9-42.3l-58.8,5.7c-10.2,1-17.7,3.3-22.5,6.9-4.8,3.6-7.2,9.3-7.2,17.1Z"/><path d="M1102.74,908.18c-13.3-14.9-19.95-33.25-19.95-55.05s6.65-40.1,19.95-54.9c13.3-14.8,31.55-22.2,54.75-22.2,15.8,0,30.45,4.8,43.95,14.4s21.25,24.2,23.25,43.8h-20.1c-4.2-27.6-19.9-41.4-47.1-41.4-18,0-31.65,5.75-40.95,17.25-9.3,11.5-13.95,25.85-13.95,43.05s4.65,31.85,13.95,43.35c9.3,11.5,22.95,17.25,40.95,17.25,27.2,0,42.9-13.8,47.1-41.4h20.1c-2,19.6-9.75,34.2-23.25,43.8s-28.15,14.4-43.95,14.4c-23.2,0-41.45-7.45-54.75-22.35Z"/><path d="M1292.18,914.03l51.9-3.3v16.8l-52.2,3c-6.6.4-11.5-1.05-14.7-4.35-3.2-3.3-4.8-8.35-4.8-15.15v-115.2h-32.1v-16.8h32.1v-40.5l19.8-6v46.5h45.9v16.8h-45.9v118.2Z"/><path d="M1365.68,853.13c0-21.4,7.1-39.6,21.3-54.6,14.2-15,32.9-22.5,56.1-22.5s41.6,7.5,55.8,22.5c14.2,15,21.3,33.2,21.3,54.6s-7.1,39.9-21.3,54.9c-14.2,15-32.8,22.5-55.8,22.5s-41.9-7.5-56.1-22.5c-14.2-15-21.3-33.3-21.3-54.9ZM1385.48,853.13c0,17.2,5.05,31.6,15.15,43.2,10.1,11.6,24.25,17.4,42.45,17.4s32.05-5.85,42.15-17.55c10.1-11.7,15.15-26.05,15.15-43.05s-5.05-31.3-15.15-42.9c-10.1-11.6-24.15-17.4-42.15-17.4s-32.1,5.8-42.3,17.4c-10.2,11.6-15.3,25.9-15.3,42.9Z"/><path d="M1556.79,927.53v-132c0-13.6,6.5-20.1,19.5-19.5l79.5,3v16.8l-79.2-3v134.7h-19.8Z"/><path d="M1803.98,779.03h21.3l-63.9,148.5v40.5c0,11.6-6.5,17.1-19.5,16.5l-54.3-3v-16.8l54,3v-40.2l-64.2-148.5h21.3l49.8,122.4v9h6v-9l49.5-122.4Z"/><polygon points="1945.93 853.42 1938.45 845.95 1863.78 845.95 1848.5 861.53 1937.82 861.53 1945.93 853.42"/><polygon points="1949.25 850.1 1957.12 842.22 1957.12 794.31 1941.08 779.03 1941.08 841.94 1949.25 850.1"/><polygon points="1949.15 856.65 1941.08 864.71 1941.08 912.25 1957.12 927.53 1957.12 864.62 1949.15 856.65"/><polygon points="1959.85 845.95 1952.47 853.33 1960.67 861.53 2034.43 861.53 2049.71 845.95 1959.85 845.95"/></svg>
+      </a>
       <nav class="nav__links" aria-label="Menu principale">
         <a class="nav__link" href="../eventi/" data-split="word" data-trigger="load" style="--ty:10px;--tb:10px;--tdur:.4s" data-delay="0.1">Eventi</a>
         <a class="nav__link" href="../about-us/" aria-current="page" data-split="word" data-trigger="load" style="--ty:10px;--tb:10px;--tdur:.4s" data-delay="0.1">About</a>
-        <a class="nav__link" href="../contatti/" data-split="word" data-trigger="load" style="--ty:10px;--tb:10px;--tdur:.4s" data-delay="0.1">Contatti</a>
-        <a class="nav__link nav__link--tickets" href="https://xceed.me/it/catanzaro/club/complesso-monumentale-del-san-giovanni" target="_blank" rel="noopener" data-split="word" data-trigger="load" style="--ty:10px;--tb:10px;--tdur:.4s" data-delay="0.2">Tickets</a>
+        <a class="btn-primary" href="https://xceed.me/it/catanzaro/club/complesso-monumentale-del-san-giovanni" target="_blank" rel="noopener noreferrer" data-reveal data-trigger="load" style="--ry:10px;--rb:6px;--rd:.8s;--rdelay:.2s">Tickets</a>
       </nav>
-      <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="menu-mobile">Menu</button>
+      <div class="nav__mobile">
+        <a class="btn-primary" href="https://xceed.me/it/catanzaro/club/complesso-monumentale-del-san-giovanni" target="_blank" rel="noopener noreferrer">Tickets</a>
+        <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="menu-mobile">Menu</button>
+      </div>
     </div>
     <nav class="nav__menu" id="menu-mobile" aria-label="Menu" hidden>
       <a href="../eventi/" style="--d:.3s">Eventi</a>
-      <a href="../about-us/" style="--d:.36s">Noi</a>
-      <a href="../contatti/" style="--d:.39s">Contatti</a>
-      <a href="https://xceed.me/it/catanzaro/club/complesso-monumentale-del-san-giovanni" target="_blank" rel="noopener" style="--d:.42s">Biglietti</a>
+      <a href="../about-us/" aria-current="page" style="--d:.36s">About</a>
     </nav>
   </header>
 
@@ -150,6 +184,8 @@
           <div class="org__row"><dt>Codice fiscale</dt><dd>97105210799</dd></div>
           <div class="org__row"><dt>Partita IVA</dt><dd>03942250790</dd></div>
           <div class="org__row"><dt>RUNTS</dt><dd>Sezione "Altri enti del Terzo settore", repertorio n. 0118188 (decreto della Regione Calabria n. 5206 del 16/04/2024)</dd></div>
+          <div class="org__row"><dt>PEC</dt><dd><a href="mailto:factoryplus@pec.it">factoryplus@pec.it</a></dd></div>
+          <div class="org__row"><dt>Email</dt><dd><a href="mailto:associazionefactorycatanzaro@gmail.com">associazionefactorycatanzaro@gmail.com</a></dd></div>
         </dl>
       </div>
     </section>
@@ -158,29 +194,35 @@
 
   <!-- ================= FOOTER ================= -->
   <footer class="footer">
-    <div class="footer__cols">
-      <div class="footer__col">
-        <p class="footer__title">Sitemap</p>
-        <ul class="footer__list">
-          <li><a href="../eventi/">Eventi</a></li>
-          <li><a href="../about-us/">About</a></li>
-          <li><a href="../contatti/">Contatti</a></li>
-          <li><a href="https://xceed.me/it/catanzaro/club/complesso-monumentale-del-san-giovanni" target="_blank" rel="noopener">Tickets</a></li>
-        </ul>
+    <div class="footer__wrap">
+      <div class="footer__top">
+        <div class="footer__cols">
+          <div class="footer__col">
+            <p class="footer__title">Social</p>
+            <ul class="footer__list">
+              <li><a href="https://www.instagram.com/factoryarea" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+              <li><a href="https://open.spotify.com/show/7eSPHnYkYD0GSq333V9OXO" target="_blank" rel="noopener noreferrer">Spotify</a></li>
+              <li><a href="https://www.youtube.com/@factoryarea" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+              <li><a href="https://www.linkedin.com/company/factoryarea/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+            </ul>
+          </div>
+          <!-- Colonne libere: per aggiungere un gruppo di link copia il blocco "footer__col" qui sopra -->
+        </div>
+        <!-- Spazio per loghi o riconoscimenti (in basso a destra): per ora vuoto -->
+        <div class="footer__badges"></div>
       </div>
-      <div class="footer__col">
-        <p class="footer__title">Social</p>
-        <ul class="footer__list">
-          <li><a href="https://www.instagram.com/factoryarea" target="_blank" rel="noopener">Instagram</a></li>
-          <li><a href="https://open.spotify.com/show/7eSPHnYkYD0GSq333V9OXO" target="_blank" rel="noopener">Spotify</a></li>
-          <li><a href="https://www.youtube.com/@factoryarea" target="_blank" rel="noopener">YouTube</a></li>
-          <li><a href="https://www.linkedin.com/company/factoryarea/" target="_blank" rel="noopener">LinkedIn</a></li>
-        </ul>
+      <div class="footer__bottom">
+        <p class="footer__legal">
+          <span>© <span data-year>2026</span> Factory+ ETS</span>
+          <span>Via Gregorio Mattei 3, 88100 Catanzaro (CZ)</span>
+          <span>C.F. 97105210799</span>
+          <span>P.IVA 03942250790</span>
+          <span>RUNTS rep. n. 0118188</span>
+          <span>PEC <a href="mailto:factoryplus@pec.it">factoryplus@pec.it</a></span>
+          <span>Email <a href="mailto:associazionefactorycatanzaro@gmail.com">associazionefactorycatanzaro@gmail.com</a></span>
+        </p>
+        <p class="footer__links"><a href="../privacy/">Privacy Policy</a></p>
       </div>
-    </div>
-    <div class="footer__bottom">
-      <p class="footer__legal">Factory Area Festival è un progetto di Factory+ ETS · Via Gregorio Mattei 3, 88100 Catanzaro (CZ) · C.F. 97105210799 · P. IVA 03942250790 · RUNTS rep. n. 0118188 · <a href="../privacy/">Privacy</a></p>
-      <p class="footer__copy">Factory+ ETS <span data-year>2026</span>. All rights reserved.</p>
     </div>
   </footer>
 

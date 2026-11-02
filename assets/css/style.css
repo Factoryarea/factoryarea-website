@@ -6,13 +6,12 @@
    2.  Variabili (colori, misure, curve di animazione)
    3.  Base
    4.  Tipografia
-   5.  Navigazione (desktop + menu mobile)
+   5.  Navigazione (barra sfocata, pulsante Tickets, menu mobile)
    6.  Footer
-   7.  Home: hero, edizioni impilate, intro, call to action
+   7.  Home: hero con video, edizioni impilate, intro
    8.  Elenco eventi e card
    9.  Pagina edizione
-   10. Pagina About
-   11. Pagina Contatti e modulo
+   10. Pagina About e pagina privacy
    12. Pagina 404
    13. Cursore personalizzato
    14. Animazioni di comparsa
@@ -62,8 +61,9 @@
   --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
   /* Misure */
-  --gutter: 16px;       /* margine laterale delle pagine */
+  --gutter: 32px;       /* margine laterale di pagine e barra (16 px su telefono) */
   --max: 1600px;        /* larghezza massima dei contenuti */
+  --nav-h: 64px;        /* altezza della barra di navigazione */
 
   /* Curve di animazione.
      Le "spring" riproducono le molle di Framer (bounce 0 / 0.1 / 0.2 / 0.3).
@@ -244,89 +244,142 @@ html.is-locked body {
 }
 
 
-/* 5. NAVIGAZIONE ------------------------------------------------------------ */
+/* 5. NAVIGAZIONE ------------------------------------------------------------
+   Barra fissa: 16 px sopra e sotto, margini laterali come le pagine (--gutter).
+   Lo sfondo scuro semitrasparente e sfocato tiene leggibili logo e voci
+   mentre i contenuti scorrono sotto. In home (data-overlay) la barra resta
+   trasparente sopra il video finché non si scorre la pagina. */
 .nav {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 50;
-  pointer-events: none;
 }
 
 .nav__bar {
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 8px 11px;
+  height: var(--nav-h);
+  padding: 16px var(--gutter);
 }
 
-.nav__logo,
-.nav__links,
-.nav__toggle {
-  pointer-events: auto;
+/* Sfondo sfocato */
+.nav__bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(20, 21, 23, 0.62);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: opacity 0.35s ease;
+}
+
+/* Sfumatura leggera sopra il video della home, per leggere logo e voci */
+.nav[data-overlay] .nav__bar::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 -32px;
+  z-index: -2;
+  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0));
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.nav[data-overlay]:not(.is-scrolled) .nav__bar::before,
+.nav[data-overlay].is-scrolled .nav__bar::after,
+.nav.is-open .nav__bar::before,
+.nav.is-open .nav__bar::after {
+  opacity: 0;
+}
+
+/* Browser senza sfocatura: sfondo più coprente */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .nav__bar::before {
+    background: rgba(20, 21, 23, 0.94);
+  }
 }
 
 .nav__logo {
   display: block;
-  padding-top: 5px;
-  font-size: 70px;
-  line-height: 1;
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  white-space: nowrap;
-  transition:
-    color 0.2s ease,
-    font-size 0.5s var(--spring-0),
-    font-weight 0.5s var(--spring-0),
-    letter-spacing 0.5s var(--spring-0);
+  flex: none;
+  color: var(--fg);
+  transition: opacity 0.2s ease;
 }
 
 .nav__logo:hover {
-  color: var(--fg-70);
+  opacity: 0.7;
 }
 
-.nav__links {
+.nav__logo-svg {
+  display: block;
+  width: auto;
+  height: 32px;
+}
+
+.nav__links,
+.nav__mobile {
   display: flex;
   align-items: center;
   gap: 24px;
-  padding-top: 15px;
-  font-size: 18px;
-  line-height: 1.2;
+}
+
+.nav__mobile {
+  display: none;
+  gap: 16px;
+}
+
+.nav__link,
+.nav__toggle {
+  display: block;
+  font-size: 16px;
+  line-height: 20px;
   font-weight: 500;
   letter-spacing: -0.01em;
-  transition: padding 0.5s var(--spring-0);
-}
-
-/* Nel sito originale "Tickets" è un po' più vicino a "Contatti" */
-.nav__links .nav__link--tickets {
-  margin-left: -14px;
-}
-
-.nav__link {
-  display: block;
   white-space: nowrap;
   transition: color 0.2s ease;
 }
 
-.nav__link:hover {
+.nav__link:hover,
+.nav__toggle:hover {
   color: var(--fg-70);
 }
 
-/* Stato "compatto": dopo un po' di scroll (pagine interne, desktop) */
-.nav.is-small .nav__logo {
-  font-size: 42px;
-  font-weight: 600;
-  letter-spacing: -0.03em;
-}
-
-.nav.is-small .nav__link {
+.nav__link[aria-current="page"] {
   text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
-.nav__toggle {
-  display: none;
+/* Pulsante principale bianco (Tickets) */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 16px;
+  border-radius: 100px;
+  background: var(--fg);
+  color: #000;
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
 }
 
 .nav__menu {
@@ -334,76 +387,125 @@ html.is-locked body {
 }
 
 
-/* 6. FOOTER ----------------------------------------------------------------- */
+/* 6. FOOTER -----------------------------------------------------------------
+   Struttura: colonne di link in alto (ora solo "Social", le altre libere),
+   spazio per loghi in basso a destra, linea, riga con i dati legali e la privacy. */
 .footer {
   position: relative;
   z-index: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 410px;
-  padding: 20px var(--gutter) 15px;
+  padding: 96px var(--gutter) 32px;
   background: var(--bg);
 }
 
-.footer__cols {
+.footer__wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+}
+
+.footer__top {
   display: flex;
-  align-items: flex-start;
-  gap: 128px;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 48px;
+  min-height: 280px;
+}
+
+.footer__cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 40px 24px;
 }
 
 .footer__col {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 16px;
 }
 
-.footer__title,
-.footer__list a {
-  font-size: 18px;
+.footer__title {
+  font-size: 20px;
   line-height: 1.2;
+  font-weight: 600;
   letter-spacing: -0.01em;
 }
 
 .footer__list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 12px;
 }
 
 .footer__list a {
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
   color: var(--fg-70);
   transition: color 0.2s ease;
 }
 
 .footer__list a:hover {
-  color: var(--fg-50);
+  color: var(--fg);
+}
+
+.footer__badges {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
 }
 
 .footer__bottom {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 8px 24px;
-  margin-top: 40px;
-}
-
-.footer__legal,
-.footer__copy {
-  font-size: 16px;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
+  gap: 12px 40px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 14px;
+  line-height: 1.5;
   color: var(--fg-70);
 }
 
-.footer__copy {
-  margin-left: auto;
+/* Dati legali separati da una barretta. Il margine negativo e overflow: hidden
+   nascondono la barretta all'inizio di ogni riga quando il testo va a capo. */
+.footer__legal {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 2px;
+  max-width: 1100px;
+  margin: -6px 0 -6px -21px;
+  padding: 6px 0;
+  overflow: hidden;
 }
 
-.footer__legal a {
+.footer__legal > span {
+  white-space: nowrap;
+}
+
+.footer__legal > span::before {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 12px;
+  margin: 0 10px;
+  background: var(--fg-30);
+  vertical-align: -1px;
+}
+
+.footer__legal a,
+.footer__links a {
   text-decoration: underline;
   text-underline-offset: 2px;
+  transition: color 0.2s ease;
+}
+
+.footer__legal a:hover,
+.footer__links a:hover {
+  color: var(--fg);
+}
+
+.footer__links {
+  flex: none;
 }
 
 
@@ -435,10 +537,69 @@ html.is-locked body {
   will-change: transform;
 }
 
-.hero__img {
+.hero__img,
+.hero__video {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  background: var(--bg);
+}
+
+/* Sfumatura in basso per leggere il testo sopra il video */
+.hero__media::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 45%;
+  background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5));
+  pointer-events: none;
+}
+
+/* Pulsante pausa / riproduci del video */
+.hero__toggle {
+  position: absolute;
+  right: var(--gutter);
+  bottom: 64px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.3);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: var(--fg);
+  opacity: 0.8;
+  pointer-events: auto;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.hero__toggle[hidden] {
+  display: none;
+}
+
+.hero__toggle:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.hero__icon {
+  width: 20px;
+  height: 20px;
+}
+
+.hero__toggle .hero__icon--play,
+.hero__toggle.is-paused .hero__icon--pause {
+  display: none;
+}
+
+.hero__toggle.is-paused .hero__icon--play {
+  display: block;
 }
 
 .hero__content {
@@ -447,7 +608,7 @@ html.is-locked body {
   right: 0;
   bottom: 0;
   z-index: 1;
-  padding: 0 20px 64px;
+  padding: 0 calc(var(--gutter) + 56px) 64px var(--gutter);
   pointer-events: none;
 }
 
@@ -535,7 +696,7 @@ html.is-locked body {
   flex-direction: column;
   align-items: flex-start;
   gap: 50px;
-  padding: 20px var(--gutter) 340px;
+  padding: 20px var(--gutter) 140px;
   background: var(--bg);
 }
 
@@ -569,63 +730,6 @@ html.is-locked body {
 .link-line:hover::after {
   background: var(--fg-70);
 }
-
-/* Call to action "Siamo sempre disponibili…" */
-.cta {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 445px;
-  padding: 0 var(--gutter);
-  background: var(--bg);
-}
-
-.cta__link {
-  position: relative;
-  display: block;
-  width: 100%;
-  text-align: center;
-}
-
-.cta__text {
-  display: block;
-  font-size: 80px;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  font-weight: 500;
-  opacity: 0.7;
-  transition: opacity 0.5s var(--spring-2);
-}
-
-.cta__hint {
-  display: block;
-  position: absolute;
-  top: calc(100% + 22px);
-  left: 0;
-  right: 0;
-  font-size: 18px;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-  opacity: 0;
-  transform: translateY(-8px);
-  transition:
-    opacity 0.5s var(--spring-2),
-    transform 0.5s var(--spring-2);
-}
-
-.cta__link:hover .cta__text,
-.cta__link:focus-visible .cta__text {
-  opacity: 1;
-}
-
-.cta__link:hover .cta__hint,
-.cta__link:focus-visible .cta__hint {
-  opacity: 1;
-  transform: none;
-}
-
 
 /* 8. ELENCO EVENTI E CARD ----------------------------------------------------- */
 .page {
@@ -801,7 +905,7 @@ html.is-locked body {
 
 .edition__sticky {
   position: sticky;
-  top: 60px;
+  top: calc(var(--nav-h) + 24px);
 }
 
 .next {
@@ -847,7 +951,7 @@ html.is-locked body {
 
 .about__title {
   position: sticky;
-  top: 85px;
+  top: calc(var(--nav-h) + 24px);
 }
 
 .about__body {
@@ -900,6 +1004,12 @@ html.is-locked body {
   flex: 1 1 0;
   min-width: 0;
   margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.org a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 /* Pagine di testo (informativa privacy) */
@@ -948,199 +1058,6 @@ html.is-locked body {
 }
 
 
-/* 11. CONTATTI E MODULO ------------------------------------------------------- */
-.contact {
-  display: flex;
-  flex-direction: column;
-  gap: 180px;
-  padding-top: 200px;
-  padding-bottom: 180px;
-}
-
-.split-block {
-  display: block;
-}
-
-.split-block + .split-block {
-  margin-top: 1em;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.form__row {
-  display: flex;
-  gap: 20px;
-}
-
-.field {
-  flex: 1 1 0;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.field__label {
-  display: block;
-  font-size: 18px;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-  font-weight: 500;
-}
-
-.field__control {
-  position: relative;
-  display: block;
-}
-
-.field__input {
-  display: block;
-  width: 100%;
-  height: 40px;
-  padding: 0;
-  border: 0;
-  border-bottom: 1px solid transparent;
-  border-radius: 0;
-  background: transparent;
-  color: var(--fg);
-  font-family: var(--font);
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.3;
-  outline: none;
-  transition: border-color 0.3s cubic-bezier(0.25, 0, 0.5, 1);
-  -webkit-appearance: none;
-  appearance: none;
-}
-
-.field__input::placeholder {
-  color: var(--fg-30);
-  opacity: 1;
-}
-
-.field__input:focus {
-  border-bottom-color: var(--fg);
-}
-
-.field__input--lg {
-  font-size: 17px;
-}
-
-textarea.field__input {
-  height: 255px;
-  padding-top: 8px;
-  resize: vertical;
-}
-
-.field__line {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0;
-  height: 1px;
-  background: var(--fg-50);
-  pointer-events: none;
-  transition: width 1s var(--spring-0) 0.3s;
-}
-
-.form.is-in .field__line,
-html:not(.anim) .field__line {
-  width: 100%;
-}
-
-.honeypot {
-  position: absolute !important;
-  left: -9999px;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-}
-
-.form__privacy {
-  font-size: 14px;
-  line-height: 1.3;
-  color: var(--fg-50);
-}
-
-.form__privacy a {
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.btn-submit {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 40px;
-  border-radius: 10px;
-  background: var(--fg);
-  color: #000;
-  font-size: 14px;
-  line-height: 1.2;
-  font-weight: 600;
-  transition:
-    background-color 0.4s var(--spring-2),
-    color 0.4s var(--spring-2),
-    opacity 0.3s;
-}
-
-.btn-submit:hover,
-.btn-submit:active {
-  background: var(--fg-30);
-  color: var(--fg);
-}
-
-.btn-submit[disabled] {
-  cursor: default;
-}
-
-.btn-submit .btn-submit__spinner {
-  display: none;
-  width: 18px;
-  height: 18px;
-  border: 2px solid currentColor;
-  border-right-color: transparent;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-.btn-submit.is-loading .btn-submit__text {
-  display: none;
-}
-
-.btn-submit.is-loading .btn-submit__spinner {
-  display: block;
-}
-
-.btn-submit.is-success {
-  background: var(--fg);
-  color: #000;
-}
-
-.btn-submit.is-error {
-  background: rgba(255, 34, 68, 0.15);
-  color: var(--fg);
-}
-
-.form__status {
-  min-height: 1.3em;
-  font-size: 14px;
-  color: var(--fg-70);
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-
 /* 12. PAGINA 404 -------------------------------------------------------------- */
 .notfound {
   display: flex;
@@ -1156,8 +1073,7 @@ html:not(.anim) .field__line {
 
 
 /* 13. CURSORE PERSONALIZZATO --------------------------------------------------
-   Compare passando sopra le card delle edizioni ("Explore")
-   e sopra la call to action della home (freccia). */
+   Compare passando sopra le card delle edizioni ("Explore"). */
 .cursor {
   position: fixed;
   top: 0;
@@ -1179,8 +1095,7 @@ html:not(.anim) .field__line {
     transform 0.6s var(--spring-3);
 }
 
-.cursor[data-variant="explore"] .cursor__item--explore,
-.cursor[data-variant="contact"] .cursor__item--contact {
+.cursor[data-variant="explore"] .cursor__item--explore {
   opacity: 1;
   transform: none;
 }
@@ -1200,23 +1115,6 @@ html:not(.anim) .field__line {
   line-height: 1.2;
   letter-spacing: -0.01em;
   white-space: nowrap;
-}
-
-.cursor__item--contact {
-  display: grid;
-  place-items: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: var(--fg);
-  color: #000;
-  transform: scale(0);
-  transform-origin: 50% 50%;
-}
-
-.cursor__item--contact svg {
-  width: 32px;
-  height: 32px;
 }
 
 
@@ -1279,13 +1177,15 @@ html:not(.anim) .field__line {
   opacity: var(--o, 0.1);
 }
 
-/* Foto della hero: comparsa all'apertura della pagina */
-.anim .hero__img {
+/* Video (o foto) della hero: comparsa all'apertura della pagina */
+.anim .hero__img,
+.anim .hero__video {
   opacity: 0;
   transform: translate3d(0, 40px, 0) scale(1.2);
 }
 
-.anim .hero__img.is-in {
+.anim .hero__img.is-in,
+.anim .hero__video.is-in {
   opacity: 1;
   transform: none;
   transition:
@@ -1315,40 +1215,20 @@ html:not(.anim) .field__line {
   .t-h2 { font-size: 48px; }
   .t-hero { font-size: 32px; }
   .t-display { font-size: 64px; }
-  .cta__text { font-size: 64px; }
   .partners { font-size: 48px; }
 
-  /* Navigazione: logo piccolo e pulsante "Menu" */
-  .nav__bar {
-    padding: 8px 17px;
-  }
-
-  .nav__logo,
-  .nav.is-small .nav__logo {
-    padding-top: 8px;
-    font-size: 26px;
-    line-height: 1.1;
-    font-weight: 600;
-    letter-spacing: -0.03em;
-  }
-
+  /* Navigazione: Tickets e "Menu" nella barra, voci nel menu a tutto schermo */
   .nav__links {
     display: none;
   }
 
-  .nav__toggle {
-    display: block;
-    padding-top: 10px;
-    font-size: 18px;
-    line-height: 1.2;
-    font-weight: 500;
-    letter-spacing: -0.01em;
+  .nav__mobile {
+    display: flex;
   }
 
   .nav.is-open {
     bottom: 0;
     background: var(--bg);
-    pointer-events: auto;
     transition: background-color 0.4s ease;
   }
 
@@ -1357,8 +1237,7 @@ html:not(.anim) .field__line {
     flex-direction: column;
     align-items: flex-start;
     gap: 3px;
-    padding: 97px var(--gutter) 40px;
-    pointer-events: auto;
+    padding: 33px var(--gutter) 40px;
   }
 
   .nav__menu[hidden] {
@@ -1380,19 +1259,32 @@ html:not(.anim) .field__line {
 
   /* Home */
   .hero__content {
-    padding: 0 16px 16px;
+    padding-bottom: 32px;
   }
 
   .hero__text {
     max-width: 90%;
   }
 
-  .intro {
-    padding: 50px var(--gutter) 300px;
+  .hero__toggle {
+    bottom: 32px;
   }
 
-  .footer {
-    min-height: 310px;
+  .intro {
+    padding: 50px var(--gutter) 140px;
+  }
+
+  /* Footer */
+  .footer__cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .footer__top {
+    min-height: 220px;
+  }
+
+  .footer__bottom {
+    flex-direction: column;
   }
 
   /* Edizione */
@@ -1410,12 +1302,6 @@ html:not(.anim) .field__line {
     padding-top: 150px;
     padding-bottom: 25px;
   }
-
-  /* Contatti */
-  .contact {
-    gap: 160px;
-    padding-top: 160px;
-  }
 }
 
 /* Telefono: fino a 809px */
@@ -1423,16 +1309,29 @@ html:not(.anim) .field__line {
   .t-h2 { font-size: 40px; }
   .t-hero { font-size: 26px; }
   .t-display { font-size: 40px; }
-  .cta__text { font-size: 50px; }
 
-  .nav__bar {
-    padding: 8px 27px;
+  :root {
+    --gutter: 16px;
+  }
+
+  .nav__logo-svg {
+    height: 26px;
+  }
+
+  .nav__mobile {
+    gap: 14px;
   }
 
   /* Home */
   .hero__content {
-    padding: 0 15px 15px;
+    padding: 0 calc(var(--gutter) + 52px) 20px var(--gutter);
     --rdelay: 0.1s;
+  }
+
+  .hero__toggle {
+    bottom: 20px;
+    width: 36px;
+    height: 36px;
   }
 
   .hero__text {
@@ -1446,36 +1345,37 @@ html:not(.anim) .field__line {
   }
 
   .intro {
-    padding: 20px var(--gutter) 200px;
-  }
-
-  .cta {
-    min-height: 280px;
-    padding: 40px var(--gutter);
+    padding: 20px var(--gutter) 100px;
   }
 
   /* Footer */
   .footer {
-    min-height: 0;
-    gap: 80px;
+    padding-top: 72px;
+    padding-bottom: 24px;
+  }
+
+  .footer__top {
+    min-height: 160px;
   }
 
   .footer__cols {
-    gap: 0;
+    gap: 32px 16px;
   }
 
-  .footer__col {
-    flex: 1 1 0;
-  }
-
-  .footer__bottom {
+  /* Dati legali uno per riga */
+  .footer__legal {
     flex-direction: column;
-    align-items: flex-start;
-    margin-top: 0;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
   }
 
-  .footer__copy {
-    margin-left: 0;
+  .footer__legal > span {
+    white-space: normal;
+  }
+
+  .footer__legal > span::before {
+    display: none;
   }
 
   /* Eventi */
@@ -1602,17 +1502,6 @@ html:not(.anim) .field__line {
     gap: 40px;
     padding-top: 100px;
     padding-bottom: 120px;
-  }
-
-  /* Contatti */
-  .contact {
-    gap: 150px;
-    padding-top: 100px;
-    padding-bottom: 200px;
-  }
-
-  .form__row {
-    flex-direction: column;
   }
 }
 

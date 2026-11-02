@@ -1,5 +1,4 @@
 # Pubblica il sito su GitHub Pages a ogni modifica del ramo "main".
-# La prima volta scarica anche le foto dal vecchio sito Framer e le salva nel repository.
 name: Pubblica il sito
 
 on:
@@ -8,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write   # serve per salvare le foto nel repository
+  contents: read
   pages: write
   id-token: write
 
@@ -28,41 +27,11 @@ jobs:
         with:
           ref: main   # sempre l'ultima versione, anche quando si rilancia un'esecuzione vecchia
 
-      - name: Controlla se mancano le foto
-        id: foto
-        run: |
-          if [ -f assets/img/edizioni/2025/copertina-2048.jpg ]; then
-            echo "mancanti=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "mancanti=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Prepara Python
-        if: steps.foto.outputs.mancanti == 'true'
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-
-      - name: Scarica e ottimizza le foto
-        if: steps.foto.outputs.mancanti == 'true'
-        run: |
-          pip install --quiet pillow
-          python scripts/scarica_immagini.py
-
-      - name: Salva le foto nel repository
-        if: steps.foto.outputs.mancanti == 'true'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
-          git add assets/img
-          git commit -m "Aggiunge le foto del sito" || echo "Nessuna foto nuova"
-          git push
-
       - name: Prepara i file da pubblicare
         run: |
           mkdir -p _site
           tar --exclude="./.git" --exclude="./.github" --exclude="./_site" \
-              --exclude="./scripts" --exclude="./README.md" --exclude="./.gitignore" \
+              --exclude="./README.md" --exclude="./.gitignore" \
               -cf - . | tar -xf - -C _site
           ls -la _site
 

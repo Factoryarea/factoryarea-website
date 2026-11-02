@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://factoryarea.it/</loc></url>
-  <url><loc>https://factoryarea.it/eventi/</loc></url>
-  <url><loc>https://factoryarea.it/eventi/quintaed/</loc></url>
-  <url><loc>https://factoryarea.it/eventi/quartaed/</loc></url>
-  <url><loc>https://factoryarea.it/eventi/terzaed/</loc></url>
-  <url><loc>https://factoryarea.it/eventi/secondaed/</loc></url>
-  <url><loc>https://factoryarea.it/eventi/primaed/</loc></url>
-  <url><loc>https://factoryarea.it/about-us/</loc></url>
-  <url><loc>https://factoryarea.it/contatti/</loc></url>
-  <url><loc>https://factoryarea.it/privacy/</loc></url>
+  <url><loc>https://factoryarea.it/</loc><lastmod>2026-11-02</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://factoryarea.it/eventi/</loc><lastmod>2026-11-02</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://factoryarea.it/eventi/quintaed/</loc><lastmod>2026-11-02</lastmod><changefreq>yearly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://factoryarea.it/eventi/quartaed/</loc><lastmod>2026-11-02</lastmod><changefreq>yearly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://factoryarea.it/eventi/terzaed/</loc><lastmod>2026-11-02</lastmod><changefreq>yearly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://factoryarea.it/eventi/secondaed/</loc><lastmod>2026-11-02</lastmod><changefreq>yearly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://factoryarea.it/eventi/primaed/</loc><lastmod>2026-11-02</lastmod><changefreq>yearly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://factoryarea.it/about-us/</loc><lastmod>2026-11-02</lastmod><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://factoryarea.it/privacy/</loc><lastmod>2026-11-02</lastmod><changefreq>yearly</changefreq><priority>0.2</priority></url>
 </urlset>
