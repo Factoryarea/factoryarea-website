@@ -4,8 +4,8 @@
   "lang": "it",
   "start_url": "/",
   "display": "browser",
-  "background_color": "#141517",
-  "theme_color": "#141517",
+  "background_color": "#0024FF",
+  "theme_color": "#0024FF",
   "icons": [
     {
       "src": "/assets/img/icon-192.png",

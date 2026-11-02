@@ -55,7 +55,7 @@ clicca la matita ✏️, modifica e premi **Commit changes**. Il sito si aggiorn
 | Informativa privacy | `privacy/index.html` |
 | Dati di Factory+ ETS (C.F., P. IVA, RUNTS, sede, PEC, email) | footer di ogni pagina, sezione "Factory+ ETS" in `about-us/index.html`, `privacy/index.html` e dati strutturati per Google in `index.html` e `about-us/index.html` |
 | Link dei biglietti (Tickets) | barra di navigazione di ogni pagina (compare due volte: computer e telefono) |
-| Colori, font, margini | variabili all'inizio di `assets/css/style.css` |
+| Colori, font, margini | variabili all'inizio di `assets/css/style.css` (sfondo: blu elettrico `#0024ff`, preso dalla foto profilo Instagram) |
 
 **Barra di navigazione e footer** sono ripetuti in ogni pagina. Se cambi un link (per
 esempio quello dei biglietti, che inizia con `https://xceed.me/...`) va cambiato in tutte
@@ -89,17 +89,27 @@ aggiorna anche `width` e `height` nel tag `<img>`.
 
 ### Video della home
 
-I file sono in `assets/video/`:
+Il video originale ("Reel con drone.mp4", 1276×718) è stato ripulito dal rumore,
+ingrandito a 1920×1008 con un filtro di qualità (lanczos) e reso più nitido; le bande
+nere ai bordi e i secondi neri finali sono stati tolti. I file sono in `assets/video/`,
+in tre formati: ogni browser usa il primo che sa riprodurre.
 
-- `hero.mp4`: versione orizzontale (computer, tablet);
-- `hero-verticale.mp4`: ritaglio 3:4 al centro, più leggero, per i telefoni;
-- `hero-poster.jpg`: primo fotogramma, mostrato mentre il video carica e a chi ha
-  attivato "riduci movimento" o il risparmio dati.
+| File | Per chi |
+| --- | --- |
+| `hero.av1.mp4`, `hero-verticale.av1.mp4` | AV1, il più leggero: Chrome, Edge, Firefox, Android |
+| `hero.hevc.mp4`, `hero-verticale.hevc.mp4` | HEVC: Safari su Mac e iPhone |
+| `hero.mp4`, `hero-verticale.mp4` | H.264: tutti gli altri browser |
+| `hero-poster.jpg` | primo fotogramma, mostrato mentre il video carica |
 
-Il video parte da solo e senza audio (i browser lo permettono solo così), va in loop
-e si ferma quando la hero è coperta dalle sezioni successive. Il pulsante in basso a
-destra lo mette in pausa. Per cambiarlo, sostituisci i tre file tenendo gli stessi nomi:
-MP4 H.264 senza audio, al massimo 1920 px di larghezza e pochi MB.
+Le versioni `-verticale` sono un ritaglio 3:4 al centro, usato dagli schermi in verticale
+(telefoni). Il video parte sempre da solo (autoplay), senza audio (i browser permettono
+la riproduzione automatica solo così) e in loop; si ferma quando la hero è coperta dalle
+sezioni successive e riparte quando torna in vista. Il pulsante in basso a destra lo mette
+in pausa. Su iPhone con il risparmio energetico attivo è il sistema a bloccare la
+riproduzione automatica: resta la copertina e il pulsante diventa "riproduci".
+
+Per cambiare video basta anche un solo MP4 H.264 senza audio: caricalo come `hero.mp4`
+e togli dalle pagine le righe `<source>` degli altri formati.
 
 ### Logo e icone
 
@@ -107,11 +117,11 @@ MP4 H.264 senza audio, al massimo 1920 px di larghezza e pochi MB.
   Nella barra è inserito direttamente nel codice delle pagine, per poterlo colorare.
 - `assets/img/logo-factory-nero.png`: logo nero su bianco, usato nei dati per Google.
 - `favicon.ico`, `assets/img/favicon.svg`, `apple-touch-icon.png`, `icon-192.png`,
-  `icon-512.png`: icone del sito (la "F" del logo).
+  `icon-512.png`: icone del sito (il "+" del logo, bianco su blu).
 
 ### Anteprima quando si condivide un link
 
-L'immagine è `assets/img/og-factoryarea.png` (1200×630 px, logo su fondo scuro).
+L'immagine è `assets/img/og-factoryarea.png` (1200×630 px, logo bianco su blu).
 WhatsApp, Facebook e LinkedIn la tengono in memoria per qualche giorno. Per aggiornarla
 subito: Facebook → <https://developers.facebook.com/tools/debug/> ("Recupera di nuovo");
 LinkedIn → <https://www.linkedin.com/post-inspector/>. WhatsApp si aggiorna da solo col tempo.
@@ -231,7 +241,8 @@ Poi apri <http://localhost:8000>.
   utili anche per la verifica di Google Workspace for Nonprofits.
 - Novembre 2026: logo ufficiale al posto della scritta, barra di navigazione sfocata con
   pulsante Tickets, video nella home, footer con dati legali e recapiti, anteprima social
-  con il logo, pagina Contatti e modulo eliminati, pagina 2026 in preparazione.
+  con il logo, pagina Contatti e modulo eliminati, pagina 2026 in preparazione; poi colore
+  blu elettrico al posto del grigio-nero, favicon con il "+", video ingrandito e più nitido.
 
 ---
 
@@ -244,8 +255,8 @@ Poi apri <http://localhost:8000>.
 - **Barra di navigazione**: 16 px sopra e sotto, margini laterali uguali alle pagine
   (32 px su computer e tablet, 16 px su telefono, variabile `--gutter`). In home è
   trasparente sopra il video e diventa sfocata appena si scorre.
-- Se nel sistema è attiva l'opzione **riduci movimento**, le animazioni si disattivano,
-  il video non parte da solo e i contenuti sono subito visibili.
+- Se nel sistema è attiva l'opzione **riduci movimento**, le animazioni si disattivano
+  e i contenuti sono subito visibili (il video della home parte comunque).
 - Il font è ospitato nel sito: nessuna richiesta a Google Fonts.
 - Il sito non usa cookie né strumenti di tracciamento. Se in futuro aggiungete
   statistiche (es. Google Analytics) o contenuti incorporati (es. post Instagram),

@@ -7,7 +7,7 @@
   <meta name="description" content="Factory Area Festival è il festival multidisciplinare di musica e arte nato in Calabria nel 2021 e organizzato da Factory+ ETS di Catanzaro.">
   <link rel="canonical" href="https://factoryarea.it/">
   <meta name="robots" content="index, follow, max-image-preview:large">
-  <meta name="theme-color" content="#141517">
+  <meta name="theme-color" content="#0024FF">
 
   <!-- Anteprima quando il link viene condiviso (WhatsApp, Facebook, LinkedIn, X…) -->
   <meta property="og:type" content="website">
@@ -129,12 +129,18 @@
 
     <!-- HERO: video a tutto schermo (porta all'edizione più recente).
          Il video resta fermo e le sezioni successive gli scorrono sopra.
-         Parte da solo e senza audio; con "riduci movimento" o risparmio dati
-         resta l'immagine di copertina. -->
+         Parte da solo (autoplay), senza audio e in loop. Ogni browser sceglie il
+         primo file che sa riprodurre: AV1 (Chrome, Firefox, Android), HEVC (Safari,
+         iPhone) o H.264 (tutti gli altri); sui telefoni in verticale la versione
+         ritagliata 3:4. -->
     <a class="hero__media" href="eventi/quintaed/" aria-label="Scopri Factory Area Festival 5 (2025)">
       <div class="hero__parallax">
-        <video class="hero__video" data-hero-video muted loop playsinline preload="none" poster="assets/video/hero-poster.jpg" width="1276" height="670" aria-hidden="true" tabindex="-1">
+        <video class="hero__video" data-hero-video autoplay muted loop playsinline preload="auto" poster="assets/video/hero-poster.jpg" width="1920" height="1008" aria-hidden="true" tabindex="-1">
+          <source src="assets/video/hero-verticale.av1.mp4" type='video/mp4; codecs="av01.0.05M.10"' media="(max-aspect-ratio: 3/4)">
+          <source src="assets/video/hero-verticale.hevc.mp4" type='video/mp4; codecs="hvc1.1.6.L93.90"' media="(max-aspect-ratio: 3/4)">
           <source src="assets/video/hero-verticale.mp4" type="video/mp4" media="(max-aspect-ratio: 3/4)">
+          <source src="assets/video/hero.av1.mp4" type='video/mp4; codecs="av01.0.08M.10"'>
+          <source src="assets/video/hero.hevc.mp4" type='video/mp4; codecs="hvc1.1.6.L120.90"'>
           <source src="assets/video/hero.mp4" type="video/mp4">
         </video>
       </div>

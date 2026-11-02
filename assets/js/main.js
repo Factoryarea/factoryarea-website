@@ -399,17 +399,18 @@
   /* ------------------------------------------------------------------------
      5. VIDEO DELLA HOME
      ------------------------------------------------------------------------
-     Parte da solo, senza audio e in loop. Non parte se l'utente chiede di
-     ridurre i movimenti o di risparmiare dati: resta l'immagine di copertina.
+     Parte sempre da solo (attributo autoplay), senza audio e in loop.
      Si ferma quando la hero è coperta dalle sezioni successive o la scheda
-     non è visibile. Il pulsante in basso a destra lo mette in pausa. */
+     non è visibile, e riparte quando torna in vista. Il pulsante in basso a
+     destra lo mette in pausa. Se il dispositivo blocca la riproduzione
+     automatica (es. risparmio energetico su iPhone) resta la copertina e il
+     pulsante diventa "riproduci". */
   var videoUpdate = null;
   var heroVideo = document.querySelector("[data-hero-video]");
   var videoToggle = document.querySelector("[data-video-toggle]");
 
   if (heroVideo) {
-    var saveData = !!(navigator.connection && navigator.connection.saveData);
-    var userPaused = reduceMotion || saveData;
+    var userPaused = false;
     var heroVisible = true;
 
     var setToggle = function () {
