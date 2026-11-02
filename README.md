@@ -15,7 +15,7 @@ si aggiorna da solo in un paio di minuti.
 ```
 index.html                 Home (video, edizioni impilate, intro)
 eventi/index.html          Elenco delle edizioni pubblicate
-eventi/sestaed/            Edizione 2026: pagina in preparazione, nascosta (vedi sotto)
+eventi/sestaed/            Edizione 2026 (Factory Area Festival 6)
 eventi/quintaed/           Edizione 2025 (Factory Area Festival 5)
 eventi/quartaed/           Edizione 2024
 eventi/terzaed/            Edizione 2023
@@ -76,7 +76,7 @@ Le foto delle edizioni sono in `assets/img/edizioni/<anno>/`:
 
 | File | Dove compare |
 | --- | --- |
-| `copertina` | foto grande in cima alla pagina dell'edizione, anteprima nell'elenco eventi (la copertina 2025 è anche la foto del 2025 in home) |
+| `copertina` | foto grande in cima alla pagina dell'edizione, anteprima nell'elenco eventi (le copertine 2026 e 2025 sono anche le foto di quegli anni in home) |
 | `foto-1` | prima foto larga nella pagina dell'edizione e foto dell'anno in home (dal 2024 in giù) |
 | `foto-2` | foto verticale accanto al secondo testo |
 | `foto-3` | seconda foto larga |
@@ -143,28 +143,16 @@ LinkedIn → <https://www.linkedin.com/post-inspector/>. WhatsApp si aggiorna da
 
 ---
 
-## Pagina 2026
-
-`eventi/sestaed/` è completa (testi, lineup e foto della sesta edizione, 18–19 agosto
-2026) ma ancora **nascosta**: non è collegata da nessuna parte e ha `noindex`, quindi
-Google non la mostra. Si può vedere all'indirizzo <https://factoryarea.it/eventi/sestaed/>.
-
-Per pubblicarla:
-
-1. In `eventi/sestaed/index.html`, nella riga `<meta name="robots" …>` metti
-   `index, follow, max-image-preview:large` e togli il commento "pagina pronta ma non
-   ancora pubblicata".
-2. In `eventi/index.html` aggiungi la card in cima alla griglia e aggiorna il numero
-   tra parentesi.
-3. In `index.html` aggiungi il 2026 in cima alle foto impilate (`.stack__card`).
-4. Aggiorna i blocchi "Next Projects" delle altre edizioni e aggiungi l'indirizzo in
-   `sitemap.xml`.
-
 ## Aggiungere una nuova edizione (es. 2027)
 
-Come sopra: copia la cartella di un'edizione (per esempio `eventi/sestaed/` in
-`eventi/settimaed/`), carica le foto in `assets/img/edizioni/2027/` con i nomi della
-tabella "Foto" e segui i passi 2-4.
+1. Copia la cartella di un'edizione (per esempio `eventi/sestaed/` in `eventi/settimaed/`),
+   cambia testi, `<title>`, `description` e dati strutturati, e carica le foto in
+   `assets/img/edizioni/2027/` con i nomi della tabella "Foto".
+2. In `eventi/index.html` aggiungi la card in cima alla griglia e aggiorna il numero
+   tra parentesi.
+3. In `index.html` aggiungi l'anno in cima alle foto impilate (`.stack__card`).
+4. Aggiorna i blocchi "Next Projects" delle altre edizioni e aggiungi l'indirizzo in
+   `sitemap.xml`.
 
 ---
 
