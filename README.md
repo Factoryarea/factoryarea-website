@@ -105,8 +105,13 @@ Le versioni `-verticale` sono un ritaglio 3:4 al centro, usato dagli schermi in 
 (telefoni). Il video parte sempre da solo (autoplay), senza audio (i browser permettono
 la riproduzione automatica solo così) e in loop; si ferma quando la hero è coperta dalle
 sezioni successive e riparte quando torna in vista. Il pulsante in basso a destra lo mette
-in pausa. Su iPhone con il risparmio energetico attivo è il sistema a bloccare la
-riproduzione automatica: resta la copertina e il pulsante diventa "riproduci".
+in pausa. Il video è solo decorativo: non si può cliccare e i controlli del browser
+(per esempio il grande "play" di Safari) sono nascosti.
+
+Alcuni browser possono bloccare la riproduzione automatica: iPhone e Mac in risparmio
+energetico, oppure Safari impostato su "Non riprodurre mai automaticamente" (Safari →
+Impostazioni → Siti web → Riproduzione automatica). In quei casi resta la copertina e il
+pulsante in basso a destra diventa "riproduci".
 
 Per cambiare video basta anche un solo MP4 H.264 senza audio: caricalo come `hero.mp4`
 e togli dalle pagine le righe `<source>` degli altri formati.
@@ -141,8 +146,7 @@ Per pubblicarla, con testi e foto definitivi:
    `index, follow, max-image-preview:large`.
 2. In `eventi/index.html` aggiungi la card in cima alla griglia e aggiorna il numero
    tra parentesi.
-3. In `index.html` aggiungi il 2026 in cima alle foto impilate (`.stack__card`) e
-   punta la hero alla nuova edizione.
+3. In `index.html` aggiungi il 2026 in cima alle foto impilate (`.stack__card`).
 4. Aggiorna i blocchi "Next Projects" delle altre edizioni e aggiungi l'indirizzo in
    `sitemap.xml`.
 
@@ -257,6 +261,11 @@ Poi apri <http://localhost:8000>.
   trasparente sopra il video e diventa sfocata appena si scorre.
 - Se nel sistema è attiva l'opzione **riduci movimento**, le animazioni si disattivano
   e i contenuti sono subito visibili (il video della home parte comunque).
+- **Fascia in alto del browser**: da iOS 26 Safari ignora `theme-color` e colora la zona
+  sopra la pagina con il colore degli elementi fissi in cima. In home un elemento
+  invisibile (`.tint`) e il meta `theme-color` seguono il colore del bordo superiore del
+  video finché la pagina è in cima; scorrendo o aprendo il menu tornano al blu. Il video
+  vero e proprio non può comparire sotto l'orologio: in verticale Safari 26 non lo permette.
 - Il font è ospitato nel sito: nessuna richiesta a Google Fonts.
 - Il sito non usa cookie né strumenti di tracciamento. Se in futuro aggiungete
   statistiche (es. Google Analytics) o contenuti incorporati (es. post Instagram),

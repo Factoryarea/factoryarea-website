@@ -7,7 +7,7 @@
   <meta name="description" content="Factory Area Festival è il festival multidisciplinare di musica e arte nato in Calabria nel 2021 e organizzato da Factory+ ETS di Catanzaro.">
   <link rel="canonical" href="https://factoryarea.it/">
   <meta name="robots" content="index, follow, max-image-preview:large">
-  <meta name="theme-color" content="#0024FF">
+  <meta name="theme-color" content="#6e5745">
 
   <!-- Anteprima quando il link viene condiviso (WhatsApp, Facebook, LinkedIn, X…) -->
   <meta property="og:type" content="website">
@@ -74,6 +74,8 @@
     },
     "sameAs": [
       "https://www.instagram.com/factoryarea",
+      "https://www.whatsapp.com/channel/0029VbCT6C2CcW4zBC6F692b",
+      "https://t.me/FACTORYAREA",
       "https://open.spotify.com/show/7eSPHnYkYD0GSq333V9OXO",
       "https://www.youtube.com/@factoryarea",
       "https://www.linkedin.com/company/factoryarea/"
@@ -99,6 +101,9 @@
   </script>
 </head>
 <body class="page-home">
+  <!-- Colore della fascia in alto del browser (Safari su iPhone e Mac, Chrome su Android):
+       segue il colore del bordo superiore del video, finché non si scorre la pagina. -->
+  <div class="tint" data-tint aria-hidden="true" style="background-color:#6e5745"></div>
   <a class="skip-link" href="#contenuto">Vai al contenuto</a>
 
   <!-- ================= NAVIGAZIONE =================
@@ -127,15 +132,15 @@
 
   <main id="contenuto">
 
-    <!-- HERO: video a tutto schermo (porta all'edizione più recente).
+    <!-- HERO: video a tutto schermo, solo decorativo (non cliccabile).
          Il video resta fermo e le sezioni successive gli scorrono sopra.
          Parte da solo (autoplay), senza audio e in loop. Ogni browser sceglie il
          primo file che sa riprodurre: AV1 (Chrome, Firefox, Android), HEVC (Safari,
          iPhone) o H.264 (tutti gli altri); sui telefoni in verticale la versione
          ritagliata 3:4. -->
-    <a class="hero__media" href="eventi/quintaed/" aria-label="Scopri Factory Area Festival 5 (2025)">
+    <div class="hero__media">
       <div class="hero__parallax">
-        <video class="hero__video" data-hero-video autoplay muted loop playsinline preload="auto" poster="assets/video/hero-poster.jpg" width="1920" height="1008" aria-hidden="true" tabindex="-1">
+        <video class="hero__video" data-hero-video autoplay muted loop playsinline preload="auto" disablepictureinpicture disableremoteplayback x-webkit-airplay="deny" poster="assets/video/hero-poster.jpg" width="1920" height="1008" aria-hidden="true" tabindex="-1">
           <source src="assets/video/hero-verticale.av1.mp4" type='video/mp4; codecs="av01.0.05M.10"' media="(max-aspect-ratio: 3/4)">
           <source src="assets/video/hero-verticale.hevc.mp4" type='video/mp4; codecs="hvc1.1.6.L93.90"' media="(max-aspect-ratio: 3/4)">
           <source src="assets/video/hero-verticale.mp4" type="video/mp4" media="(max-aspect-ratio: 3/4)">
@@ -144,7 +149,7 @@
           <source src="assets/video/hero.mp4" type="video/mp4">
         </video>
       </div>
-    </a>
+    </div>
     <section class="hero" id="hero">
       <div class="hero__content" data-reveal data-trigger="load">
         <h1 class="hero__text t-hero" data-split="line" data-trigger="load" data-stagger="0.1" data-delay="0.1">Factory Area Festival nasce dall’incontro tra persone, dove la creatività si traduce in suoni e relazioni che trasformano i luoghi.</h1>
@@ -221,6 +226,8 @@
             <p class="footer__title">Social</p>
             <ul class="footer__list">
               <li><a href="https://www.instagram.com/factoryarea" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+              <li><a href="https://www.whatsapp.com/channel/0029VbCT6C2CcW4zBC6F692b" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+              <li><a href="https://t.me/FACTORYAREA" target="_blank" rel="noopener noreferrer">Telegram</a></li>
               <li><a href="https://open.spotify.com/show/7eSPHnYkYD0GSq333V9OXO" target="_blank" rel="noopener noreferrer">Spotify</a></li>
               <li><a href="https://www.youtube.com/@factoryarea" target="_blank" rel="noopener noreferrer">YouTube</a></li>
               <li><a href="https://www.linkedin.com/company/factoryarea/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
@@ -232,15 +239,17 @@
         <div class="footer__badges"></div>
       </div>
       <div class="footer__bottom">
-        <p class="footer__legal">
-          <span>© <span data-year>2026</span> Factory+ ETS</span>
-          <span>Via Gregorio Mattei 3, 88100 Catanzaro (CZ)</span>
-          <span>C.F. 97105210799</span>
-          <span>P.IVA 03942250790</span>
-          <span>RUNTS rep. n. 0118188</span>
-          <span>PEC <a href="mailto:factoryplus@pec.it">factoryplus@pec.it</a></span>
-          <span>Email <a href="mailto:associazionefactorycatanzaro@gmail.com">associazionefactorycatanzaro@gmail.com</a></span>
-        </p>
+        <div class="footer__legal-wrap">
+          <p class="footer__legal">
+            <span>© <span data-year>2026</span> Factory+ ETS</span>
+            <span>Via Gregorio Mattei 3, 88100 Catanzaro (CZ)</span>
+            <span>C.F. 97105210799</span>
+            <span>P.IVA 03942250790</span>
+            <span>RUNTS rep. n. 0118188</span>
+            <span>PEC <a href="mailto:factoryplus@pec.it">factoryplus@pec.it</a></span>
+            <span>Email <a href="mailto:associazionefactorycatanzaro@gmail.com">associazionefactorycatanzaro@gmail.com</a></span>
+          </p>
+        </div>
         <p class="footer__links"><a href="privacy/">Privacy Policy</a></p>
       </div>
     </div>

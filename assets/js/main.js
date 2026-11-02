@@ -5,7 +5,7 @@
    2. Testi animati (righe / parole / lettere) e comparse
    3. Navigazione: barra sfocata e menu mobile
    4. Effetti legati allo scroll (hero, edizioni impilate, testo che si accende)
-   5. Video della home
+   5. Video della home e colore della fascia in alto del browser
    6. Cursore personalizzato
    7. Anno nel footer
    Nessuna dipendenza oltre a Lenis (assets/js/lenis.min.js).
@@ -249,6 +249,7 @@
     menuOpen = open;
     toggle.setAttribute("aria-expanded", String(open));
     toggle.textContent = open ? "Chiudi" : "Menu";
+    if (tintRefresh) tintRefresh();
     if (open) {
       menu.hidden = false;
       void menu.offsetWidth;
@@ -387,6 +388,7 @@
     if (stack) stack.classList.toggle("is-active", y >= layout.stackTop - 1);
 
     if (videoUpdate) videoUpdate(y);
+    if (tintUpdate) tintUpdate(y);
     if (cursorUpdate) cursorUpdate(dt);
     requestAnimationFrame(frame);
   }
@@ -455,6 +457,74 @@
     };
 
     syncVideo();
+  }
+
+  /* Colore della fascia in alto del browser (solo home).
+     Safari su iPhone (iOS 26) e su Mac colora la zona sopra la pagina con il colore
+     degli elementi fissi sul bordo dello schermo; Chrome su Android e i Safari meno
+     recenti usano il meta "theme-color". Finché la pagina è in cima, entrambi
+     seguono il colore del bordo superiore del video, scurito come appare sotto la
+     sfumatura della barra; quando si scorre o si apre il menu tornano al blu. */
+  var tintUpdate = null;
+  var tintRefresh = null;
+  var tintEl = document.querySelector("[data-tint]");
+  var themeMeta = document.querySelector('meta[name="theme-color"]');
+
+  if (tintEl && heroVideo) {
+    var brandColor = getComputedStyle(root).getPropertyValue("--bg").trim() || "#0024ff";
+    var tintCanvas = document.createElement("canvas");
+    tintCanvas.width = 8;
+    tintCanvas.height = 8;
+    var tintCtx = tintCanvas.getContext("2d", { willReadFrequently: true });
+    var tintRgb = (getComputedStyle(tintEl).backgroundColor.match(/\d+/g) || [110, 87, 69]).slice(0, 3).map(Number);
+    var atTop = true;
+
+    var toHex = function (c) {
+      return "#" + c.map(function (v) {
+        var h = Math.round(clamp(v, 0, 255)).toString(16);
+        return h.length < 2 ? "0" + h : h;
+      }).join("");
+    };
+
+    tintRefresh = function () {
+      var show = atTop && !menuOpen;
+      tintEl.hidden = !show;
+      if (show) tintEl.style.backgroundColor = toHex(tintRgb);
+      if (themeMeta) themeMeta.setAttribute("content", show ? toHex(tintRgb) : brandColor);
+    };
+
+    var sampleTint = function () {
+      if (!atTop || menuOpen || document.hidden || heroVideo.readyState < 2) return;
+      try {
+        tintCtx.drawImage(heroVideo, 0, 0, 8, 8);
+        var d = tintCtx.getImageData(0, 0, 8, 1).data;
+        var sum = [0, 0, 0];
+        for (var i = 0; i < d.length; i += 4) {
+          sum[0] += d[i];
+          sum[1] += d[i + 1];
+          sum[2] += d[i + 2];
+        }
+        tintRgb = tintRgb.map(function (v, k) {
+          var target = (sum[k] / 8) * 0.55; // sotto la sfumatura nera al 45% della barra
+          return v + (target - v) * 0.5;
+        });
+        tintRefresh();
+      } catch (e) {
+        // se il fotogramma non si può leggere resta il colore della copertina
+      }
+    };
+
+    setInterval(sampleTint, 400);
+
+    tintUpdate = function (y) {
+      var top = y <= 8;
+      if (top !== atTop) {
+        atTop = top;
+        tintRefresh();
+      }
+    };
+
+    tintRefresh();
   }
 
   /* ------------------------------------------------------------------------
