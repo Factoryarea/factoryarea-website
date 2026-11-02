@@ -452,6 +452,8 @@
       return "src=" + (heroVideo.currentSrc.split("/").pop() || "-") + " rs=" + heroVideo.readyState +
         " ns=" + heroVideo.networkState + " paused=" + heroVideo.paused + " t=" + heroVideo.currentTime.toFixed(2) +
         " fotogrammi=" + shownFrames + "/" + decodedFrames() +
+        " scaricato=" + (heroVideo.buffered.length ? heroVideo.buffered.end(heroVideo.buffered.length - 1).toFixed(1) + "s" : "0") +
+        " opacità=" + getComputedStyle(heroVideo).opacity +
         (e ? " ERRORE=" + e.code + " " + (e.message || "") : "");
     };
     dlog(navigator.userAgent);
@@ -464,7 +466,33 @@
       heroVideo.addEventListener(ev, function () { dlog(ev + " " + dstate()); });
     });
     setInterval(function () { dlog("controllo " + dstate()); }, 3000);
+    // pulsante per copiare il registro e incollarlo in un messaggio
+    var copy = document.createElement("button");
+    copy.type = "button";
+    copy.textContent = "Copia il registro";
+    copy.style.cssText = "position:fixed;right:16px;top:76px;z-index:1000;padding:8px 14px;border:0;border-radius:999px;background:#7CFC00;color:#000;font:600 13px/1 sans-serif;cursor:pointer";
+    copy.addEventListener("click", function () {
+      var text = dbg.textContent;
+      var done = function () { copy.textContent = "Copiato ✓"; };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () { selectLog(); });
+      } else {
+        selectLog();
+      }
+    });
+    var selectLog = function () {
+      var r = document.createRange();
+      r.selectNodeContents(dbg);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+      copy.textContent = "Testo selezionato: copialo";
+    };
+    dbg.style.top = "120px";
+    dbg.style.bottom = "auto";
+    dbg.style.pointerEvents = "auto";
     document.body.appendChild(dbg);
+    document.body.appendChild(copy);
   }
 
   if (heroVideo) {

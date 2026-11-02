@@ -120,7 +120,8 @@ il pulsante in basso a destra mostra "riproduci": un tocco lo fa partire.
 Se su un dispositivo il video non parte, apri <https://factoryarea.it/?debug-video>:
 in basso compare un riquadro con il formato scelto dal browser, gli eventi del video,
 i fotogrammi mostrati e decodificati, gli eventuali errori e i cambi di formato, utile
-per capire il motivo.
+per capire il motivo. Il pulsante verde "Copia il registro" copia tutto il testo, da
+incollare in un messaggio.
 
 Per cambiare video basta anche un solo MP4 H.264 senza audio: caricalo come `hero.mp4`
 e togli dalle pagine le righe `<source>` degli altri formati.
@@ -144,15 +145,15 @@ LinkedIn → <https://www.linkedin.com/post-inspector/>. WhatsApp si aggiorna da
 
 ## Pagina 2026
 
-`eventi/sestaed/` è pronta ma **nascosta**: testi e foto sono segnaposto
-(`[Testo 1 da inserire…]`, immagini blu con la scritta "segnaposto" in `assets/img/edizioni/2026/`), non è
-collegata da nessuna parte e ha `noindex`, quindi Google non la mostra.
+`eventi/sestaed/` è completa (testi, lineup e foto della sesta edizione, 18–19 agosto
+2026) ma ancora **nascosta**: non è collegata da nessuna parte e ha `noindex`, quindi
+Google non la mostra. Si può vedere all'indirizzo <https://factoryarea.it/eventi/sestaed/>.
 
-Per pubblicarla, con testi e foto definitivi:
+Per pubblicarla:
 
-1. In `eventi/sestaed/index.html` sostituisci i segnaposto, cambia il `<title>` e la
-   `description`, e nella riga `<meta name="robots" …>` metti
-   `index, follow, max-image-preview:large`.
+1. In `eventi/sestaed/index.html`, nella riga `<meta name="robots" …>` metti
+   `index, follow, max-image-preview:large` e togli il commento "pagina pronta ma non
+   ancora pubblicata".
 2. In `eventi/index.html` aggiungi la card in cima alla griglia e aggiorna il numero
    tra parentesi.
 3. In `index.html` aggiungi il 2026 in cima alle foto impilate (`.stack__card`).
@@ -267,7 +268,10 @@ Poi apri <http://localhost:8000>.
   cursore "Explore", menu mobile a tutto schermo.
 - **Barra di navigazione**: 16 px sopra e sotto, margini laterali uguali alle pagine
   (32 px su computer e tablet, 16 px su telefono, variabile `--gutter`). In home è
-  trasparente sopra il video e diventa sfocata appena si scorre.
+  trasparente sopra il video e appena si scorre sfoca ciò che passa sotto, senza
+  colore di sfondo.
+- **Barra di scorrimento** nascosta su tutte le pagine: su computer video e foto
+  arrivano fino al bordo destro. Si scorre normalmente con rotella, trackpad e tastiera.
 - Se nel sistema è attiva l'opzione **riduci movimento**, le animazioni si disattivano
   e i contenuti sono subito visibili (il video della home parte comunque).
 - **Fascia in alto del browser**: da iOS 26 Safari ignora `theme-color` e colora la zona

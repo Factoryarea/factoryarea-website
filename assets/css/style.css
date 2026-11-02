@@ -103,6 +103,19 @@ html {
   text-size-adjust: 100%;
 }
 
+/* Barra di scorrimento nascosta: su computer il video e le foto arrivano fino al
+   bordo destro della finestra. Si scorre come sempre (rotella, trackpad, tastiera). */
+html {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -272,13 +285,13 @@ html.is-locked body {
   padding: 16px var(--gutter);
 }
 
-/* Sfondo sfocato */
+/* Sfondo sfocato, senza colore: si vede solo la sfocatura di ciò che passa sotto */
 .nav__bar::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: rgba(0, 36, 255, 0.6);
+  background: transparent;
   -webkit-backdrop-filter: blur(18px) saturate(1.4);
   backdrop-filter: blur(18px) saturate(1.4);
   border-bottom: 1px solid rgba(255, 255, 255, 0.18);
@@ -337,7 +350,7 @@ html.is-locked body {
   display: none;
 }
 
-/* Browser senza sfocatura: sfondo più coprente */
+/* Browser senza sfocatura: sfondo blu quasi coprente, per leggere le voci */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .nav__bar::before {
     background: rgba(0, 36, 255, 0.95);
