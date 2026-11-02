@@ -402,46 +402,68 @@
      5. VIDEO DELLA HOME
      ------------------------------------------------------------------------
      Parte da solo grazie all'attributo autoplay (con muted e playsinline).
-     Il JavaScript NON chiama play() all'apertura della pagina: su Safari una
-     chiamata troppo presto può essere rifiutata e, da regola HTML, annulla
-     anche l'autoplay del browser. Interviene solo dopo: ferma il video quando
-     la hero è coperta dalle sezioni successive o la scheda non è visibile,
-     lo fa ripartire quando torna in vista e, se dopo un paio di secondi
-     l'autoplay non è partito, ritenta qualche volta. Se il dispositivo lo
-     blocca (es. risparmio energetico) resta la copertina e il pulsante in
-     basso a destra diventa "riproduci". */
+     Lo script non chiama play() all'apertura della pagina (su Safari una
+     chiamata troppo presto può essere rifiutata e annullare l'autoplay) e si
+     occupa del resto:
+     - ferma il video quando la hero è coperta o la scheda non è visibile, e
+       lo fa ripartire quando torna in vista;
+     - se l'autoplay non parte, ritenta qualche volta; se il dispositivo lo
+       blocca (es. risparmio energetico) il pulsante diventa "riproduci";
+     - se il file scelto dà errore, o il video resta fermo pur risultando in
+       riproduzione con i dati già scaricati, passa al formato successivo
+       (HEVC → AV1 → H.264). */
   var videoUpdate = null;
   var heroVideo = document.querySelector("[data-hero-video]");
   var videoToggle = document.querySelector("[data-video-toggle]");
+  var dlog = function () {};
 
   // Diagnostica: aprendo la home con ?debug-video compare un riquadro con lo stato del video
   if (heroVideo && /[?&]debug-video\b/.test(location.search)) {
     var dbg = document.createElement("pre");
     dbg.style.cssText = "position:fixed;left:8px;right:8px;bottom:8px;z-index:999;max-height:50vh;overflow:auto;margin:0;padding:8px;background:rgba(0,0,0,.85);color:#7CFC00;font:11px/1.35 monospace;white-space:pre-wrap;border-radius:6px";
-    var dlog = function (m) {
+    dlog = function (m) {
       dbg.textContent += (performance.now() / 1000).toFixed(1) + "s " + m + "\n";
+      dbg.scrollTop = dbg.scrollHeight;
+    };
+    // fotogrammi mostrati sullo schermo / decodificati
+    var shownFrames = 0;
+    var frameId = 0;
+    if ("requestVideoFrameCallback" in heroVideo) {
+      var countFrame = function () {
+        shownFrames++;
+        frameId = heroVideo.requestVideoFrameCallback(countFrame);
+      };
+      var watchFrames = function () {
+        if (frameId && heroVideo.cancelVideoFrameCallback) heroVideo.cancelVideoFrameCallback(frameId);
+        frameId = heroVideo.requestVideoFrameCallback(countFrame);
+      };
+      watchFrames();
+      heroVideo.addEventListener("loadstart", watchFrames);
+    }
+    var decodedFrames = function () {
+      try {
+        return heroVideo.getVideoPlaybackQuality ? heroVideo.getVideoPlaybackQuality().totalVideoFrames : "?";
+      } catch (e) {
+        return "?";
+      }
     };
     var dstate = function () {
       var e = heroVideo.error;
       return "src=" + (heroVideo.currentSrc.split("/").pop() || "-") + " rs=" + heroVideo.readyState +
-        " ns=" + heroVideo.networkState + " paused=" + heroVideo.paused + " muted=" + heroVideo.muted +
+        " ns=" + heroVideo.networkState + " paused=" + heroVideo.paused + " t=" + heroVideo.currentTime.toFixed(2) +
+        " fotogrammi=" + shownFrames + "/" + decodedFrames() +
         (e ? " ERRORE=" + e.code + " " + (e.message || "") : "");
     };
     dlog(navigator.userAgent);
-    dlog("canPlay av1=" + heroVideo.canPlayType('video/mp4; codecs="av01.0.05M.10"') +
-      " hevc=" + heroVideo.canPlayType('video/mp4; codecs="hvc1.1.6.L93.90"') +
-      " h264=" + heroVideo.canPlayType('video/mp4; codecs="avc1.640028"'));
-    dlog("riduci movimento=" + reduceMotion + " | stato iniziale " + dstate());
+    dlog("canPlay hevc=" + heroVideo.canPlayType('video/mp4; codecs="hvc1.1.6.L93.90"') +
+      " av1=" + heroVideo.canPlayType('video/mp4; codecs="av01.0.05M.10"') +
+      " h264=" + heroVideo.canPlayType('video/mp4; codecs="avc1.640028"') +
+      " | riduci movimento=" + reduceMotion);
+    dlog("stato iniziale " + dstate());
     ["loadstart", "loadedmetadata", "loadeddata", "canplay", "play", "playing", "pause", "waiting", "stalled", "suspend", "error", "abort", "emptied"].forEach(function (ev) {
       heroVideo.addEventListener(ev, function () { dlog(ev + " " + dstate()); });
     });
-    var nativePlay = heroVideo.play;
-    heroVideo.play = function () {
-      dlog("play() chiamato dallo script");
-      var pr = nativePlay.call(heroVideo);
-      if (pr && pr.then) pr.then(function () { dlog("play() riuscito"); }, function (err) { dlog("play() rifiutato: " + err.name + " " + err.message); });
-      return pr;
-    };
+    setInterval(function () { dlog("controllo " + dstate()); }, 3000);
     document.body.appendChild(dbg);
   }
 
@@ -449,13 +471,24 @@
     var userPaused = false;   // solo il pulsante lo cambia
     var playFailed = false;   // il browser ha rifiutato la riproduzione
     var heroVisible = true;
-    var lastTry = performance.now();
+    var startTime = performance.now();
+    var lastTry = startTime;
     var tries = 0;
+    var switches = 0;         // cambi di formato già fatti
+    var switching = false;
+    var lastVideoTime = -1;
+    var lastProgressAt = startTime;   // ultima volta in cui il tempo del video è avanzato
+    var toggleState = null;
 
+    // Pulsante: "pausa" mentre il video va (o sta partendo), "riproduci" quando è fermo.
+    // Nei primi 3 secondi un video fermo è considerato "in partenza".
     var setToggle = function () {
       if (!videoToggle) return;
+      var graceOver = performance.now() - startTime > 3000;
+      var showPlay = heroVideo.paused && (userPaused || playFailed || graceOver);
+      if (showPlay === toggleState) return;
+      toggleState = showPlay;
       videoToggle.hidden = false;
-      var showPlay = heroVideo.paused && (userPaused || playFailed);
       videoToggle.classList.toggle("is-paused", showPlay);
       videoToggle.setAttribute("aria-label", showPlay ? "Riproduci il video" : "Metti in pausa il video");
     };
@@ -464,39 +497,99 @@
       return !userPaused && heroVisible && !document.hidden;
     };
 
-    var tryPlay = function () {
+    var tryPlay = function (why) {
       lastTry = performance.now();
       tries++;
-      var pr = heroVideo.play();
-      if (pr && pr.catch) {
-        pr.catch(function () {
-          playFailed = true;
+      dlog("play() (" + why + ")");
+      var pr = null;
+      try {
+        pr = heroVideo.play();
+      } catch (e) {}
+      if (pr && pr.then) {
+        pr.then(function () {
+          playFailed = false;
+          setToggle();
+        }, function (err) {
+          dlog("play() rifiutato: " + err.name + " " + err.message);
+          if (err && err.name === "NotAllowedError") playFailed = true;
           setToggle();
         });
       }
     };
 
+    // Un'altra sorgente, diversa da quella in uso, che il browser può provare
+    var canUse = function (s) {
+      if (s.src === heroVideo.currentSrc) return false;
+      var media = s.getAttribute("media");
+      if (media && window.matchMedia && !window.matchMedia(media).matches) return false;
+      var type = s.getAttribute("type");
+      return !type || heroVideo.canPlayType(type) !== "";
+    };
+
+    // Passa al formato successivo: toglie il file che non va e ricarica il video
+    var nextFormat = function (reason) {
+      if (switching || switches >= 2) return;
+      var current = heroVideo.currentSrc;
+      var sources = Array.prototype.slice.call(heroVideo.querySelectorAll("source"));
+      if (!current || !sources.some(canUse)) {
+        dlog("nessun altro formato disponibile (" + reason + ")");
+        switches = 2;
+        return;
+      }
+      sources.forEach(function (s) {
+        if (s.src === current) s.parentNode.removeChild(s);
+      });
+      switches++;
+      switching = true;
+      dlog("cambio formato (" + reason + ")");
+      lastVideoTime = -1;
+      lastProgressAt = performance.now();
+      lastTry = lastProgressAt;
+      tries = 0;
+      heroVideo.load();   // ripete la scelta del file; l'autoplay torna attivo
+      setTimeout(function () { switching = false; }, 1500);
+    };
+
+    heroVideo.addEventListener("error", function () {
+      var code = heroVideo.error ? heroVideo.error.code : 0;
+      // 3 = file non decodificabile, 4 = formato non supportato
+      if (code === 3 || code === 4) nextFormat("errore " + code);
+    });
+
+    // Secondi di video già scaricati dopo il punto attuale
+    var bufferedAhead = function () {
+      var b = heroVideo.buffered;
+      var t = heroVideo.currentTime;
+      for (var i = 0; i < b.length; i++) {
+        if (b.start(i) <= t + 0.1 && b.end(i) > t) return b.end(i) - t;
+      }
+      return 0;
+    };
+
     var syncVideo = function () {
       if (!wantsPlay()) {
         if (!heroVideo.paused) heroVideo.pause();
-      } else if (heroVideo.paused && heroVideo.readyState >= 2) {
-        tryPlay();
+      } else if (heroVideo.paused && performance.now() - startTime > 2000) {
+        tryPlay("ripresa");
       }
       setToggle();
     };
 
     heroVideo.addEventListener("playing", function () {
       playFailed = false;
+      lastProgressAt = performance.now();
       setToggle();
     });
+    heroVideo.addEventListener("play", setToggle);
     heroVideo.addEventListener("pause", setToggle);
 
     if (videoToggle) {
       videoToggle.addEventListener("click", function () {
         if (heroVideo.paused) {
           userPaused = false;
+          playFailed = false;
           tries = 0;
-          tryPlay();
+          tryPlay("pulsante");
         } else {
           userPaused = true;
           heroVideo.pause();
@@ -506,19 +599,37 @@
     }
     document.addEventListener("visibilitychange", function () {
       tries = 0;
+      lastProgressAt = performance.now();
       syncVideo();
     });
 
     videoUpdate = function (y) {
+      var now = performance.now();
       var visible = y < (layout.vh || window.innerHeight) * 1.05;
       if (visible !== heroVisible) {
         heroVisible = visible;
         tries = 0;
+        lastProgressAt = now;
         syncVideo();
-      } else if (wantsPlay() && heroVideo.paused && heroVideo.readyState >= 2 &&
-                 tries < 5 && performance.now() - lastTry > 2000) {
-        // l'autoplay del browser non è partito: ritenta (al massimo 5 volte)
-        tryPlay();
+        return;
+      }
+      if (!wantsPlay() || switching) return;
+
+      if (heroVideo.paused) {
+        // l'autoplay non è partito: dopo 2 secondi riprova, ogni 2 secondi, al massimo 5 volte
+        if (tries < 5 && now - lastTry > 2000) tryPlay("autoplay non partito");
+        setToggle();
+        return;
+      }
+
+      // In riproduzione: il tempo del video avanza?
+      if (heroVideo.currentTime !== lastVideoTime) {
+        lastVideoTime = heroVideo.currentTime;
+        lastProgressAt = now;
+      }
+      // Fermo da 4 secondi pur avendo i dati: il browser non riesce a usare questo formato
+      if (now - lastProgressAt > 4000 && (heroVideo.readyState >= 3 || bufferedAhead() > 2)) {
+        nextFormat("video fermo");
       }
     };
 
@@ -529,8 +640,10 @@
      Safari su iPhone (iOS 26) e su Mac colora la zona sopra la pagina con il colore
      degli elementi fissi sul bordo dello schermo; Chrome su Android e i Safari meno
      recenti usano il meta "theme-color". Finché la pagina è in cima, entrambi
-     seguono il colore del bordo superiore del video, scurito come appare sotto la
-     sfumatura della barra; quando si scorre o si apre il menu tornano al blu. */
+     seguono il colore del bordo superiore del video, preso da una tabella
+     calcolata in anticipo (un colore ogni mezzo secondo, già scurito come appare
+     sotto la sfumatura della barra): nessuna lettura dei fotogrammi dal browser.
+     Quando si scorre o si apre il menu tornano al blu. */
   var tintUpdate = null;
   var tintRefresh = null;
   var tintEl = document.querySelector("[data-tint]");
@@ -538,12 +651,16 @@
 
   if (tintEl && heroVideo) {
     var brandColor = getComputedStyle(root).getPropertyValue("--bg").trim() || "#0024ff";
-    var tintCanvas = document.createElement("canvas");
-    tintCanvas.width = 8;
-    tintCanvas.height = 8;
-    var tintCtx = tintCanvas.getContext("2d", { willReadFrequently: true });
+    var parseTimeline = function (attr) {
+      return (heroVideo.getAttribute(attr) || "").split(",").filter(Boolean).map(function (h) {
+        return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+      });
+    };
+    var timelineH = parseTimeline("data-tint-h");
+    var timelineV = parseTimeline("data-tint-v");
     var tintRgb = (getComputedStyle(tintEl).backgroundColor.match(/\d+/g) || [110, 87, 69]).slice(0, 3).map(Number);
     var atTop = true;
+    var lastTint = 0;
 
     var toHex = function (c) {
       return "#" + c.map(function (v) {
@@ -559,35 +676,25 @@
       if (themeMeta) themeMeta.setAttribute("content", show ? toHex(tintRgb) : brandColor);
     };
 
-    var sampleTint = function () {
-      if (!atTop || menuOpen || document.hidden || heroVideo.readyState < 2) return;
-      try {
-        tintCtx.drawImage(heroVideo, 0, 0, 8, 8);
-        var d = tintCtx.getImageData(0, 0, 8, 1).data;
-        var sum = [0, 0, 0];
-        for (var i = 0; i < d.length; i += 4) {
-          sum[0] += d[i];
-          sum[1] += d[i + 1];
-          sum[2] += d[i + 2];
-        }
-        tintRgb = tintRgb.map(function (v, k) {
-          var target = (sum[k] / 8) * 0.55; // sotto la sfumatura nera al 45% della barra
-          return v + (target - v) * 0.5;
-        });
-        tintRefresh();
-      } catch (e) {
-        // se il fotogramma non si può leggere resta il colore della copertina
-      }
-    };
-
-    setInterval(sampleTint, 400);
-
     tintUpdate = function (y) {
       var top = y <= 8;
       if (top !== atTop) {
         atTop = top;
         tintRefresh();
       }
+      var now = performance.now();
+      if (!atTop || menuOpen || now - lastTint < 250) return;
+      lastTint = now;
+      var timeline = /verticale/.test(heroVideo.currentSrc) ? timelineV : timelineH;
+      if (!timeline.length || !heroVideo.currentSrc) return;
+      var target = timeline[Math.min(timeline.length - 1, Math.floor(heroVideo.currentTime * 2))];
+      var changed = false;
+      tintRgb = tintRgb.map(function (v, k) {
+        var nv = v + (target[k] - v) * 0.35;
+        if (Math.abs(nv - v) > 0.5) changed = true;
+        return nv;
+      });
+      if (changed) tintRefresh();
     };
 
     tintRefresh();

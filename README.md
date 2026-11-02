@@ -92,14 +92,17 @@ aggiorna anche `width` e `height` nel tag `<img>`.
 Il video originale ("Reel con drone.mp4", 1276×718) è stato ripulito dal rumore,
 ingrandito a 1920×1008 con un filtro di qualità (lanczos) e reso più nitido; le bande
 nere ai bordi e i secondi neri finali sono stati tolti. I file sono in `assets/video/`,
-in tre formati: ogni browser usa il primo che sa riprodurre.
+in tre formati, in quest'ordine: ogni browser usa il primo che sa riprodurre.
 
 | File | Per chi |
 | --- | --- |
-| `hero.av1.mp4`, `hero-verticale.av1.mp4` | AV1, il più leggero: Chrome, Edge, Firefox, Android |
-| `hero.hevc.mp4`, `hero-verticale.hevc.mp4` | HEVC: Safari su Mac e iPhone |
+| `hero.hevc.mp4`, `hero-verticale.hevc.mp4` | HEVC: Safari su iPhone e Mac, e gli altri browser con decodifica HEVC |
+| `hero.av1.mp4`, `hero-verticale.av1.mp4` | AV1, il più leggero: Chrome, Edge, Firefox, Android senza HEVC |
 | `hero.mp4`, `hero-verticale.mp4` | H.264: tutti gli altri browser |
 | `hero-poster.jpg` | primo fotogramma, mostrato mentre il video carica |
+
+Se il formato scelto dà errore, o il video risulta in riproduzione ma resta fermo pur
+avendo i dati già scaricati, lo script passa da solo al formato successivo.
 
 Le versioni `-verticale` sono un ritaglio 3:4 al centro, usato dagli schermi in verticale
 (telefoni). Il video parte sempre da solo (autoplay), senza audio (i browser permettono
@@ -110,12 +113,14 @@ in pausa. Il video è solo decorativo: non si può cliccare e i controlli del br
 
 Alcuni browser possono bloccare la riproduzione automatica: iPhone e Mac in risparmio
 energetico, oppure Safari impostato su "Non riprodurre mai automaticamente" (Safari →
-Impostazioni → Siti web → Riproduzione automatica). In quei casi resta la copertina e il
-pulsante in basso a destra diventa "riproduci".
+Impostazioni → Siti web → Riproduzione automatica). Se dopo 2 secondi il video non è
+partito, lo script riprova; se il dispositivo continua a bloccarlo resta la copertina e
+il pulsante in basso a destra mostra "riproduci": un tocco lo fa partire.
 
 Se su un dispositivo il video non parte, apri <https://factoryarea.it/?debug-video>:
-in basso compare un riquadro con il formato scelto dal browser, gli eventi del video ed
-eventuali errori, utile per capire il motivo.
+in basso compare un riquadro con il formato scelto dal browser, gli eventi del video,
+i fotogrammi mostrati e decodificati, gli eventuali errori e i cambi di formato, utile
+per capire il motivo.
 
 Per cambiare video basta anche un solo MP4 H.264 senza audio: caricalo come `hero.mp4`
 e togli dalle pagine le righe `<source>` degli altri formati.
@@ -268,8 +273,12 @@ Poi apri <http://localhost:8000>.
 - **Fascia in alto del browser**: da iOS 26 Safari ignora `theme-color` e colora la zona
   sopra la pagina con il colore degli elementi fissi in cima. In home un elemento
   invisibile (`.tint`) e il meta `theme-color` seguono il colore del bordo superiore del
-  video finché la pagina è in cima; scorrendo o aprendo il menu tornano al blu. Il video
-  vero e proprio non può comparire sotto l'orologio: in verticale Safari 26 non lo permette.
+  video finché la pagina è in cima; scorrendo o aprendo il menu tornano al blu. I colori
+  sono calcolati in anticipo, due al secondo, e scritti nella pagina (attributi
+  `data-tint-h` e `data-tint-v` del video): il browser non legge i fotogrammi. Se cambiate
+  il video vanno ricalcolati (oppure si possono togliere i due attributi: la fascia resta
+  del colore fisso indicato sull'elemento `.tint`). Il video vero e proprio non può
+  comparire sotto l'orologio: in verticale Safari 26 non lo permette.
 - Il font è ospitato nel sito: nessuna richiesta a Google Fonts.
 - Il sito non usa cookie né strumenti di tracciamento. Se in futuro aggiungete
   statistiche (es. Google Analytics) o contenuti incorporati (es. post Instagram),
