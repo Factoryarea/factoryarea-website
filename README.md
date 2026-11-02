@@ -131,7 +131,7 @@ LinkedIn → <https://www.linkedin.com/post-inspector/>. WhatsApp si aggiorna da
 ## Pagina 2026
 
 `eventi/sestaed/` è pronta ma **nascosta**: testi e foto sono segnaposto
-(`[Testo 1 da inserire…]`, immagini grigie in `assets/img/edizioni/2026/`), non è
+(`[Testo 1 da inserire…]`, immagini blu con la scritta "segnaposto" in `assets/img/edizioni/2026/`), non è
 collegata da nessuna parte e ha `noindex`, quindi Google non la mostra.
 
 Per pubblicarla, con testi e foto definitivi:
