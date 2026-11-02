@@ -113,6 +113,10 @@ energetico, oppure Safari impostato su "Non riprodurre mai automaticamente" (Saf
 Impostazioni → Siti web → Riproduzione automatica). In quei casi resta la copertina e il
 pulsante in basso a destra diventa "riproduci".
 
+Se su un dispositivo il video non parte, apri <https://factoryarea.it/?debug-video>:
+in basso compare un riquadro con il formato scelto dal browser, gli eventi del video ed
+eventuali errori, utile per capire il motivo.
+
 Per cambiare video basta anche un solo MP4 H.264 senza audio: caricalo come `hero.mp4`
 e togli dalle pagine le righe `<source>` degli altri formati.
 

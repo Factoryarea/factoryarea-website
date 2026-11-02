@@ -401,62 +401,128 @@
   /* ------------------------------------------------------------------------
      5. VIDEO DELLA HOME
      ------------------------------------------------------------------------
-     Parte sempre da solo (attributo autoplay), senza audio e in loop.
-     Si ferma quando la hero è coperta dalle sezioni successive o la scheda
-     non è visibile, e riparte quando torna in vista. Il pulsante in basso a
-     destra lo mette in pausa. Se il dispositivo blocca la riproduzione
-     automatica (es. risparmio energetico su iPhone) resta la copertina e il
-     pulsante diventa "riproduci". */
+     Parte da solo grazie all'attributo autoplay (con muted e playsinline).
+     Il JavaScript NON chiama play() all'apertura della pagina: su Safari una
+     chiamata troppo presto può essere rifiutata e, da regola HTML, annulla
+     anche l'autoplay del browser. Interviene solo dopo: ferma il video quando
+     la hero è coperta dalle sezioni successive o la scheda non è visibile,
+     lo fa ripartire quando torna in vista e, se dopo un paio di secondi
+     l'autoplay non è partito, ritenta qualche volta. Se il dispositivo lo
+     blocca (es. risparmio energetico) resta la copertina e il pulsante in
+     basso a destra diventa "riproduci". */
   var videoUpdate = null;
   var heroVideo = document.querySelector("[data-hero-video]");
   var videoToggle = document.querySelector("[data-video-toggle]");
 
+  // Diagnostica: aprendo la home con ?debug-video compare un riquadro con lo stato del video
+  if (heroVideo && /[?&]debug-video\b/.test(location.search)) {
+    var dbg = document.createElement("pre");
+    dbg.style.cssText = "position:fixed;left:8px;right:8px;bottom:8px;z-index:999;max-height:50vh;overflow:auto;margin:0;padding:8px;background:rgba(0,0,0,.85);color:#7CFC00;font:11px/1.35 monospace;white-space:pre-wrap;border-radius:6px";
+    var dlog = function (m) {
+      dbg.textContent += (performance.now() / 1000).toFixed(1) + "s " + m + "\n";
+    };
+    var dstate = function () {
+      var e = heroVideo.error;
+      return "src=" + (heroVideo.currentSrc.split("/").pop() || "-") + " rs=" + heroVideo.readyState +
+        " ns=" + heroVideo.networkState + " paused=" + heroVideo.paused + " muted=" + heroVideo.muted +
+        (e ? " ERRORE=" + e.code + " " + (e.message || "") : "");
+    };
+    dlog(navigator.userAgent);
+    dlog("canPlay av1=" + heroVideo.canPlayType('video/mp4; codecs="av01.0.05M.10"') +
+      " hevc=" + heroVideo.canPlayType('video/mp4; codecs="hvc1.1.6.L93.90"') +
+      " h264=" + heroVideo.canPlayType('video/mp4; codecs="avc1.640028"'));
+    dlog("riduci movimento=" + reduceMotion + " | stato iniziale " + dstate());
+    ["loadstart", "loadedmetadata", "loadeddata", "canplay", "play", "playing", "pause", "waiting", "stalled", "suspend", "error", "abort", "emptied"].forEach(function (ev) {
+      heroVideo.addEventListener(ev, function () { dlog(ev + " " + dstate()); });
+    });
+    var nativePlay = heroVideo.play;
+    heroVideo.play = function () {
+      dlog("play() chiamato dallo script");
+      var pr = nativePlay.call(heroVideo);
+      if (pr && pr.then) pr.then(function () { dlog("play() riuscito"); }, function (err) { dlog("play() rifiutato: " + err.name + " " + err.message); });
+      return pr;
+    };
+    document.body.appendChild(dbg);
+  }
+
   if (heroVideo) {
-    var userPaused = false;
+    var userPaused = false;   // solo il pulsante lo cambia
+    var playFailed = false;   // il browser ha rifiutato la riproduzione
     var heroVisible = true;
+    var lastTry = performance.now();
+    var tries = 0;
 
     var setToggle = function () {
       if (!videoToggle) return;
       videoToggle.hidden = false;
-      videoToggle.classList.toggle("is-paused", userPaused);
-      videoToggle.setAttribute("aria-label", userPaused ? "Riproduci il video" : "Metti in pausa il video");
+      var showPlay = heroVideo.paused && (userPaused || playFailed);
+      videoToggle.classList.toggle("is-paused", showPlay);
+      videoToggle.setAttribute("aria-label", showPlay ? "Riproduci il video" : "Metti in pausa il video");
+    };
+
+    var wantsPlay = function () {
+      return !userPaused && heroVisible && !document.hidden;
+    };
+
+    var tryPlay = function () {
+      lastTry = performance.now();
+      tries++;
+      var pr = heroVideo.play();
+      if (pr && pr.catch) {
+        pr.catch(function () {
+          playFailed = true;
+          setToggle();
+        });
+      }
     };
 
     var syncVideo = function () {
-      var shouldPlay = !userPaused && heroVisible && !document.hidden;
-      if (shouldPlay && heroVideo.paused) {
-        heroVideo.preload = "auto";
-        var playing = heroVideo.play();
-        if (playing && playing.catch) {
-          playing.catch(function () {
-            // Riproduzione automatica bloccata (es. risparmio energetico): resta la copertina
-            userPaused = true;
-            setToggle();
-          });
-        }
-      } else if (!shouldPlay && !heroVideo.paused) {
-        heroVideo.pause();
+      if (!wantsPlay()) {
+        if (!heroVideo.paused) heroVideo.pause();
+      } else if (heroVideo.paused && heroVideo.readyState >= 2) {
+        tryPlay();
       }
       setToggle();
     };
 
+    heroVideo.addEventListener("playing", function () {
+      playFailed = false;
+      setToggle();
+    });
+    heroVideo.addEventListener("pause", setToggle);
+
     if (videoToggle) {
       videoToggle.addEventListener("click", function () {
-        userPaused = !userPaused;
-        syncVideo();
+        if (heroVideo.paused) {
+          userPaused = false;
+          tries = 0;
+          tryPlay();
+        } else {
+          userPaused = true;
+          heroVideo.pause();
+        }
+        setToggle();
       });
     }
-    document.addEventListener("visibilitychange", syncVideo);
+    document.addEventListener("visibilitychange", function () {
+      tries = 0;
+      syncVideo();
+    });
 
     videoUpdate = function (y) {
       var visible = y < (layout.vh || window.innerHeight) * 1.05;
       if (visible !== heroVisible) {
         heroVisible = visible;
+        tries = 0;
         syncVideo();
+      } else if (wantsPlay() && heroVideo.paused && heroVideo.readyState >= 2 &&
+                 tries < 5 && performance.now() - lastTry > 2000) {
+        // l'autoplay del browser non è partito: ritenta (al massimo 5 volte)
+        tryPlay();
       }
     };
 
-    syncVideo();
+    setToggle();
   }
 
   /* Colore della fascia in alto del browser (solo home).
