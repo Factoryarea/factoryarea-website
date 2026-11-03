@@ -218,8 +218,10 @@ Già fatto:
 - Content Security Policy in ogni pagina (vedi "Note tecniche");
 - link esterni con `rel="noopener noreferrer"`;
 - nessun cookie, nessun servizio esterno caricato dalle pagine;
-- dominio verificato su GitHub (record TXT `_github-pages-challenge-Factoryarea`): nessun
-  altro account può pubblicare un sito GitHub Pages su `factoryarea.it` o sui suoi sottodomini;
+- verifica del dominio su GitHub: il record TXT `_github-pages-challenge-Factoryarea` è
+  sul DNS; in GitHub → impostazioni → Pages il dominio deve risultare **Verified**. Così
+  nessun altro account può pubblicare un sito GitHub Pages su `factoryarea.it` o sui suoi
+  sottodomini;
 - scansione dei segreti di GitHub attiva.
 
 Da fare (richiede l'accesso agli account, non si può fare dal codice):
