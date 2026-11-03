@@ -280,6 +280,14 @@ Poi apri <http://localhost:8000>.
   del colore fisso indicato sull'elemento `.tint`). Il video vero e proprio non può
   comparire sotto l'orologio: in verticale Safari 26 non lo permette.
 - Il font è ospitato nel sito: nessuna richiesta a Google Fonts.
+- **Sicurezza (Content Security Policy)**: ogni pagina ha in testa un
+  `<meta http-equiv="Content-Security-Policy">` che permette di caricare solo file del sito
+  stesso (script, font, foto, video) e blocca script esterni, incorporamenti e moduli.
+  Il piccolo script in testa alla pagina è autorizzato con la sua impronta (`sha256-…`):
+  se lo modificate, l'impronta va ricalcolata, altrimenti le animazioni non si attivano.
+  Se in futuro aggiungete qualcosa da un altro sito (statistiche, mappe, video YouTube,
+  post Instagram, un modulo), va aggiunto il suo indirizzo nella regola giusta
+  (`script-src`, `frame-src`, `img-src`, `connect-src`, `form-action`) in tutte le pagine.
 - Il sito non usa cookie né strumenti di tracciamento, quindi non serve il banner dei
   cookie: le linee guida del Garante lo richiedono solo per i cookie che hanno bisogno di
   consenso. La cookie policy è la sezione "Cookie" di `privacy/index.html`, collegata dal
