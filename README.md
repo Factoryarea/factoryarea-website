@@ -192,8 +192,9 @@ Nella scheda **Record** il dominio principale ha *Nome host* `@`. Imposta questi
 - Il vecchio record A `@` dell'hosting Aruba (`62.149.128.40`) va **modificato**, non
   lasciato accanto ai nuovi: se resta, GitHub non riesce a creare il certificato HTTPS.
 - Il valore del CNAME si scrive senza punto finale, come gli altri del pannello.
-- **Non toccare** gli altri record: `localhost`, i record A `mx`, i CNAME `admin`,
-  `ftp` e `_domainconnect`, i record TXT e la scheda **Record MX**.
+- **Non toccare** gli altri record: i record A `mx`, i CNAME `admin` e `_domainconnect`,
+  i record TXT e la scheda **Record MX**. I record `localhost` e `ftp` sono residui
+  dell'hosting Aruba e si possono cancellare (vedi "Sicurezza").
 - Aruba applica le modifiche quasi subito, ma le cache in giro per Internet possono
   metterci qualche ora. Il certificato HTTPS arriva in genere entro un'ora da quando
   GitHub vede i DNS corretti (*Settings → Pages* mostra "DNS check successful").
@@ -203,6 +204,45 @@ Nella scheda **Record** il dominio principale ha *Nome host* `@`. Imposta questi
 Sul dominio ci sono già i record di Google Workspace: TXT `google-site-verification`,
 SPF (`v=spf1 include:_spf.google.com ~all`) e DKIM (`google._domainkey`). Restano
 come sono: non hanno nulla a che fare con i record del sito.
+
+---
+
+## Sicurezza
+
+Il sito è statico: niente database, password, moduli o pannello di amministrazione da
+attaccare. Il codice nel repository pubblico non contiene dati riservati: solo i dati
+pubblici dell'associazione. Foto e video sono senza metadati (posizione GPS, fotocamera).
+
+Già fatto:
+- HTTPS obbligatorio (anche `www` e `http` portano a `https://factoryarea.it`);
+- Content Security Policy in ogni pagina (vedi "Note tecniche");
+- link esterni con `rel="noopener noreferrer"`;
+- nessun cookie, nessun servizio esterno caricato dalle pagine;
+- dominio verificato su GitHub (record TXT `_github-pages-challenge-Factoryarea`): nessun
+  altro account può pubblicare un sito GitHub Pages su `factoryarea.it` o sui suoi sottodomini;
+- scansione dei segreti di GitHub attiva.
+
+Da fare (richiede l'accesso agli account, non si può fare dal codice):
+
+1. **GitHub → account → Password and authentication**: attivare la verifica in due passaggi.
+2. **GitHub → repository → Settings → Rules → Rulesets → New branch ruleset**: target
+   "Default branch", spuntare **Restrict deletions** e **Block force pushes**. Così nessuno
+   (nemmeno per errore) può cancellare o riscrivere la storia del ramo `main`.
+3. **GitHub → repository → Settings → General → Features**: togliere **Wikis** e **Projects**
+   (non usati). In **Settings → Actions → General → Workflow permissions** scegliere
+   **Read repository contents permission**: il flusso di pubblicazione chiede da solo i
+   permessi che gli servono.
+4. **Aruba → Gestione DNS**: aggiungere un record **TXT** con nome host `_dmarc` e valore
+   `v=DMARC1; p=none; rua=mailto:associazionefactorycatanzaro@gmail.com`. Senza DMARC
+   chiunque può mandare email che sembrano arrivare da `@factoryarea.it`. Dopo qualche
+   settimana senza problemi nei report, passare a `p=quarantine`.
+5. **Aruba → Gestione DNS**: cancellare i record `localhost` (punta a 127.0.0.1) e `ftp`
+   (rimanda al sito, non serve). Facoltativo: un record **CAA** `0 issue "letsencrypt.org"`
+   (il certificato del sito è di Let's Encrypt) e, se Aruba lo offre, attivare **DNSSEC**.
+
+Limiti di GitHub Pages: non permette di impostare intestazioni HTTP come
+`Strict-Transport-Security` o `X-Frame-Options`. Per un sito informativo senza login né
+moduli il rischio è basso; servirebbe un servizio davanti al sito (per esempio Cloudflare).
 
 ---
 
