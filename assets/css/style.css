@@ -332,9 +332,15 @@ html.is-locked body {
   opacity: 0;
 }
 
-/* Elemento invisibile in cima alla home: Safari (iOS 26 e macOS) colora la fascia
-   in alto del browser con il colore degli elementi fissi sul bordo dello schermo,
-   anche se trasparenti. Il JavaScript gli assegna il colore del bordo del video. */
+/* Elemento invisibile in cima a ogni pagina. Safari su iPhone (iOS 26 e successivi)
+   colora la fascia sopra la pagina con il colore di sfondo dell'elemento fisso che
+   trova 4 px sotto il bordo superiore. Se quell'elemento è trasparente o sfocato
+   (come la barra), mostra lì il contenuto che scorre sotto. Per questo l'elemento:
+   - sta sopra la barra (z-index) e copre i primi 12 px, dove la barra non ha pulsanti;
+   - riceve i clic (pointer-events: auto): Safari salta gli elementi invisibili che
+     non li ricevono;
+   - è invisibile (opacity: 0), ma Safari ne legge comunque il colore di sfondo.
+   In home il JavaScript gli assegna il colore del bordo del video. */
 .tint {
   position: fixed;
   top: 0;
@@ -343,7 +349,7 @@ html.is-locked body {
   z-index: 60;
   height: 12px;
   opacity: 0;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .tint[hidden] {

@@ -270,7 +270,10 @@ Poi apri <http://localhost:8000>.
   invisibile (`.tint`) e il meta `theme-color` seguono il colore del bordo superiore del
   video finché la pagina è in cima; scorrendo o aprendo il menu tornano al blu. Nelle
   altre pagine lo stesso elemento invisibile è sempre blu: senza, dato che la barra è
-  trasparente, su iPhone sopra la barra si vedrebbe il contenuto che ci scorre sotto. I colori
+  trasparente, su iPhone sopra la barra si vedrebbe il contenuto che ci scorre sotto.
+  Safari prende il colore dall'elemento fisso che trova 4 px sotto il bordo superiore e
+  salta quelli invisibili che non ricevono i clic: per questo `.tint` ha
+  `pointer-events: auto` e sta sopra la barra (copre solo i primi 12 px, senza pulsanti). I colori
   sono calcolati in anticipo, due al secondo, e scritti nella pagina (attributi
   `data-tint-h` e `data-tint-v` del video): il browser non legge i fotogrammi. Se cambiate
   il video vanno ricalcolati (oppure si possono togliere i due attributi: la fascia resta
