@@ -339,7 +339,7 @@ html.is-locked body {
    - sta sopra la barra (z-index) e copre i primi 12 px, dove la barra non ha pulsanti;
    - riceve i clic (pointer-events: auto): Safari salta gli elementi invisibili che
      non li ricevono;
-   - è invisibile (opacity: 0), ma Safari ne legge comunque il colore di sfondo.
+   - su computer è invisibile; su telefoni e tablet è una striscia a tinta piena (sotto).
    In home il JavaScript gli assegna il colore del bordo del video. */
 .tint {
   position: fixed;
@@ -350,6 +350,17 @@ html.is-locked body {
   height: 12px;
   opacity: 0;
   pointer-events: auto;
+}
+
+/* Su telefoni e tablet la striscia in cima è visibile (6 px, a tinta piena):
+   Safari su iPhone usa il colore dell'elemento solo se è opaco; se è invisibile o
+   trasparente mostra sopra la barra il contenuto che scorre sotto. 6 px bastano
+   (Safari guarda 4 px sotto il bordo) e si fondono con la fascia del browser. */
+@media (hover: none) and (pointer: coarse) {
+  .tint {
+    height: 6px;
+    opacity: 1;
+  }
 }
 
 .tint[hidden] {

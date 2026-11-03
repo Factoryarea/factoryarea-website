@@ -315,7 +315,9 @@ Poi apri <http://localhost:8000>.
   trasparente, su iPhone sopra la barra si vedrebbe il contenuto che ci scorre sotto.
   Safari prende il colore dall'elemento fisso che trova 4 px sotto il bordo superiore e
   salta quelli invisibili che non ricevono i clic: per questo `.tint` ha
-  `pointer-events: auto` e sta sopra la barra (copre solo i primi 12 px, senza pulsanti). I colori
+  `pointer-events: auto` e sta sopra la barra (copre solo i primi 12 px, senza pulsanti).
+  Inoltre Safari usa il colore solo se l'elemento è opaco: su telefoni e tablet `.tint` è
+  quindi una striscia visibile di 6 px a tinta piena, che si fonde con la fascia del browser. I colori
   sono calcolati in anticipo, due al secondo, e scritti nella pagina (attributi
   `data-tint-h` e `data-tint-v` del video): il browser non legge i fotogrammi. Se cambiate
   il video vanno ricalcolati (oppure si possono togliere i due attributi: la fascia resta
