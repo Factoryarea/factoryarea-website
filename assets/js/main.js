@@ -408,7 +408,8 @@
      - ferma il video quando la hero è coperta o la scheda non è visibile, e
        lo fa ripartire quando torna in vista;
      - se l'autoplay non parte, ritenta qualche volta; se il dispositivo lo
-       blocca (es. risparmio energetico) il pulsante diventa "riproduci";
+       blocca (es. risparmio energetico) il pulsante diventa "riproduci" e il
+       video parte al primo tocco sulla pagina;
      - se il file scelto dà errore, o il video resta fermo pur risultando in
        riproduzione con i dati già scaricati, passa al formato successivo
        (HEVC → AV1 → H.264). */
@@ -625,6 +626,20 @@
         setToggle();
       });
     }
+    // Se il telefono blocca l'avvio automatico (per esempio iPhone in risparmio
+    // energetico), il video parte al primo tocco o tasto in qualsiasi punto della pagina
+    // (e riparte così anche se dopo una pausa il telefono lo blocca di nuovo).
+    var gestureEvents = ["touchend", "pointerup", "click", "keydown"];
+    var onFirstGesture = function (ev) {
+      if (!playFailed || userPaused || !heroVisible || !heroVideo.paused) return;
+      if (videoToggle && ev.target && videoToggle.contains(ev.target)) return; // ci pensa il pulsante
+      tries = 0;
+      tryPlay("primo tocco sulla pagina");
+    };
+    gestureEvents.forEach(function (ev) {
+      document.addEventListener(ev, onFirstGesture, { capture: true, passive: true });
+    });
+
     document.addEventListener("visibilitychange", function () {
       tries = 0;
       lastProgressAt = performance.now();
