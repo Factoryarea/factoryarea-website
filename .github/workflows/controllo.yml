@@ -14,23 +14,8 @@ jobs:
   controllo:
     runs-on: ubuntu-latest
     steps:
-      - name: Intestazioni HTTP
-        run: |
-          for u in https://factoryarea.it/ http://factoryarea.it/ https://www.factoryarea.it/ http://www.factoryarea.it/ https://factoryarea.it/assets/js/main.js https://factoryarea.it/.git/config https://factoryarea.it/README.md https://factoryarea.it/.github/workflows/pubblica.yml https://factoryarea.github.io/; do
-            echo "=== $u"; curl -sS -o /dev/null -D - --max-time 15 "$u" | grep -iE "^(HTTP|location|strict-transport|content-security|x-frame|x-content-type|referrer-policy|permissions-policy|server|access-control|cache-control)" || true
-          done
-          echo "=== range video"; curl -sS -o /dev/null -D - -H "Range: bytes=0-1" https://factoryarea.it/assets/video/hero.mp4 | grep -iE "^(HTTP|content-range|accept-ranges|content-type)"
-          echo "=== TLS"; echo | openssl s_client -connect factoryarea.it:443 -servername factoryarea.it 2>/dev/null | openssl x509 -noout -issuer -subject -dates -ext subjectAltName
-
-      - name: DNS
-        run: |
-          sudo apt-get -qq install -y dnsutils >/dev/null 2>&1 || true
-          for r in "factoryarea.it A" "factoryarea.it AAAA" "www.factoryarea.it CNAME" "factoryarea.it MX" "factoryarea.it TXT" "_dmarc.factoryarea.it TXT" "google._domainkey.factoryarea.it TXT" "factoryarea.it CAA" "factoryarea.it NS" "factoryarea.it DS" "_github-pages-challenge-Factoryarea.factoryarea.it TXT"; do
-            set -- $r; echo "=== $1 $2"; dig +short "$1" "$2" @1.1.1.1
-          done
-          for s in ftp admin mail webmail mx pop smtp imap autodiscover localhost; do echo "=== $s.factoryarea.it"; dig +short "$s.factoryarea.it" @1.1.1.1; done
-
       - name: Cancella il ramo temporaneo video-originale
         run: |
+          git init -q /tmp/r && cd /tmp/r
+          git push "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" --delete video-originale 
           git ls-remote --heads "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
-          git push "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" --delete video-originale || echo "ramo già assente"
