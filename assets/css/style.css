@@ -562,6 +562,8 @@ html.is-locked body {
 
 .footer__links {
   flex: none;
+  display: flex;
+  gap: 16px;
 }
 
 

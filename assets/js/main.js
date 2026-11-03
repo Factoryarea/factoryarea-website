@@ -714,9 +714,11 @@
 
     tintRefresh = function () {
       var show = atTop && !menuOpen;
-      tintEl.hidden = !show;
-      if (show) tintEl.style.backgroundColor = toHex(tintRgb);
-      if (themeMeta) themeMeta.setAttribute("content", show ? toHex(tintRgb) : brandColor);
+      // in cima segue il video; scorrendo o con il menu aperto torna blu (mai trasparente,
+      // altrimenti Safari mostrerebbe sopra la barra il contenuto che ci scorre sotto)
+      var color = show ? toHex(tintRgb) : brandColor;
+      tintEl.style.backgroundColor = color;
+      if (themeMeta) themeMeta.setAttribute("content", color);
     };
 
     tintUpdate = function (y) {

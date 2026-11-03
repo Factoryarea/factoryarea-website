@@ -268,15 +268,20 @@ Poi apri <http://localhost:8000>.
 - **Fascia in alto del browser**: da iOS 26 Safari ignora `theme-color` e colora la zona
   sopra la pagina con il colore degli elementi fissi in cima. In home un elemento
   invisibile (`.tint`) e il meta `theme-color` seguono il colore del bordo superiore del
-  video finché la pagina è in cima; scorrendo o aprendo il menu tornano al blu. I colori
+  video finché la pagina è in cima; scorrendo o aprendo il menu tornano al blu. Nelle
+  altre pagine lo stesso elemento invisibile è sempre blu: senza, dato che la barra è
+  trasparente, su iPhone sopra la barra si vedrebbe il contenuto che ci scorre sotto. I colori
   sono calcolati in anticipo, due al secondo, e scritti nella pagina (attributi
   `data-tint-h` e `data-tint-v` del video): il browser non legge i fotogrammi. Se cambiate
   il video vanno ricalcolati (oppure si possono togliere i due attributi: la fascia resta
   del colore fisso indicato sull'elemento `.tint`). Il video vero e proprio non può
   comparire sotto l'orologio: in verticale Safari 26 non lo permette.
 - Il font è ospitato nel sito: nessuna richiesta a Google Fonts.
-- Il sito non usa cookie né strumenti di tracciamento. Se in futuro aggiungete
-  statistiche (es. Google Analytics) o contenuti incorporati (es. post Instagram),
-  andranno riviste privacy e banner cookie.
+- Il sito non usa cookie né strumenti di tracciamento, quindi non serve il banner dei
+  cookie: le linee guida del Garante lo richiedono solo per i cookie che hanno bisogno di
+  consenso. La cookie policy è la sezione "Cookie" di `privacy/index.html`, collegata dal
+  footer (`privacy/#cookie`). Se in futuro aggiungete statistiche (es. Google Analytics) o
+  contenuti incorporati (es. post Instagram, video YouTube, mappe), andranno riviste
+  l'informativa e aggiunto un banner con il consenso.
 - Licenze: Inter (SIL Open Font License, `assets/fonts/OFL-Inter.txt`), Lenis (MIT,
   `assets/js/LICENSE-lenis.txt`).

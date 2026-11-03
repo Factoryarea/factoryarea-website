@@ -49,6 +49,8 @@
   <script src="../assets/js/main.js" defer></script>
 </head>
 <body class="page-privacy">
+  <!-- Invisibile: Safari su iPhone ne usa il colore per la fascia sopra la barra -->
+  <div class="tint" aria-hidden="true" style="background-color:#0024FF"></div>
   <a class="skip-link" href="#contenuto">Vai al contenuto</a>
 
   <!-- ================= NAVIGAZIONE =================
@@ -78,7 +80,7 @@
   <main id="contenuto" class="page legal">
     <h1 class="t-h2">Informativa privacy</h1>
     <div class="legal__body">
-      <p class="legal__updated">Ultimo aggiornamento: 2 novembre 2026</p>
+      <p class="legal__updated">Ultimo aggiornamento: 3 novembre 2026</p>
 
       <h2>Titolare del trattamento</h2>
       <p>Factory+ ETS (Associazione culturale Factory+), Via Gregorio Mattei 3, 88100 Catanzaro (CZ), codice fiscale 97105210799, partita IVA 03942250790, iscritta al RUNTS (repertorio n. 0118188). Puoi contattarci all'indirizzo email <a href="mailto:associazionefactorycatanzaro@gmail.com">associazionefactorycatanzaro@gmail.com</a>, via PEC a <a href="mailto:factoryplus@pec.it">factoryplus@pec.it</a> oppure per posta all'indirizzo della sede legale.</p>
@@ -96,8 +98,10 @@
       <h2>Per quanto tempo li conserviamo</h2>
       <p>Conserviamo i messaggi per il tempo necessario a gestire la richiesta e comunque non oltre 24 mesi, salvo obblighi di legge.</p>
 
-      <h2>Cookie e contenuti esterni</h2>
-      <p>Il sito non usa cookie di profilazione né strumenti di statistica e non incorpora contenuti di terze parti: font, foto e video sono ospitati direttamente sul sito. I link verso altri siti (per esempio la biglietteria Xceed o i nostri profili social) si aprono in una nuova scheda; su quei siti valgono le rispettive informative.</p>
+      <h2 id="cookie">Cookie</h2>
+      <p>Il sito non installa cookie, né tecnici né di profilazione, e non usa altri strumenti di tracciamento o di statistica (per esempio la memoria locale del browser). Per questo non ti chiediamo alcun consenso e non trovi un banner dei cookie.</p>
+      <p>Il sito non incorpora contenuti di terze parti: font, foto e video sono ospitati direttamente sul sito. I link verso altri siti (per esempio la biglietteria Xceed o i nostri profili social) si aprono in una nuova scheda; su quei siti valgono le rispettive informative sulla privacy e sui cookie.</p>
+      <p>Se in futuro aggiungeremo cookie o strumenti che richiedono il tuo consenso, aggiorneremo questa informativa e te lo chiederemo prima di attivarli.</p>
 
       <h2>I tuoi diritti</h2>
       <p>Puoi chiedere in qualsiasi momento l'accesso ai tuoi dati, la rettifica, la cancellazione, la limitazione del trattamento, la portabilità e opporti al trattamento (artt. 15-22 GDPR), scrivendo a <a href="mailto:associazionefactorycatanzaro@gmail.com">associazionefactorycatanzaro@gmail.com</a> o a <a href="mailto:factoryplus@pec.it">factoryplus@pec.it</a>. Hai anche il diritto di presentare reclamo al <a href="https://www.garanteprivacy.it" target="_blank" rel="noopener noreferrer">Garante per la protezione dei dati personali</a>.</p>
@@ -137,7 +141,7 @@
             <span>Email <a href="mailto:associazionefactorycatanzaro@gmail.com">associazionefactorycatanzaro@gmail.com</a></span>
           </p>
         </div>
-        <p class="footer__links"><a href="../privacy/">Privacy Policy</a></p>
+        <p class="footer__links"><a href="../privacy/">Privacy Policy</a><a href="../privacy/#cookie">Cookie Policy</a></p>
       </div>
     </div>
   </footer>
