@@ -114,9 +114,14 @@ in pausa. Il video è solo decorativo: non si può cliccare e i controlli del br
 Alcuni browser possono bloccare la riproduzione automatica: iPhone e Mac in risparmio
 energetico, oppure Safari impostato su "Non riprodurre mai automaticamente" (Safari →
 Impostazioni → Siti web → Riproduzione automatica). Se dopo 2 secondi il video non è
-partito, lo script riprova; se il dispositivo continua a bloccarlo resta la copertina,
-il pulsante in basso a destra mostra "riproduci" e il video parte al primo tocco in
-qualsiasi punto della pagina (o sul pulsante). Su iPhone il caso tipico è il risparmio
+partito, lo script riprova. Se il dispositivo continua a bloccarlo:
+- su Safari (iPhone, iPad, Mac) il video viene mostrato come **immagine animata**: Safari
+  sa riprodurre un MP4 anche dentro un `<img>`, come una GIF, e le immagini non sono
+  soggette al blocco. Usa i file H.264 (`hero-verticale.mp4` o `hero.mp4`), scaricati solo
+  in questo caso. Il pulsante in basso a destra la ferma (mostra la copertina) e la fa
+  ripartire; fuori schermo si ferma da sola;
+- negli altri browser resta la copertina, il pulsante mostra "riproduci" e il video parte
+  al primo tocco in qualsiasi punto della pagina (o sul pulsante). Su iPhone il caso tipico è il risparmio
 energetico: il registro di diagnostica mostra `ns=0` (Safari non scarica nemmeno il video)
 e `play() rifiutato: NotAllowedError`.
 

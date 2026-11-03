@@ -408,8 +408,9 @@
      - ferma il video quando la hero è coperta o la scheda non è visibile, e
        lo fa ripartire quando torna in vista;
      - se l'autoplay non parte, ritenta qualche volta; se il dispositivo lo
-       blocca (es. risparmio energetico) il pulsante diventa "riproduci" e il
-       video parte al primo tocco sulla pagina;
+       blocca (es. risparmio energetico) su Safari mostra il video come immagine
+       animata; negli altri casi il pulsante diventa "riproduci" e il video parte
+       al primo tocco sulla pagina;
      - se il file scelto dà errore, o il video resta fermo pur risultando in
        riproduzione con i dati già scaricati, passa al formato successivo
        (HEVC → AV1 → H.264). */
@@ -511,10 +512,48 @@
 
     // Pulsante: "pausa" mentre il video va (o sta partendo), "riproduci" quando è fermo.
     // Nei primi 3 secondi un video fermo è considerato "in partenza".
+    /* Ripiego per Safari quando il telefono blocca l'avvio automatico dei video
+       (risparmio energetico, dati ridotti...): Safari sa mostrare un MP4 anche dentro
+       un <img>, come una GIF, e le immagini non sono soggette a quel blocco. Se il
+       browser non lo supporta (Chrome, Firefox) l'immagine dà errore e resta tutto com'è. */
+    var animImg = null;        // <img> con il video, se il ripiego è attivo
+    var animImgTried = false;
+    var animSrc = "";
+    var posterSrc = heroVideo.getAttribute("poster") || "";
+    var showAnimImg = function (on) {
+      if (!animImg) return;
+      var want = on ? animSrc : posterSrc;
+      if (animImg.getAttribute("src") !== want) animImg.setAttribute("src", want);
+    };
+    var tryAnimatedImage = function () {
+      if (animImgTried) return;
+      animImgTried = true;
+      var vertical = window.matchMedia && window.matchMedia("(max-aspect-ratio: 3/4)").matches;
+      var base = posterSrc.replace(/[^\/]*$/, "");          // stessa cartella della copertina
+      animSrc = base + (vertical ? "hero-verticale.mp4" : "hero.mp4");   // H.264
+      var img = new Image();
+      img.onload = function () {
+        img.onload = null;
+        if (!heroVideo.paused || animImg) return;          // nel frattempo il video è partito
+        img.className = heroVideo.className;
+        img.setAttribute("alt", "");
+        img.setAttribute("aria-hidden", "true");
+        heroVideo.parentNode.insertBefore(img, heroVideo);
+        heroVideo.style.display = "none";
+        animImg = img;
+        dlog("video mostrato come immagine animata");
+        showAnimImg(!userPaused && heroVisible);
+        toggleState = null;
+        setToggle();
+      };
+      img.onerror = function () { dlog("immagine animata non supportata da questo browser"); };
+      img.src = animSrc;
+    };
+
     var setToggle = function () {
       if (!videoToggle) return;
       var graceOver = performance.now() - startTime > 3000;
-      var showPlay = heroVideo.paused && (userPaused || playFailed || graceOver);
+      var showPlay = animImg ? userPaused : heroVideo.paused && (userPaused || playFailed || graceOver);
       if (showPlay === toggleState) return;
       toggleState = showPlay;
       videoToggle.hidden = false;
@@ -540,7 +579,10 @@
           setToggle();
         }, function (err) {
           dlog("play() rifiutato: " + err.name + " " + err.message);
-          if (err && err.name === "NotAllowedError") playFailed = true;
+          if (err && err.name === "NotAllowedError") {
+            playFailed = true;
+            tryAnimatedImage();
+          }
           setToggle();
         });
       }
@@ -596,6 +638,11 @@
     };
 
     var syncVideo = function () {
+      if (animImg) {
+        showAnimImg(wantsPlay());
+        setToggle();
+        return;
+      }
       if (!wantsPlay()) {
         if (!heroVideo.paused) heroVideo.pause();
       } else if (heroVideo.paused && performance.now() - startTime > 2000) {
@@ -614,6 +661,12 @@
 
     if (videoToggle) {
       videoToggle.addEventListener("click", function () {
+        if (animImg) {
+          userPaused = !userPaused;
+          showAnimImg(!userPaused);
+          setToggle();
+          return;
+        }
         if (heroVideo.paused) {
           userPaused = false;
           playFailed = false;
@@ -631,7 +684,7 @@
     // (e riparte così anche se dopo una pausa il telefono lo blocca di nuovo).
     var gestureEvents = ["touchend", "pointerup", "click", "keydown"];
     var onFirstGesture = function (ev) {
-      if (!playFailed || userPaused || !heroVisible || !heroVideo.paused) return;
+      if (animImg || !playFailed || userPaused || !heroVisible || !heroVideo.paused) return;
       if (videoToggle && ev.target && videoToggle.contains(ev.target)) return; // ci pensa il pulsante
       tries = 0;
       tryPlay("primo tocco sulla pagina");
@@ -656,7 +709,7 @@
         syncVideo();
         return;
       }
-      if (!wantsPlay() || switching) return;
+      if (animImg || !wantsPlay() || switching) return;
 
       if (heroVideo.paused) {
         // l'autoplay non è partito: dopo 2 secondi riprova, ogni 2 secondi, al massimo 5 volte
