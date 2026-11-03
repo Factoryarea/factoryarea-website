@@ -302,7 +302,7 @@ Poi apri <http://localhost:8000>.
 - **Barra di navigazione**: 16 px sopra e sotto, margini laterali uguali alle pagine
   (32 px su computer e tablet, 16 px su telefono, variabile `--gutter`). In home è
   trasparente sopra il video e appena si scorre sfoca ciò che passa sotto, senza
-  colore di sfondo.
+  colore di sfondo (su telefoni e tablet diventa blu pieno: vedi "Fascia in alto").
 - **Barra di scorrimento** nascosta su tutte le pagine: su computer video e foto
   arrivano fino al bordo destro. Si scorre normalmente con rotella, trackpad e tastiera.
 - Se nel sistema è attiva l'opzione **riduci movimento**, le animazioni si disattivano
@@ -316,8 +316,11 @@ Poi apri <http://localhost:8000>.
   Safari prende il colore dall'elemento fisso che trova 4 px sotto il bordo superiore e
   salta quelli invisibili che non ricevono i clic: per questo `.tint` ha
   `pointer-events: auto` e sta sopra la barra (copre solo i primi 12 px, senza pulsanti).
-  Inoltre Safari usa il colore solo se l'elemento è opaco: su telefoni e tablet `.tint` è
-  quindi una striscia visibile di 6 px a tinta piena, che si fonde con la fascia del browser. I colori
+  Su iPhone però questo non basta: Safari mostra sopra la barra il contenuto che scorre
+  sotto se la barra è trasparente o sfocata. Per questo su telefoni e tablet la barra ha un
+  fondo **blu pieno** appena si scorre (e sempre nelle altre pagine), messo sulla barra
+  stessa e non su un `::before`, che Safari ignora. In home, in cima, resta trasparente e
+  sopra si vede il video. Su computer la barra resta trasparente e sfocata. I colori
   sono calcolati in anticipo, due al secondo, e scritti nella pagina (attributi
   `data-tint-h` e `data-tint-v` del video): il browser non legge i fotogrammi. Se cambiate
   il video vanno ricalcolati (oppure si possono togliere i due attributi: la fascia resta

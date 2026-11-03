@@ -352,14 +352,31 @@ html.is-locked body {
   pointer-events: auto;
 }
 
-/* Su telefoni e tablet la striscia in cima è visibile (6 px, a tinta piena):
-   Safari su iPhone usa il colore dell'elemento solo se è opaco; se è invisibile o
-   trasparente mostra sopra la barra il contenuto che scorre sotto. 6 px bastano
-   (Safari guarda 4 px sotto il bordo) e si fondono con la fascia del browser. */
+/* Telefoni e tablet: Safari su iPhone mostra sopra la barra il contenuto che scorre
+   sotto, a meno che la barra stessa (non un suo ::before) abbia un fondo pieno senza
+   sfocatura (con la sfocatura rinuncia e mostra la pagina). Quindi qui, appena si scorre (e sempre nelle
+   altre pagine), la barra è blu pieno: Safari colora di blu anche la fascia
+   dell'orologio. In home, in cima, la barra resta trasparente e lassù si vede il video.
+   Su computer la barra resta trasparente e sfocata. */
 @media (hover: none) and (pointer: coarse) {
+  /* il colore va sulla barra stessa: Safari non guarda gli pseudo-elementi */
+  .nav__bar {
+    background-color: var(--bg);
+    transition: background-color 0.35s ease;
+  }
+
+  .nav[data-overlay]:not(.is-scrolled):not(.is-open) .nav__bar {
+    background-color: transparent;
+  }
+
+  .nav__bar::before {
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
   .tint {
-    height: 6px;
-    opacity: 1;
+    display: none;
   }
 }
 
