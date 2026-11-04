@@ -21,7 +21,7 @@ eventi/quartaed/           Edizione 2024
 eventi/terzaed/            Edizione 2023
 eventi/secondaed/          Edizione 2022
 eventi/primaed/            Edizione 2021
-about-us/index.html        Chi siamo, valori, partner, dati di Factory+ ETS
+about-us/index.html        Chi siamo, missione, attività, storia, visione e obiettivi, partner, dati di Factory+ ETS
 privacy/index.html         Informativa privacy
 404.html                   Pagina "non trovata"
 
@@ -51,9 +51,9 @@ clicca la matita ✏️, modifica e premi **Commit changes**. Il sito si aggiorn
 | --- | --- |
 | Testi della home | `index.html` |
 | Testi di un'edizione | `eventi/<edizione>/index.html` |
-| Chi siamo, valori, partner | `about-us/index.html` |
+| Chi siamo, missione, attività, storia, obiettivi, partner | `about-us/index.html` |
 | Informativa privacy | `privacy/index.html` |
-| Dati di Factory+ ETS (C.F., P. IVA, RUNTS, sede, PEC, email) | footer di ogni pagina, sezione "Factory+ ETS" in `about-us/index.html`, `privacy/index.html` e dati strutturati per Google in `index.html` e `about-us/index.html` |
+| Dati di Factory+ ETS (C.F., P. IVA, RUNTS, sede). Niente indirizzi email sul sito: Google for Nonprofits chiede di non mostrare email generiche (Gmail, PEC). Quando sarà attivo Google Workspace si potrà aggiungere un indirizzo `@factoryarea.it` | footer di ogni pagina, sezione "Factory+ ETS" in `about-us/index.html`, `privacy/index.html` e dati strutturati per Google in `index.html` e `about-us/index.html` |
 | Link dei biglietti (Tickets) | barra di navigazione di ogni pagina (compare due volte: computer e telefono) |
 | Colori, font, margini | variabili all'inizio di `assets/css/style.css` (sfondo: blu elettrico `#0024ff`, preso dalla foto profilo Instagram) |
 
