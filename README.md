@@ -66,17 +66,16 @@ si perde. I file `README.md`, `CLAUDE.md` e la cartella `sorgente/` non vengono 
 
 | Cosa | Dove |
 | --- | --- |
-| Testi della home | `index.html` |
-| Testi di un'edizione | `eventi/<edizione>/index.html` |
-| Chi siamo, missione, attività, storia, obiettivi, partner | `about-us/index.html` |
-| Informativa privacy | `privacy/index.html` |
-| Dati di Factory+ ETS (C.F., P. IVA, RUNTS, sede). Niente indirizzi email sul sito: Google for Nonprofits chiede di non mostrare email generiche (Gmail, PEC). Quando sarà attivo Google Workspace si potrà aggiungere un indirizzo `@factoryarea.it` | footer di ogni pagina, sezione "Factory+ ETS" in `about-us/index.html`, `privacy/index.html` e dati strutturati per Google in `index.html` e `about-us/index.html` |
-| Link dei biglietti (Tickets) | barra di navigazione di ogni pagina (compare due volte: computer e telefono) |
+| Testi della home | `sorgente/genera.py`, funzione `build_home` |
+| Testi, date e artisti di un'edizione | `sorgente/genera.py`, elenco `EDITIONS` |
+| Chi siamo, missione, attività, storia, obiettivi | `sorgente/genera.py`, funzione `build_about` (partner: elenco `PARTNERS`) |
+| Informativa privacy | `sorgente/genera.py`, funzione `build_privacy` |
+| Dati di Factory+ ETS (C.F., P. IVA, RUNTS, sede). Niente indirizzi email sul sito: Google for Nonprofits chiede di non mostrare email generiche (Gmail, PEC). Quando sarà attivo Google Workspace si potrà aggiungere un indirizzo `@factoryarea.it` | `sorgente/genera.py`, dizionario `ORG`: finiscono nel footer, nella pagina Chi siamo, nella privacy e nei dati per Google |
+| Link dei biglietti (Tickets) | `sorgente/genera.py`, funzione `nav` (compare in ogni pagina, per computer e telefono) |
 | Colori, font, margini | variabili all'inizio di `assets/css/style.css` (sfondo: blu elettrico `#0024ff`, preso dalla foto profilo Instagram) |
 
-**Barra di navigazione e footer** sono ripetuti in ogni pagina. Se cambi un link (per
-esempio quello dei biglietti, che inizia con `https://xceed.me/...`) va cambiato in tutte
-le pagine: su GitHub puoi cercarlo con la ricerca del repository.
+**Barra di navigazione e footer** sono ripetuti in ogni pagina, ma in `genera.py` sono
+scritti una volta sola (funzioni `nav` e `footer`): si cambiano lì e si rigenera.
 
 I link verso altri siti si aprono in una nuova scheda e hanno sempre
 `target="_blank" rel="noopener noreferrer"`: copia questi attributi se ne aggiungi di nuovi.
@@ -172,14 +171,12 @@ LinkedIn → <https://www.linkedin.com/post-inspector/>. WhatsApp si aggiorna da
 
 ## Aggiungere una nuova edizione (es. 2027)
 
-1. Copia la cartella di un'edizione (per esempio `eventi/sestaed/` in `eventi/settimaed/`),
-   cambia testi, `<title>`, `description` e dati strutturati, e carica le foto in
-   `assets/img/edizioni/2027/` con i nomi della tabella "Foto".
-2. In `eventi/index.html` aggiungi la card in cima alla griglia e aggiorna il numero
-   tra parentesi.
-3. In `index.html` aggiungi l'anno in cima alle foto impilate (`.stack__card`).
-4. Aggiorna i blocchi "Next Projects" delle altre edizioni e aggiungi l'indirizzo in
-   `sitemap.xml`.
+1. Carica le foto in `assets/img/edizioni/2027/` con i nomi della tabella "Foto".
+2. In `sorgente/genera.py` aggiungi le misure delle foto in `DIMS`, l'edizione in cima a
+   `EDITIONS` (slug, date, luogo, artisti, tre testi, edizioni consigliate in `next`) e l'anno
+   in cima a `STACK` (foto impilate della home).
+3. Lancia `python3 sorgente/genera.py`: pagina dell'edizione, elenco eventi, home e sitemap
+   si aggiornano da soli.
 
 ---
 
@@ -354,8 +351,9 @@ Poi apri <http://localhost:8000>.
 - **Sicurezza (Content Security Policy)**: ogni pagina ha in testa un
   `<meta http-equiv="Content-Security-Policy">` che permette di caricare solo file del sito
   stesso (script, font, foto, video) e blocca script esterni, incorporamenti e moduli.
-  Il piccolo script in testa alla pagina è autorizzato con la sua impronta (`sha256-…`):
-  se lo modificate, l'impronta va ricalcolata, altrimenti le animazioni non si attivano.
+  Il piccolo script in testa alla pagina è autorizzato con la sua impronta (`sha256-…`),
+  che `genera.py` calcola da solo: se lo modificate a mano in una pagina, le animazioni
+  non si attivano più.
   Se in futuro aggiungete qualcosa da un altro sito (statistiche, mappe, video YouTube,
   post Instagram, un modulo), va aggiunto il suo indirizzo nella regola giusta
   (`script-src`, `frame-src`, `img-src`, `connect-src`, `form-action`) in tutte le pagine.
