@@ -32,6 +32,10 @@ assets/fonts/              Font Inter (licenza SIL OFL), ospitato nel sito
 assets/img/                Foto delle edizioni, logo, icone, anteprima social
 assets/video/              Video della home e immagine di copertina del video
 
+sorgente/genera.py         Programma che genera tutte le pagine HTML (testi, edizioni, dati)
+sorgente/*.json, *.txt     Dati usati dal programma (colori del video, forma del logo)
+CLAUDE.md                  Regole del progetto per Claude (e per chi lavora al sito)
+
 favicon.ico, site.webmanifest    Icone del sito
 .github/workflows/pubblica.yml   Pubblicazione automatica su GitHub Pages
 CNAME, robots.txt, sitemap.xml   Dominio e indicizzazione
@@ -44,8 +48,21 @@ Gli indirizzi delle pagine sono gli stessi del sito Framer (`/eventi`, `/eventi/
 
 ## Modificare i contenuti
 
-Il modo più semplice è modificare i file direttamente su github.com: apri il file,
-clicca la matita ✏️, modifica e premi **Commit changes**. Il sito si aggiorna da solo.
+Le pagine HTML sono **generate** dal programma `sorgente/genera.py`: testi, edizioni,
+partner, dati dell'ente, menu e footer sono scritti lì. Il modo giusto per cambiarli è
+modificare `genera.py` e rigenerare le pagine, dalla cartella del repository:
+
+```
+python3 sorgente/genera.py
+```
+
+Poi si salvano su GitHub sia `genera.py` sia le pagine cambiate. CSS, JavaScript, foto e
+video invece non sono generati e si modificano direttamente in `assets/`.
+
+Per una correzione veloce si può anche modificare una pagina direttamente su github.com
+(apri il file, matita ✏️, **Commit changes**): il sito si aggiorna da solo. In quel caso la
+stessa correzione va riportata anche in `genera.py`, altrimenti alla generazione successiva
+si perde. I file `README.md`, `CLAUDE.md` e la cartella `sorgente/` non vengono pubblicati.
 
 | Cosa | Dove |
 | --- | --- |

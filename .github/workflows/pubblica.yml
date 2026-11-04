@@ -32,6 +32,7 @@ jobs:
           mkdir -p _site
           tar --exclude="./.git" --exclude="./.github" --exclude="./_site" \
               --exclude="./README.md" --exclude="./.gitignore" \
+              --exclude="./CLAUDE.md" --exclude="./sorgente" \
               -cf - . | tar -xf - -C _site
           ls -la _site
 
