@@ -612,6 +612,18 @@
     heroVideo.addEventListener("play", setToggle);
     heroVideo.addEventListener("pause", setToggle);
 
+    // Copertina: sparisce solo quando il video avanza davvero (non basta "playing")
+    var heroCover = document.querySelector("[data-hero-cover]");
+    if (heroCover) {
+      var hideCover = function () {
+        if (heroVideo.currentTime > 0.05 && !heroVideo.paused) {
+          heroCover.classList.add("is-hidden");
+          heroVideo.removeEventListener("timeupdate", hideCover);
+        }
+      };
+      heroVideo.addEventListener("timeupdate", hideCover);
+    }
+
     if (videoToggle) {
       videoToggle.addEventListener("click", function () {
         if (heroVideo.paused) {

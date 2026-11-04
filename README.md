@@ -53,7 +53,7 @@ clicca la matita ✏️, modifica e premi **Commit changes**. Il sito si aggiorn
 | Testi di un'edizione | `eventi/<edizione>/index.html` |
 | Chi siamo, valori, partner | `about-us/index.html` |
 | Informativa privacy | `privacy/index.html` |
-| Dati di Factory+ ETS (C.F., P. IVA, RUNTS, sede). Niente indirizzi email sul sito: Google for Nonprofits chiede di non mostrare email generiche (Gmail, PEC). Quando sarà attivo Google Workspace si potrà aggiungere un indirizzo `@factoryarea.it` | footer di ogni pagina, sezione "Factory+ ETS" in `about-us/index.html`, `privacy/index.html` e dati strutturati per Google in `index.html` e `about-us/index.html` |
+| Dati di Factory+ ETS (C.F., P. IVA, RUNTS, sede, PEC, email) | footer di ogni pagina, sezione "Factory+ ETS" in `about-us/index.html`, `privacy/index.html` e dati strutturati per Google in `index.html` e `about-us/index.html` |
 | Link dei biglietti (Tickets) | barra di navigazione di ogni pagina (compare due volte: computer e telefono) |
 | Colori, font, margini | variabili all'inizio di `assets/css/style.css` (sfondo: blu elettrico `#0024ff`, preso dalla foto profilo Instagram) |
 
@@ -122,6 +122,10 @@ automatica di anteprime video e immagini animate disattivate: il registro di dia
 mostra `ns=0` (Safari non scarica nemmeno il video) e `play() rifiutato: NotAllowedError`.
 È una scelta di chi usa il telefono e il sito la rispetta (un tentativo di mostrare il video
 come immagine animata, il 3 novembre, è stato tolto: su quell'iPhone restava fermo).
+
+Sopra il video c'è la copertina (`hero__cover`, la stessa `hero-poster.jpg`): sparisce con
+una dissolvenza solo quando il video avanza davvero. Così, se l'iPhone blocca l'avvio
+automatico, non si vede il grande "play" che Safari disegna al centro del video.
 
 Se su un dispositivo il video non parte, apri <https://factoryarea.it/?debug-video>:
 in basso compare un riquadro con il formato scelto dal browser, gli eventi del video,
