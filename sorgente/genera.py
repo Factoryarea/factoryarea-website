@@ -40,8 +40,6 @@ ORG = {
     "runts": "0118188",
     "runts_section": "Altri enti del Terzo settore",
     "runts_decree": "decreto della Regione Calabria n. 5206 del 16/04/2024",
-    "pec": "factoryplus@pec.it",
-    "email": "associazionefactorycatanzaro@gmail.com",
 }
 ORG_ADDRESS = f"{ORG['street']}, {ORG['zip']} {ORG['city']} ({ORG['prov']})"
 BRAND_BLUE = "#0024FF"   # blu elettrico della foto profilo Instagram

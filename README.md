@@ -256,7 +256,7 @@ Da fare (richiede l'accesso agli account, non si può fare dal codice):
    **Read repository contents permission**: il flusso di pubblicazione chiede da solo i
    permessi che gli servono.
 4. **Aruba → Gestione DNS**: aggiungere un record **TXT** con nome host `_dmarc` e valore
-   `v=DMARC1; p=none; rua=mailto:associazionefactorycatanzaro@gmail.com`. Senza DMARC
+   `v=DMARC1; p=none; rua=mailto:<indirizzo-dell'associazione>`. Senza DMARC
    chiunque può mandare email che sembrano arrivare da `@factoryarea.it`. Dopo qualche
    settimana senza problemi nei report, passare a `p=quarantine`.
 5. **Aruba → Gestione DNS**: cancellare i record `localhost` (punta a 127.0.0.1) e `ftp`
