@@ -375,7 +375,8 @@ def head(p, title, path, description=DESC, og_title=None, abs_assets=False, data
   <meta name="twitter:image:alt" content="{OG_ALT}">
 
   <!-- Icone -->
-  <link rel="icon" href="{a}favicon.ico" sizes="32x32">
+  <link rel="icon" href="{a}favicon.ico" sizes="16x16 32x32 48x48">
+  <link rel="icon" href="{a}assets/img/icon-192.png" type="image/png" sizes="192x192">
   <link rel="icon" href="{a}assets/img/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="{a}assets/img/apple-touch-icon.png">
   <link rel="manifest" href="{a}site.webmanifest">
