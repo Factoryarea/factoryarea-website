@@ -35,6 +35,8 @@ GitHub Pages. La guida completa per le persone è in `README.md`: leggila prima 
   servizi esterni (sfondo OpenStreetMap, foglio Google con i luoghi) ed è descritta nell'informativa privacy
   (`#mappa`). Si genera con `python3 sorgente/mappa/genera_mappa.py`, non con `genera.py`; ha una
   Content Security Policy propria. Sul sito non mostra le email dei locali (regola qui sopra).
+  Per scelta dell'associazione (12/11/2026) non ha footer né i dati dell'ente: è uno strumento
+  interno, non una pagina del sito; ha solo un link all'informativa privacy.
 - **Content Security Policy**: è nel `<head>` di ogni pagina (funzione `head()` di `genera.py`).
   L'impronta dello script in testa (`INLINE_JS`) è calcolata da sola. Se si aggiunge una risorsa
   esterna va autorizzata nella regola giusta.

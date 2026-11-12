@@ -233,7 +233,8 @@ come sono: non hanno nulla a che fare con i record del sito.
 
 <https://factoryarea.it/mappa/> è uno strumento di lavoro interno: una mappa dei luoghi di
 musica dal vivo in Italia (452 al 12/11/2026) con capienza, Instagram/Facebook, sito, telefono,
-confini di Stato, regioni e città, filtri e esportazione CSV.
+confini di Stato, regioni e città, filtri con legenda dei colori. Non ha footer né i dati
+dell'ente (scelta dell'associazione: è uno strumento interno), solo un link alla privacy.
 
 - **Non è indicizzata**: ha `noindex, nofollow`, non è nella `sitemap.xml` e nessuna pagina la
   collega. Non è protetta da password: chi ha l'indirizzo la apre. Non va bloccata in `robots.txt`

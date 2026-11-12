@@ -9,7 +9,7 @@
 <title>Mappa della musica dal vivo in Italia · Factory Area</title>
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="mappa.css?v=a1ec4a5ac8">
+<link rel="stylesheet" href="mappa.css?v=03e76b1950">
 </head>
 <body>
 <div class="app vista-elenco" id="app">
@@ -25,11 +25,13 @@
     <div class="barra">
       <button class="btn" id="apri-filtri" type="button" aria-expanded="false" aria-controls="filtri">Filtri <span class="num" id="n-filtri" hidden>0</span></button>
       <button class="btn" id="azzera" type="button" hidden title="Toglie tutti i filtri e la ricerca">Azzera filtri</button>
-      <span class="spazio"></span>
-      <button class="btn pieno" id="esporta" type="button" title="Scarica l'elenco filtrato in formato CSV (si apre con Excel)">Esporta CSV</button>
     </div>
     <div class="attivi" id="attivi" hidden aria-label="Filtri attivi"></div>
     <div class="filtri" id="filtri">
+      <div class="gruppo legenda"><span class="et">Legenda</span>
+        <ul class="leg-col" id="leg-col"></ul>
+        <div class="leg-dim"><span class="leg-pallini"><i style="width:10px;height:10px"></i><i style="width:15px;height:15px"></i><i style="width:21px;height:21px"></i></span>La grandezza del pallino indica la capienza (più grande = più posti; il più piccolo anche quando la capienza non è nota).</div>
+      </div>
       <div class="gruppo"><label for="f-regione">Regione</label>
         <select class="btn" id="f-regione"><option value="">Tutte le regioni</option></select></div>
       <div class="gruppo"><span class="et">Tipologia</span><div class="chips" id="f-tipo"></div></div>
@@ -41,7 +43,6 @@
     <div class="riga-info">
       <span><strong id="conta">0</strong> <span id="conta-et">luoghi</span></span>
       <span class="spazio"></span>
-      <label class="spunta" title="Mostra nell'elenco solo i luoghi dentro l'area visibile della mappa"><input type="checkbox" id="solo-vista"> solo in mappa</label>
       <select class="btn" id="ordina" aria-label="Ordina l'elenco" style="height:30px;font-size:12.5px">
         <option value="nome">Nome A–Z</option>
         <option value="citta">Città</option>
@@ -53,17 +54,16 @@
     <ul class="lista" id="lista"></ul>
     <div class="piede">
       <span class="stato" id="stato"><i></i>Carico i dati…</span>
-      <a id="link-foglio" href="#" target="_blank" rel="noopener noreferrer" hidden>Apri il foglio</a>
+      <span class="piede-link"><a href="/privacy/#mappa">Privacy</a> <a id="link-foglio" href="#" target="_blank" rel="noopener noreferrer" hidden>Apri il foglio</a></span>
     </div>
-    <div class="legale"><span>Factory+ ETS (Associazione culturale Factory+)</span> <span>Via Gregorio Mattei 3, 88100 Catanzaro (CZ)</span> <span>C.F. 97105210799 · P. IVA 03942250790 · RUNTS n. 0118188</span> <a href="/privacy/#mappa">Privacy</a></div>
   </aside>
   <div id="mappa" role="application" aria-label="Mappa dei luoghi"></div>
-  <button class="cambia" id="cambia" type="button">Vedi la mappa</button>
+  <button class="cambia" id="cambia" type="button"><span>Vedi la mappa</span></button>
 </div>
 
 <script src="leaflet.js?v=dc71f8a688"></script>
 <script src="leaflet.markercluster.js?v=b1ef34ccee"></script>
 <script src="dati.js?v=68f3bf5577"></script>
-<script src="mappa.js?v=6a56f74bc0"></script>
+<script src="mappa.js?v=b8232f94c5"></script>
 </body>
 </html>

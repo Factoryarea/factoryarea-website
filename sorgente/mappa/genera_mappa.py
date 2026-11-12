@@ -17,9 +17,6 @@ OUT = REPO / "mappa"
 ID_FOGLIO = "1uyPMJnodXrHayUxTRTMg9XjCBhb-MwLRFV4CND_KkkI"
 COL_EMAIL = 16  # posizione della colonna Email nelle righe di dati.json
 
-sys.path.insert(0, str(REPO / "sorgente"))
-import genera  # noqa: E402  (dati dell'ente, stessi del resto del sito)
-ORG, ORG_ADDRESS = genera.ORG, genera.ORG_ADDRESS
 
 modello = (QUI / "modello.html").read_text(encoding="utf-8")
 vendor = lambda f: (QUI / "vendor" / f).read_text(encoding="utf-8")
@@ -52,24 +49,13 @@ def js_app(sito, dati_inline=None):
     return s.replace("</script", "<\\/script")
 
 
-# Riga con i dati dell'ente (obbligatoria in ogni pagina del sito)
-legale = (f'<div class="legale"><span>{ORG["name"]} ({ORG["legal"]})</span> <span>{ORG_ADDRESS}</span> '
-          f'<span>C.F. {ORG["cf"]} · P. IVA {ORG["piva"]} · RUNTS n. {ORG["runts"]}</span> '
-          f'<a href="/privacy/#mappa">Privacy</a></div>')
-css_legale = """.legale{padding:8px 20px 10px;border-top:1px solid var(--velo);font-size:10.5px;line-height:1.5;color:var(--tenue)}
-.legale span{white-space:nowrap}
-.legale span::after{content:" · "}
-.legale a{color:#fff}
-@media (max-width:820px){.legale{padding-bottom:72px}.piede{padding-bottom:9px}}
-"""
-
 # ---------------------------------------------------------------- versione del sito
 font_face = "\n".join(re.findall(r"@font-face \{.*?\}", (REPO / "assets/css/style.css").read_text(encoding="utf-8"), re.S))
 font_face = font_face.replace("../fonts/", "../assets/fonts/")
 OUT.mkdir(exist_ok=True)
 (OUT / "mappa.css").write_text(
     "/* Mappa della musica dal vivo: stile. Generato da sorgente/mappa/genera_mappa.py: non modificare a mano. */\n"
-    + font_face + "\n" + leaflet_css + "\n" + cluster_css + "\n" + css_app + css_legale, encoding="utf-8")
+    + font_face + "\n" + leaflet_css + "\n" + cluster_css + "\n" + css_app + ".piede-link{display:inline-flex;gap:14px}\n", encoding="utf-8")
 (OUT / "leaflet.js").write_text(leaflet_js, encoding="utf-8")
 (OUT / "leaflet.markercluster.js").write_text(cluster_js, encoding="utf-8")
 shutil.copy(QUI / "vendor/LICENSE-leaflet.txt", OUT / "LICENSE-leaflet.txt")
@@ -99,7 +85,9 @@ CSP = "; ".join([
 # Numero di versione nei link ai file: a ogni modifica il browser scarica la versione nuova
 ver = lambda f: f + "?v=" + hashlib.sha256((OUT / f).read_bytes()).hexdigest()[:10]
 corpo = modello[modello.index("<body>"):modello.index("<script>")]
-corpo = corpo.replace("  </aside>", "    " + legale + "\n  </aside>", 1)
+# Link all'informativa (la pagina usa servizi esterni): accanto ad "Apri il foglio"
+corpo = corpo.replace('<a id="link-foglio"', '<span class="piede-link"><a href="/privacy/#mappa">Privacy</a> <a id="link-foglio"', 1)
+corpo = corpo.replace('>Apri il foglio</a>', '>Apri il foglio</a></span>', 1)
 html = f"""<!DOCTYPE html>
 <html lang="it">
 <head>
