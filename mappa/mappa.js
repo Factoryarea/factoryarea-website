@@ -125,7 +125,7 @@ function nFiltri(){ return (filtro.regione ? 1 : 0) + filtro.tipo.size + filtro.
 const mappa = L.map("mappa", {zoomControl: false, minZoom: 5, maxZoom: 19, worldCopyJump: true}).setView([42.3, 12.6], 6);
 L.control.zoom({position: "topright"}).addTo(mappa);
 mappa.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener noreferrer">Leaflet</a>');
-L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {subdomains: "abcd", maxZoom: 20, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener noreferrer">CARTO</a>'}).addTo(mappa);
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom: 19, className: "sfondo", attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>'}).addTo(mappa);
 const gruppi = L.markerClusterGroup({maxClusterRadius: 46, showCoverageOnHover: false, spiderfyOnMaxZoom: true, chunkedLoading: true,
   iconCreateFunction: g => { const n = g.getChildCount(); const d = n < 10 ? 34 : n < 50 ? 40 : 48; return L.divIcon({html: String(n), className: "gruppo-segn", iconSize: [d, d]}); }});
 mappa.addLayer(gruppi);

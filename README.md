@@ -254,8 +254,8 @@ confini di Stato, regioni e città, filtri e esportazione CSV.
 - **Confini delle città**: ci sono solo i comuni che avevano almeno un luogo alla generazione;
   per un luogo in un comune nuovo il confine compare alla rigenerazione successiva (servono i
   file di openpolis/geojson-italy, vedi `genera_mappa.py`).
-- **Servizi esterni** (solo in questa pagina): sfondo della mappa da CARTO
-  (`*.basemaps.cartocdn.com`) e foglio da Google (`docs.google.com`), autorizzati nella sua
+- **Servizi esterni** (solo in questa pagina): sfondo della mappa da OpenStreetMap
+  (`tile.openstreetmap.org`, gratuito e senza chiave; CARTO dal 2026 chiede una chiave) e foglio da Google (`docs.google.com`), autorizzati nella sua
   Content Security Policy e descritti nell'informativa privacy. Librerie: Leaflet 1.9.4 e
   Leaflet.markercluster 1.5.3 (licenza BSD/MIT, file `LICENSE-*` in `mappa/`). Confini: dati ISTAT
   rielaborati da openpolis/geojson-italy.

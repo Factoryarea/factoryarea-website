@@ -87,7 +87,7 @@ CSP = "; ".join([
     "default-src 'self'",
     "script-src 'self'",
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: https://*.basemaps.cartocdn.com",
+    "img-src 'self' data: https://tile.openstreetmap.org",
     "font-src 'self'",
     "connect-src 'self' https://docs.google.com https://*.googleusercontent.com",
     "frame-src 'none'",

@@ -785,6 +785,7 @@ select.btn option{color:#111;background:#fff}
 .piede a{color:#fff}
 .stato i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#7dffb0;margin-right:6px;vertical-align:1px}
 .stato.riserva i{background:#ffd34d}
+.sfondo{filter:grayscale(.85) brightness(1.06) contrast(.92)}
 #mappa{height:100%;min-height:0;background:#e9eef2;z-index:1}
 .leaflet-container{font-family:inherit}
 .segn{border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,30,.45)}
