@@ -30,6 +30,11 @@ GitHub Pages. La guida completa per le persone è in `README.md`: leggila prima 
 - **Nessun cookie e nessun servizio esterno** caricato dalle pagine (font, script, video,
   mappe, statistiche): il sito non ha banner dei cookie proprio per questo. Se in futuro serve,
   vanno aggiornati informativa privacy, banner e Content Security Policy.
+- **Eccezione: la mappa interna `mappa/`** (factoryarea.it/mappa, strumento di lavoro, `noindex`,
+  non collegata da nessuna pagina e fuori dalla sitemap: lasciala così). È l'unica pagina che carica
+  servizi esterni (sfondo CARTO, foglio Google con i luoghi) ed è descritta nell'informativa privacy
+  (`#mappa`). Si genera con `python3 sorgente/mappa/genera_mappa.py`, non con `genera.py`; ha una
+  Content Security Policy propria. Sul sito non mostra le email dei locali (regola qui sopra).
 - **Content Security Policy**: è nel `<head>` di ogni pagina (funzione `head()` di `genera.py`).
   L'impronta dello script in testa (`INLINE_JS`) è calcolata da sola. Se si aggiunge una risorsa
   esterna va autorizzata nella regola giusta.

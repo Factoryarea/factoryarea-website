@@ -833,7 +833,7 @@ def build_privacy():
   <main id="contenuto" class="page legal">
     <h1 class="t-h2">Informativa privacy</h1>
     <div class="legal__body">
-      <p class="legal__updated">Ultimo aggiornamento: 4 novembre 2026</p>
+      <p class="legal__updated">Ultimo aggiornamento: 12 novembre 2026</p>
 
       <h2>Titolare del trattamento</h2>
       <p>{ORG['name']} ({ORG['legal']}), {ORG_ADDRESS}, codice fiscale {ORG['cf']}, partita IVA {ORG['piva']}, iscritta al RUNTS (repertorio n. {ORG['runts']}). Puoi contattarci per posta all'indirizzo della sede legale.</p>
@@ -853,7 +853,9 @@ def build_privacy():
 
       <h2 id="cookie">Cookie</h2>
       <p>Il sito non installa cookie, né tecnici né di profilazione, e non usa altri strumenti di tracciamento o di statistica (per esempio la memoria locale del browser). Per questo non ti chiediamo alcun consenso e non trovi un banner dei cookie.</p>
-      <p>Il sito non incorpora contenuti di terze parti: font, foto e video sono ospitati direttamente sul sito. I link verso altri siti (per esempio la biglietteria Xceed o i nostri profili social) si aprono in una nuova scheda; su quei siti valgono le rispettive informative sulla privacy e sui cookie.</p>
+      <p>Il sito non incorpora contenuti di terze parti: font, foto e video sono ospitati direttamente sul sito. Unica eccezione è la pagina di lavoro interna con la mappa dei luoghi di musica dal vivo (vedi sotto). I link verso altri siti (per esempio la biglietteria Xceed o i nostri profili social) si aprono in una nuova scheda; su quei siti valgono le rispettive informative sulla privacy e sui cookie.</p>
+      <h3 id="mappa">Mappa dei luoghi di musica dal vivo</h3>
+      <p>La pagina factoryarea.it/mappa è uno strumento di lavoro interno, non collegata dal resto del sito ed esclusa dai motori di ricerca. Per mostrare la mappa carica le immagini dello sfondo da CARTO (dati © OpenStreetMap) e legge l'elenco dei luoghi da un foglio Google di Factory+ ETS. Per farlo il tuo browser contatta direttamente questi fornitori, che ricevono il tuo indirizzo IP e i dati tecnici della richiesta. La pagina non invia cookie a Google e non usa questi servizi per tracciarti. Le informazioni sui locali (nome, indirizzo, capienza, profili social, siti e telefoni) sono dati pubblici delle attività, raccolti da fonti aperte come OpenStreetMap e Wikidata.</p>
       <p>Se in futuro aggiungeremo cookie o strumenti che richiedono il tuo consenso, aggiorneremo questa informativa e te lo chiederemo prima di attivarli.</p>
 
       <h2>I tuoi diritti</h2>

@@ -23,6 +23,7 @@ eventi/secondaed/          Edizione 2022
 eventi/primaed/            Edizione 2021
 about-us/index.html        Chi siamo, missione, attività, storia, visione e obiettivi, partner, dati di Factory+ ETS
 privacy/index.html         Informativa privacy
+mappa/                     Mappa interna dei luoghi di musica dal vivo (noindex, vedi sotto)
 404.html                   Pagina "non trovata"
 
 assets/css/style.css       Tutto lo stile (colori, misure, animazioni CSS)
@@ -227,6 +228,37 @@ SPF (`v=spf1 include:_spf.google.com ~all`) e DKIM (`google._domainkey`). Restan
 come sono: non hanno nulla a che fare con i record del sito.
 
 ---
+
+## Mappa della musica dal vivo (`/mappa/`)
+
+<https://factoryarea.it/mappa/> è uno strumento di lavoro interno: una mappa dei luoghi di
+musica dal vivo in Italia (452 al 12/11/2026) con capienza, Instagram/Facebook, sito, telefono,
+confini di Stato, regioni e città, filtri e esportazione CSV.
+
+- **Non è indicizzata**: ha `noindex, nofollow`, non è nella `sitemap.xml` e nessuna pagina la
+  collega. Non è protetta da password: chi ha l'indirizzo la apre. Non va bloccata in `robots.txt`
+  (Google non vedrebbe il `noindex` e potrebbe comunque elencare l'indirizzo).
+- **Dati**: la pagina legge i luoghi dal foglio Google "Luoghi musica dal vivo - Factory Area"
+  (Drive dell'associazione, condiviso "chiunque abbia il link: visualizzatore"). Aggiungere o
+  correggere un luogo nel foglio basta: si vede ricaricando la pagina. Le istruzioni sono nella
+  scheda "Istruzioni" del foglio. Se il foglio non risponde, la pagina usa la copia di riserva in
+  `mappa/dati.js` (in basso a sinistra compare "Copia interna dei dati").
+- **Email**: sul sito le email dei locali non vengono mostrate (regola per Google for Nonprofits);
+  restano nel foglio.
+- **Rigenerare** (per aggiornare la copia di riserva, i confini o l'aspetto): i file sorgente
+  sono in `sorgente/mappa/` (`modello.html`, `dati.json`, `confini/`, librerie in `vendor/`).
+  Dalla cartella del repository: `python3 sorgente/mappa/genera_mappa.py`, che riscrive i file in
+  `mappa/`. Con `--file percorso.html` crea anche la versione in un unico file da aprire con un
+  doppio clic. Per aggiornare `dati.json` dal foglio: scaricalo in formato CSV e convertilo nelle
+  stesse colonne (o chiedi a Claude).
+- **Confini delle città**: ci sono solo i comuni che avevano almeno un luogo alla generazione;
+  per un luogo in un comune nuovo il confine compare alla rigenerazione successiva (servono i
+  file di openpolis/geojson-italy, vedi `genera_mappa.py`).
+- **Servizi esterni** (solo in questa pagina): sfondo della mappa da CARTO
+  (`*.basemaps.cartocdn.com`) e foglio da Google (`docs.google.com`), autorizzati nella sua
+  Content Security Policy e descritti nell'informativa privacy. Librerie: Leaflet 1.9.4 e
+  Leaflet.markercluster 1.5.3 (licenza BSD/MIT, file `LICENSE-*` in `mappa/`). Confini: dati ISTAT
+  rielaborati da openpolis/geojson-italy.
 
 ## Sicurezza
 

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.basemaps.cartocdn.com; font-src 'self'; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Mappa della musica dal vivo in Italia · Factory Area</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="mappa.css">
+</head>
+<body>
+<div class="app vista-elenco" id="app">
+  <aside class="pannello" aria-label="Elenco e filtri">
+    <div class="testa">
+      <div class="marchio">Factory Area · uso interno</div>
+      <h1>Mappa della musica dal vivo in Italia</h1>
+      <div class="cerca" id="cerca">
+        <input id="q" type="text" enterkeyhint="search" placeholder="Cerca per nome, città, provincia…" aria-label="Cerca un luogo" autocomplete="off">
+        <button id="q-x" type="button" aria-label="Cancella la ricerca">×</button>
+      </div>
+    </div>
+    <div class="barra">
+      <button class="btn" id="apri-filtri" type="button" aria-expanded="false" aria-controls="filtri">Filtri <span class="num" id="n-filtri" hidden>0</span></button>
+      <button class="btn" id="azzera" type="button" hidden title="Toglie tutti i filtri e la ricerca">Azzera filtri</button>
+      <span class="spazio"></span>
+      <button class="btn pieno" id="esporta" type="button" title="Scarica l'elenco filtrato in formato CSV (si apre con Excel)">Esporta CSV</button>
+    </div>
+    <div class="attivi" id="attivi" hidden aria-label="Filtri attivi"></div>
+    <div class="filtri" id="filtri">
+      <div class="gruppo"><label for="f-regione">Regione</label>
+        <select class="btn" id="f-regione"><option value="">Tutte le regioni</option></select></div>
+      <div class="gruppo"><span class="et">Tipologia</span><div class="chips" id="f-tipo"></div></div>
+      <div class="gruppo"><span class="et">Genere</span><div class="chips" id="f-genere"></div></div>
+      <div class="gruppo"><span class="et">Gestione</span><div class="chips" id="f-pp"></div></div>
+      <div class="gruppo"><span class="et">Capienza</span><div class="chips" id="f-cap"></div></div>
+      <div class="gruppo"><span class="et">Contatti</span><div class="chips" id="f-cont"></div></div>
+    </div>
+    <div class="riga-info">
+      <span><strong id="conta">0</strong> <span id="conta-et">luoghi</span></span>
+      <span class="spazio"></span>
+      <label class="spunta" title="Mostra nell'elenco solo i luoghi dentro l'area visibile della mappa"><input type="checkbox" id="solo-vista"> solo in mappa</label>
+      <select class="btn" id="ordina" aria-label="Ordina l'elenco" style="height:30px;font-size:12.5px">
+        <option value="nome">Nome A–Z</option>
+        <option value="citta">Città</option>
+        <option value="regione">Regione</option>
+        <option value="cap-desc">Capienza ↓</option>
+        <option value="cap-asc">Capienza ↑</option>
+      </select>
+    </div>
+    <ul class="lista" id="lista"></ul>
+    <div class="piede">
+      <span class="stato" id="stato"><i></i>Carico i dati…</span>
+      <a id="link-foglio" href="#" target="_blank" rel="noopener noreferrer" hidden>Apri il foglio</a>
+    </div>
+    <div class="legale"><span>Factory+ ETS (Associazione culturale Factory+)</span> <span>Via Gregorio Mattei 3, 88100 Catanzaro (CZ)</span> <span>C.F. 97105210799 · P. IVA 03942250790 · RUNTS n. 0118188</span> <a href="/privacy/#mappa">Privacy</a></div>
+  </aside>
+  <div id="mappa" role="application" aria-label="Mappa dei luoghi"></div>
+  <button class="cambia" id="cambia" type="button">Vedi la mappa</button>
+</div>
+
+<script src="leaflet.js"></script>
+<script src="leaflet.markercluster.js"></script>
+<script src="dati.js"></script>
+<script src="mappa.js"></script>
+</body>
+</html>
