@@ -96,6 +96,8 @@ CSP = "; ".join([
     "form-action 'none'",
     "upgrade-insecure-requests",
 ])
+# Numero di versione nei link ai file: a ogni modifica il browser scarica la versione nuova
+ver = lambda f: f + "?v=" + hashlib.sha256((OUT / f).read_bytes()).hexdigest()[:10]
 corpo = modello[modello.index("<body>"):modello.index("<script>")]
 corpo = corpo.replace("  </aside>", "    " + legale + "\n  </aside>", 1)
 html = f"""<!DOCTYPE html>
@@ -109,12 +111,12 @@ html = f"""<!DOCTYPE html>
 <title>Mappa della musica dal vivo in Italia · Factory Area</title>
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="mappa.css">
+<link rel="stylesheet" href="{ver("mappa.css")}">
 </head>
-{corpo}<script src="leaflet.js"></script>
-<script src="leaflet.markercluster.js"></script>
-<script src="dati.js"></script>
-<script src="mappa.js"></script>
+{corpo}<script src="{ver("leaflet.js")}"></script>
+<script src="{ver("leaflet.markercluster.js")}"></script>
+<script src="{ver("dati.js")}"></script>
+<script src="{ver("mappa.js")}"></script>
 </body>
 </html>
 """
