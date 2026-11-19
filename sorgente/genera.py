@@ -17,7 +17,7 @@ from pathlib import Path
 SRC = Path(__file__).resolve().parent
 OUT = SRC.parent
 DOMAIN = "https://factoryarea.it"
-TICKETS = "https://xceed.me/it/catanzaro/club/complesso-monumentale-del-san-giovanni"
+TICKETS = "https://xceed.me/it/organizer/factory-area-festival"
 # Link esterni: nuova scheda, nessun accesso alla pagina d'origine (tabnabbing) e nessun referrer
 EXT = 'target="_blank" rel="noopener noreferrer"'
 SOCIAL = [
