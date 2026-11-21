@@ -260,7 +260,7 @@ dell'ente (scelta dell'associazione: è uno strumento interno), solo un link all
   per visita, e la ricorda nel browser. Nella scheda del luogo compare "Posizione calcolata
   dall'indirizzo" (o "centro di …" se ha trovato solo la città). Coordinate scritte nel foglio
   sono sempre più precise: aggiungile quando puoi.
-- **Agente settimanale** (attività programmata di Claude, ogni lunedì alle 9:01): cerca fino a 10
+- **Agente settimanale** (attività programmata di Claude "Nuovi luoghi musica dal vivo", ogni giorno alle 9:01): cerca fino a 10
   luoghi nuovi, li verifica e li aggiunge in fondo alla scheda "Luoghi" del foglio (quindi subito
   sulla mappa), poi allinea la copia di riserva e i confini delle città con
   `python3 sorgente/mappa/aggiorna_da_foglio.py foglio.json` + `genera_mappa.py` e pubblica.
