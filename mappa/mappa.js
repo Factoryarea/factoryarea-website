@@ -7,7 +7,7 @@
 const CONFIG = {
   ID_FOGLIO: "1uyPMJnodXrHayUxTRTMg9XjCBhb-MwLRFV4CND_KkkI",
   NOME_SCHEDA: "Luoghi",
-  DATA_COPIA: "12/11/2026",
+  DATA_COPIA: "21/11/2026",
   SITO: true,       /* true nella versione pubblicata su factoryarea.it: niente lettura via script esterno */
   EMAIL: false      /* false sul sito: niente indirizzi email (regola del sito per Google for Nonprofits) */
 };
@@ -259,6 +259,35 @@ const ICONA_ELENCO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
 function vista(v){ const app = $("#app"); app.classList.toggle("vista-mappa", v === "mappa"); app.classList.toggle("vista-elenco", v !== "mappa"); $("#cambia").innerHTML = v === "mappa" ? ICONA_ELENCO + "<span>Vedi l'elenco</span>" : ICONA_MAPPA + "<span>Vedi la mappa</span>"; if(v === "mappa") setTimeout(() => mappa.invalidateSize(), 50); }
 $("#cambia").addEventListener("click", () => vista($("#app").classList.contains("vista-mappa") ? "elenco" : "mappa"));
 
+/* ===================== POSIZIONE DALL'INDIRIZZO =====================
+   I luoghi senza Latitudine/Longitudine nel foglio vengono posizionati cercando l'indirizzo su
+   OpenStreetMap (Nominatim): al massimo 15 per visita, uno al secondo, con il risultato salvato
+   nel browser per le visite successive. */
+async function geocodificaMancanti(){
+  const da = LUOGHI.filter(l => !l.haPos && l.citta).slice(0, 15); if(!da.length) return;
+  let cache = {}; try{ cache = JSON.parse(localStorage.getItem("fa_posizioni") || "{}"); }catch(e){}
+  const salva = () => { try{ localStorage.setItem("fa_posizioni", JSON.stringify(cache)); }catch(e){} };
+  const cerca = async q => { const r = await fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=it&accept-language=it&" + q, {credentials: "omit"}); if(!r.ok) throw new Error("HTTP " + r.status); const j = await r.json(); return j[0] ? [+j[0].lat, +j[0].lon] : null; };
+  let trovati = 0;
+  for(const l of da){
+    const chiave = norm([l.nome, l.indirizzo, l.citta].join(" "));
+    let pos = cache[chiave];
+    if(pos === undefined){
+      try{
+        pos = l.indirizzo ? await cerca("street=" + encodeURIComponent(l.indirizzo) + "&city=" + encodeURIComponent(l.citta)) : null;
+        if(!pos){ await new Promise(r => setTimeout(r, 1100)); pos = await cerca("q=" + encodeURIComponent(l.nome + ", " + l.citta)); }
+        if(!pos){ await new Promise(r => setTimeout(r, 1100)); pos = await cerca("city=" + encodeURIComponent(l.citta)); if(pos) pos.push("citta"); }
+      }catch(e){ console.warn("Posizione non trovata:", l.nome, e.message); break; }
+      cache[chiave] = pos || null; salva(); await new Promise(r => setTimeout(r, 1100));
+    }
+    if(!pos) continue;
+    l.lat = pos[0]; l.lon = pos[1]; l.haPos = true; trovati++;
+    l.note = [l.note, pos[2] ? "Posizione approssimativa: centro di " + l.citta + "." : "Posizione calcolata dall'indirizzo."].filter(Boolean).join(" ");
+    segnalini.set(l.id, creaSegnalino(l));
+  }
+  if(trovati){ aggiorna(false); const st = $("#stato"), senza = LUOGHI.filter(l => !l.haPos).length; if(st.textContent.startsWith("Dati dal foglio")) st.innerHTML = "<i></i>Dati dal foglio Google" + (senza ? " · " + senza + " senza coordinate" : ""); }
+}
+
 /* ===================== AVVIO ===================== */
 (async () => {
   const {lista, fonte} = await caricaDati();
@@ -268,5 +297,6 @@ $("#cambia").addEventListener("click", () => vista($("#app").classList.contains(
   const st = $("#stato"); const senza = LUOGHI.filter(l => !l.haPos).length;
   if(fonte === "foglio"){ st.innerHTML = "<i></i>Dati dal foglio Google" + (senza ? " · " + senza + " senza coordinate" : ""); }
   else { st.classList.add("riserva"); st.innerHTML = "<i></i>Copia interna dei dati" + (CONFIG.DATA_COPIA.startsWith("__") ? "" : " del " + esc(CONFIG.DATA_COPIA)); st.title = "Il foglio Google non è collegato o non è raggiungibile: la mappa usa i dati salvati nel file."; }
+  geocodificaMancanti();
   if(CONFIG.ID_FOGLIO && !CONFIG.ID_FOGLIO.startsWith("__")){ const a = $("#link-foglio"); a.href = "https://docs.google.com/spreadsheets/d/" + encodeURIComponent(CONFIG.ID_FOGLIO) + "/edit"; a.hidden = false; }
 })();

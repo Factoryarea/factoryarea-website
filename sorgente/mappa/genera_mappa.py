@@ -75,7 +75,7 @@ CSP = "; ".join([
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: https://tile.openstreetmap.org",
     "font-src 'self'",
-    "connect-src 'self' https://docs.google.com https://*.googleusercontent.com",
+    "connect-src 'self' https://docs.google.com https://*.googleusercontent.com https://nominatim.openstreetmap.org",
     "frame-src 'none'",
     "object-src 'none'",
     "base-uri 'self'",

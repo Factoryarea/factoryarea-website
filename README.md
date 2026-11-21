@@ -255,8 +255,20 @@ dell'ente (scelta dell'associazione: è uno strumento interno), solo un link all
 - **Confini delle città**: ci sono solo i comuni che avevano almeno un luogo alla generazione;
   per un luogo in un comune nuovo il confine compare alla rigenerazione successiva (servono i
   file di openpolis/geojson-italy, vedi `genera_mappa.py`).
+- **Luoghi senza coordinate**: se nel foglio mancano Latitudine e Longitudine, la pagina cerca la
+  posizione dall'indirizzo (o dal nome) e dalla città su Nominatim di OpenStreetMap, al massimo 15
+  per visita, e la ricorda nel browser. Nella scheda del luogo compare "Posizione calcolata
+  dall'indirizzo" (o "centro di …" se ha trovato solo la città). Coordinate scritte nel foglio
+  sono sempre più precise: aggiungile quando puoi.
+- **Agente settimanale** (attività programmata di Claude, ogni lunedì alle 9:01): cerca fino a 10
+  luoghi nuovi, li verifica e li aggiunge in fondo alla scheda "Luoghi" del foglio (quindi subito
+  sulla mappa), poi allinea la copia di riserva e i confini delle città con
+  `python3 sorgente/mappa/aggiorna_da_foglio.py foglio.json` + `genera_mappa.py` e pubblica.
+  Avvisa sul telefono solo se qualcosa va storto. Per toglierlo o cambiarlo: scheda delle
+  attività programmate su claude.ai.
 - **Servizi esterni** (solo in questa pagina): sfondo della mappa da OpenStreetMap
-  (`tile.openstreetmap.org`, gratuito e senza chiave; CARTO dal 2026 chiede una chiave) e foglio da Google (`docs.google.com`), autorizzati nella sua
+  (`tile.openstreetmap.org`, gratuito e senza chiave; CARTO dal 2026 chiede una chiave), posizioni
+  mancanti da Nominatim (`nominatim.openstreetmap.org`) e foglio da Google (`docs.google.com`), autorizzati nella sua
   Content Security Policy e descritti nell'informativa privacy. Librerie: Leaflet 1.9.4 e
   Leaflet.markercluster 1.5.3 (licenza BSD/MIT, file `LICENSE-*` in `mappa/`). Confini: dati ISTAT
   rielaborati da openpolis/geojson-italy.

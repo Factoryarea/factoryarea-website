@@ -32,7 +32,7 @@ GitHub Pages. La guida completa per le persone è in `README.md`: leggila prima 
   vanno aggiornati informativa privacy, banner e Content Security Policy.
 - **Eccezione: la mappa interna `mappa/`** (factoryarea.it/mappa, strumento di lavoro, `noindex`,
   non collegata da nessuna pagina e fuori dalla sitemap: lasciala così). È l'unica pagina che carica
-  servizi esterni (sfondo OpenStreetMap, foglio Google con i luoghi) ed è descritta nell'informativa privacy
+  servizi esterni (sfondo e posizioni da OpenStreetMap, foglio Google con i luoghi) ed è descritta nell'informativa privacy
   (`#mappa`). Si genera con `python3 sorgente/mappa/genera_mappa.py`, non con `genera.py`; ha una
   Content Security Policy propria. Sul sito non mostra le email dei locali (regola qui sopra).
   Per scelta dell'associazione (12/11/2026) non ha footer né i dati dell'ente: è uno strumento
