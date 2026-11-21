@@ -14,7 +14,7 @@ from pathlib import Path
 QUI = Path(__file__).resolve().parent
 REPO = QUI.parent.parent
 OUT = REPO / "mappa"
-ID_FOGLIO = "1uyPMJnodXrHayUxTRTMg9XjCBhb-MwLRFV4CND_KkkI"
+ID_FOGLIO = "1HKYIkrxkkWEHDjdLtpI4rs3qxXiPGcZYhkiXdHBnwrA"
 COL_EMAIL = 16  # posizione della colonna Email nelle righe di dati.json
 
 

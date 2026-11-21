@@ -240,7 +240,9 @@ dell'ente (scelta dell'associazione: è uno strumento interno), solo un link all
   collega. Non è protetta da password: chi ha l'indirizzo la apre. Non va bloccata in `robots.txt`
   (Google non vedrebbe il `noindex` e potrebbe comunque elencare l'indirizzo).
 - **Dati**: la pagina legge i luoghi dal foglio Google "Luoghi musica dal vivo - Factory Area"
-  (Drive dell'associazione, condiviso "chiunque abbia il link: visualizzatore"). Aggiungere o
+  (Drive di management@factoryarea.it, condiviso "chiunque abbia il link: visualizzatore"; il suo
+  identificativo è `ID_FOGLIO` in `sorgente/mappa/genera_mappa.py`; dal 21/11/2026 sostituisce il
+  vecchio foglio dell'account Gmail dell'associazione, che non va più aggiornato). Aggiungere o
   correggere un luogo nel foglio basta: si vede ricaricando la pagina. Le istruzioni sono nella
   scheda "Istruzioni" del foglio. Se il foglio non risponde, la pagina usa la copia di riserva in
   `mappa/dati.js` (in basso a sinistra compare "Copia interna dei dati").
@@ -263,7 +265,7 @@ dell'ente (scelta dell'associazione: è uno strumento interno), solo un link all
 - **Agente settimanale** (attività programmata di Claude "Nuovi luoghi musica dal vivo", ogni giorno alle 9:01): cerca fino a 10
   luoghi nuovi, li verifica e li aggiunge in fondo alla scheda "Luoghi" del foglio (quindi subito
   sulla mappa), poi allinea la copia di riserva e i confini delle città con
-  `python3 sorgente/mappa/aggiorna_da_foglio.py foglio.json` + `genera_mappa.py` e pubblica.
+  `python3 sorgente/mappa/aggiorna_da_foglio.py --aggiungi nuovi.json` + `genera_mappa.py` e pubblica.
   Avvisa sul telefono solo se qualcosa va storto. Per toglierlo o cambiarlo: scheda delle
   attività programmate su claude.ai.
 - **Servizi esterni** (solo in questa pagina): sfondo della mappa da OpenStreetMap

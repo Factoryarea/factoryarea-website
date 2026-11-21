@@ -5,7 +5,7 @@
    Il foglio deve essere condiviso come "Chiunque abbia il link: Visualizzatore".
    Se il foglio non è raggiungibile, la mappa usa la copia interna dei dati qui sotto. */
 const CONFIG = {
-  ID_FOGLIO: "1uyPMJnodXrHayUxTRTMg9XjCBhb-MwLRFV4CND_KkkI",
+  ID_FOGLIO: "1HKYIkrxkkWEHDjdLtpI4rs3qxXiPGcZYhkiXdHBnwrA",
   NOME_SCHEDA: "Luoghi",
   DATA_COPIA: "21/11/2026",
   SITO: true,       /* true nella versione pubblicata su factoryarea.it: niente lettura via script esterno */
