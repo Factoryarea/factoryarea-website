@@ -269,6 +269,7 @@ def wikidata_luoghi():
         for e, p in zip(con_sito, ex.map(lambda e: parole_sito(e["web"]), con_sito)):
             e["parole"] = p
     for e in el:
+        if not (e["ig"] or e["fb"]): continue   # senza social non serve l'indirizzo
         try:
             _, _, t = get(f"https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&addressdetails=1&lat={e['lat']}&lon={e['lon']}", timeout=30)
             e["rev"] = json.loads(t).get("address", {})
