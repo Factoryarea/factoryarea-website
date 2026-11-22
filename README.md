@@ -232,7 +232,7 @@ come sono: non hanno nulla a che fare con i record del sito.
 ## Mappa della musica dal vivo (`/mappa/`)
 
 <https://factoryarea.it/mappa/> è uno strumento di lavoro interno: una mappa dei luoghi di
-musica dal vivo in Italia (452 al 12/11/2026) con capienza, Instagram/Facebook, sito, telefono,
+musica dal vivo in Italia (788 al 22/11/2026) con capienza, Instagram/Facebook, sito, telefono,
 confini di Stato, regioni e città, filtri con legenda dei colori. Non ha footer né i dati
 dell'ente (scelta dell'associazione: è uno strumento interno), solo un link alla privacy.
 
@@ -252,8 +252,13 @@ dell'ente (scelta dell'associazione: è uno strumento interno), solo un link all
   sono in `sorgente/mappa/` (`modello.html`, `dati.json`, `confini/`, librerie in `vendor/`).
   Dalla cartella del repository: `python3 sorgente/mappa/genera_mappa.py`, che riscrive i file in
   `mappa/`. Con `--file percorso.html` crea anche la versione in un unico file da aprire con un
-  doppio clic. Per aggiornare `dati.json` dal foglio: scaricalo in formato CSV e convertilo nelle
-  stesse colonne (o chiedi a Claude).
+  doppio clic. Per allineare tutta la copia di riserva al foglio:
+  `python3 sorgente/mappa/aggiorna_da_foglio.py foglio.json` (le righe del foglio, intestazioni
+  comprese; aggiorna anche i confini delle città), poi `genera_mappa.py` (o chiedi a Claude).
+- **Nel foglio**: scrivi i telefoni che iniziano con "+" e i CAP o i nomi che iniziano con "0"
+  preceduti da un apostrofo (`'+39 …`, `'00185`), altrimenti il foglio li tratta come formule o
+  numeri. La nota "Programmazione musicale da verificare." indica teatri e spazi attivi in cui la
+  musica dal vivo non è confermata dal loro sito: controllali prima di contattarli.
 - **Confini delle città**: ci sono solo i comuni che avevano almeno un luogo alla generazione;
   per un luogo in un comune nuovo il confine compare alla rigenerazione successiva (servono i
   file di openpolis/geojson-italy, vedi `genera_mappa.py`).
@@ -262,12 +267,22 @@ dell'ente (scelta dell'associazione: è uno strumento interno), solo un link all
   per visita, e la ricorda nel browser. Nella scheda del luogo compare "Posizione calcolata
   dall'indirizzo" (o "centro di …" se ha trovato solo la città). Coordinate scritte nel foglio
   sono sempre più precise: aggiungile quando puoi.
-- **Agente settimanale** (attività programmata di Claude "Nuovi luoghi musica dal vivo", ogni giorno alle 9:01): cerca fino a 10
+- **Agente quotidiano** (attività programmata di Claude "Nuovi luoghi musica dal vivo", ogni giorno alle 9:01): cerca fino a 10
   luoghi nuovi, li verifica e li aggiunge in fondo alla scheda "Luoghi" del foglio (quindi subito
   sulla mappa), poi allinea la copia di riserva e i confini delle città con
   `python3 sorgente/mappa/aggiorna_da_foglio.py --aggiungi nuovi.json` + `genera_mappa.py` e pubblica.
   Avvisa sul telefono solo se qualcosa va storto. Per toglierlo o cambiarlo: scheda delle
   attività programmate su claude.ai.
+- **Ricerca ampia** (procedura GitHub "Ricerca luoghi per la mappa", file
+  `.github/workflows/ricerca-luoghi.yml` e `sorgente/mappa/ricerca_osm.py`): si avvia solo a mano
+  (Actions → Ricerca luoghi per la mappa → Run workflow, o chiedendo a Claude) e gira sui server di
+  GitHub, perché OpenStreetMap (Overpass, Nominatim) e Wikidata non si raggiungono dall'ambiente di
+  Claude. Comandi: `raccolta` (candidati da OpenStreetMap, una regione per processo), `dettagli`
+  (indirizzi e controllo dei siti), `wikidata` (teatri e sale da Wikidata, tramite QLever se il
+  servizio ufficiale non risponde), `foglio` (copia CSV del foglio). I risultati vanno nel ramo
+  `risultati-ricerca` (sovrascritto ogni volta), non nel sito. Il 22/11/2026 ha aggiunto 327 luoghi
+  (fonte nella colonna "Fonte dati"). Ogni esecuzione fallita manda una mail di GitHub: meglio non
+  avviarne molte di seguito.
 - **Servizi esterni** (solo in questa pagina): sfondo della mappa da OpenStreetMap
   (`tile.openstreetmap.org`, gratuito e senza chiave; CARTO dal 2026 chiede una chiave), posizioni
   mancanti da Nominatim (`nominatim.openstreetmap.org`) e foglio da Google (`docs.google.com`), autorizzati nella sua
