@@ -226,7 +226,9 @@ def dettagli():
         except Exception as ex:
             r["rev_err"] = str(ex)[:100]
         time.sleep(1.1)
-        if os.environ.get("CERCA_SOCIAL") == "1" and bloccato < 4:
+        pw = parole.get(k) or {}
+        musica = sum(pw.get(x, 0) for x in ("concerti", "live", "musica", "jazz", "band")) if pw and not pw.get("errore") else None
+        if os.environ.get("CERCA_SOCIAL") == "1" and bloccato < 4 and (musica is None or musica >= 2):
             nome = e["tags"].get("name", ""); citta = (r.get("rev") or {}).get("city") or (r.get("rev") or {}).get("town") or (r.get("rev") or {}).get("village") or ""
             try:
                 r["ddg"] = ddg(f"{nome} {citta} instagram"); bloccato = 0
