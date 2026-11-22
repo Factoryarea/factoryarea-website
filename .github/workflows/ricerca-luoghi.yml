@@ -1,7 +1,6 @@
 # Ricerca di luoghi con musica dal vivo per la mappa interna (factoryarea.it/mappa).
 # Si avvia solo a mano (o da Claude). Non pubblica niente sul sito: i risultati vanno nel ramo
-# "risultati-ricerca" del repository (sovrascritto a ogni esecuzione) e come file scaricabili
-# ("artifact") per 7 giorni. Vedi sorgente/mappa/ricerca_osm.py.
+# "risultati-ricerca" del repository (sovrascritto a ogni esecuzione). Vedi sorgente/mappa/ricerca_osm.py.
 name: Ricerca luoghi per la mappa
 
 on:
@@ -24,32 +23,61 @@ permissions:
   contents: write   # solo per il ramo risultati-ricerca
 
 jobs:
-  ricerca:
+  regioni:
+    # 'raccolta': una regione per processo, in parallelo
+    if: inputs.comando == 'raccolta'
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        regione: [IT-21, IT-23, IT-25, IT-32, IT-34, IT-36, IT-42, IT-45, IT-52, IT-55, IT-57, IT-62, IT-65, IT-67, IT-72, IT-75, IT-77, IT-78, IT-82, IT-88]
+    steps:
+      - uses: actions/checkout@v6
+      - name: Raccolta ${{ matrix.regione }}
+        env:
+          REGIONE: ${{ matrix.regione }}
+        run: python3 sorgente/mappa/ricerca_osm.py raccolta
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: regione-${{ matrix.regione }}
+          path: risultati/
+          retention-days: 3
+
+  ricerca:
+    needs: regioni
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v6
       - name: Ricerca
+        if: inputs.comando != 'raccolta'
         env:
           COMANDO: ${{ inputs.comando }}
           DATI: ${{ inputs.dati }}
           CERCA_SOCIAL: ${{ inputs.cerca_social }}
         run: python3 sorgente/mappa/ricerca_osm.py "$COMANDO"
+      - name: Foglio attuale e risultati delle regioni
+        if: inputs.comando == 'raccolta'
+        run: python3 sorgente/mappa/ricerca_osm.py foglio
+      - uses: actions/download-artifact@v4
+        if: inputs.comando == 'raccolta'
+        with:
+          pattern: regione-*
+          path: risultati
+          merge-multiple: true
       - name: Salva i risultati nel ramo risultati-ricerca
         if: always()
+        env:
+          COMANDO: ${{ inputs.comando }}
         run: |
-          cd risultati
+          mkdir -p risultati && cd risultati && ls -la
           git init -q -b risultati-ricerca
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
           git add -A
           git commit -q -m "Risultati: $COMANDO" || exit 0
           git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" risultati-ricerca
-        env:
-          COMANDO: ${{ inputs.comando }}
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: risultati
-          path: risultati/
-          retention-days: 7

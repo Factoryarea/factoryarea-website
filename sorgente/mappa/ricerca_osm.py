@@ -32,8 +32,8 @@ def get(url, data=None, timeout=30, limite=1_500_000, headers=None):
         return r.status, r.geturl(), r.read(limite).decode("utf-8", "replace")
 
 
-def overpass(q, timeout=420):
-    for giro in range(3):
+def overpass(q, timeout=200):
+    for giro in range(2):
         for url in OVERPASS:
             try:
                 _, _, t = get(url, data=urllib.parse.urlencode({"data": q}).encode(), timeout=timeout, limite=300_000_000)
@@ -47,7 +47,7 @@ def overpass(q, timeout=420):
     raise RuntimeError("Overpass non raggiungibile")
 
 
-Q_RACCOLTA = """[out:json][timeout:400];
+Q_RACCOLTA = """[out:json][timeout:180];
 area["ISO3166-2"="{reg}"]["admin_level"="4"]->.it;
 (
   nwr["amenity"="music_venue"](area.it);
@@ -89,7 +89,7 @@ def visita_sito(url):
     if not re.match(r"https?://", url): url = "https://" + url.lstrip("/")
     for u in (url, url.replace("https://", "http://", 1)):
         try:
-            st, fin, t = get(u, timeout=15)
+            st, fin, t = get(u, timeout=10)
             r = social_da_html(t); r.update({"stato": st, "url_finale": fin})
             return r
         except Exception as e:
@@ -133,9 +133,10 @@ def foglio():
 
 
 def raccolta():
-    foglio()
+    solo = os.environ.get("REGIONE", "").strip()
+    if not solo: foglio()
     el, visti = [], set()
-    for reg in REGIONI:
+    for reg in ([solo] if solo else REGIONI):
         try:
             d = overpass(Q_RACCOLTA.replace("{reg}", reg))
         except Exception as ex:
@@ -158,14 +159,15 @@ def raccolta():
         return t.get("website") or t.get("contact:website") or t.get("url") or ""
     lavoro = {f'{e["type"][0]}{e["id"]}': sito(e) for e in el if sito(e)}
     print("siti da visitare", len(lavoro), flush=True)
-    with cf.ThreadPoolExecutor(24) as ex:
+    with cf.ThreadPoolExecutor(32) as ex:
         for k, r in zip(lavoro, ex.map(visita_sito, lavoro.values())):
             siti[k] = r
     wd = wikidata({e["tags"]["wikidata"].split(";")[0].strip() for e in el if e["tags"].get("wikidata")})
     for e in el:
         k = f'{e["type"][0]}{e["id"]}'
         e["k"] = k; e["sito"] = siti.get(k); e["wd"] = wd.get(e["tags"].get("wikidata", "").split(";")[0].strip())
-    (OUT / "candidati.json").write_text(json.dumps(el, ensure_ascii=False), encoding="utf-8")
+    nome = f"candidati_{solo}.json" if solo else "candidati.json"
+    (OUT / nome).write_text(json.dumps(el, ensure_ascii=False), encoding="utf-8")
     print("fatto", len(el), flush=True)
 
 
