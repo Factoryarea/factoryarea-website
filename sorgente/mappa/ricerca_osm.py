@@ -210,6 +210,10 @@ def dettagli():
     tipi = {"n": "node", "w": "way", "r": "relation"}
     q = "[out:json][timeout:300];(" + "".join(f'{tipi[i[0]]}(id:{i[1:]});' for i in ids) + ");out center tags;"
     el = overpass(q)["elements"]
+    url = lambda e: e["tags"].get("website") or e["tags"].get("contact:website") or e["tags"].get("url") or ""
+    with cf.ThreadPoolExecutor(24) as ex:
+        parole = dict(zip([f'{e["type"][0]}{e["id"]}' for e in el], ex.map(lambda e: parole_sito(url(e)), el)))
+    print("siti controllati", sum(1 for v in parole.values() if v), flush=True)
     ris = {}
     bloccato = 0
     for e in el:
@@ -229,8 +233,7 @@ def dettagli():
             except Exception as ex:
                 r["ddg_err"] = str(ex)[:100]; bloccato += 1
             time.sleep(2.5)
-        t = e["tags"]
-        r["parole"] = parole_sito(t.get("website") or t.get("contact:website") or t.get("url") or "")
+        r["parole"] = parole.get(k)
         ris[k] = r
         if len(ris) % 25 == 0: print("dettagli", len(ris), flush=True)
     (OUT / "dettagli.json").write_text(json.dumps(ris, ensure_ascii=False), encoding="utf-8")
