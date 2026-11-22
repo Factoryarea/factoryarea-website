@@ -265,9 +265,10 @@ def wikidata_luoghi():
     if b is None: raise SystemExit("Wikidata non raggiungibile")
     for x in b:   # QLever e WDQS: coordinate come "Point(lon lat)"
         if "coord" in x:
-            m = re.match(r"Point\(([-\d.]+) ([-\d.]+)\)", x["coord"]["value"])
+            m = re.search(r"point\s*\(\s*([-\d.eE]+)\s+([-\d.eE]+)\s*\)", x["coord"]["value"], re.I)
             if m: x["lon"], x["lat"] = {"value": m.group(1)}, {"value": m.group(2)}
         if "itemLabel" not in x: x["itemLabel"] = {"value": x["item"]["value"].rsplit("/", 1)[-1]}
+    print("esempio coordinate:", b[0].get("coord") if b else None, flush=True)
     b = [x for x in b if "lat" in x]
     ris = {}
     for x in b:
