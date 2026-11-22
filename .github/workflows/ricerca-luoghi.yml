@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       comando:
-        description: "raccolta | dettagli | foglio"
+        description: "raccolta | dettagli | foglio | wikidata | social"
         required: true
         default: raccolta
       regioni:

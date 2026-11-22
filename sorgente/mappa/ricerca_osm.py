@@ -205,6 +205,99 @@ def parole_sito(url):
     return r
 
 
+def cerca_web(q):
+    """Prova più motori di ricerca; restituisce [url, titolo] dei primi risultati."""
+    motori = [
+        ("bing", "https://www.bing.com/search?setlang=it&cc=it&" + urllib.parse.urlencode({"q": q}),
+         r'<li class="b_algo".*?<h2[^>]*><a[^>]+href="([^"]+)"[^>]*>(.*?)</a>'),
+        ("brave", "https://search.brave.com/search?" + urllib.parse.urlencode({"q": q, "source": "web"}),
+         r'<a[^>]+href="(https?://[^"]+)"[^>]*class="[^"]*(?:heading-serpresult|result-header)[^"]*"[^>]*>(.*?)</a>'),
+        ("mojeek", "https://www.mojeek.com/search?" + urllib.parse.urlencode({"q": q}),
+         r'<a[^>]+class="title"[^>]+href="([^"]+)"[^>]*>(.*?)</a>'),
+        ("ddglite", "https://lite.duckduckgo.com/lite/?" + urllib.parse.urlencode({"q": q}),
+         r'<a[^>]+href="([^"]+)"[^>]*class=.result-link.[^>]*>(.*?)</a>'),
+    ]
+    errori = []
+    for nome, url, rx in motori:
+        if MOTORI_KO.get(nome, 0) >= 3: continue
+        try:
+            _, _, t = get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"})
+            ris = []
+            for m in re.finditer(rx, t, re.S):
+                href = html.unescape(m.group(1))
+                uq = urllib.parse.parse_qs(urllib.parse.urlparse(href).query).get("uddg")
+                ris.append([uq[0] if uq else href, re.sub(r"<[^>]+>", "", html.unescape(m.group(2))).strip()[:90]])
+            if ris:
+                MOTORI_KO[nome] = 0
+                return nome, ris[:8]
+            MOTORI_KO[nome] = MOTORI_KO.get(nome, 0) + 1; errori.append(nome + ":vuoto")
+        except Exception as e:
+            MOTORI_KO[nome] = MOTORI_KO.get(nome, 0) + 1; errori.append(nome + ":" + str(e)[:40])
+    raise RuntimeError(" ".join(errori))
+
+
+MOTORI_KO = {}
+
+Q_WIKIDATA = """SELECT ?item ?itemLabel ?lat ?lon ?ig ?fb ?web ?cap ?tipoLabel WHERE {
+  VALUES ?root { wd:Q24354 wd:Q8719053 wd:Q1060829 wd:Q622425 wd:Q153562 wd:Q30022 }
+  ?item wdt:P31 ?tipo . ?tipo wdt:P279* ?root .
+  ?item wdt:P17 wd:Q38 ; p:P625/psv:P625 [ wikibase:geoLatitude ?lat ; wikibase:geoLongitude ?lon ] .
+  FILTER NOT EXISTS { ?item wdt:P576 ?fine }
+  FILTER NOT EXISTS { ?item wdt:P3999 ?chiuso }
+  OPTIONAL { ?item wdt:P2003 ?ig } OPTIONAL { ?item wdt:P2013 ?fb } OPTIONAL { ?item wdt:P856 ?web } OPTIONAL { ?item wdt:P1083 ?cap }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "it,en". }
+}"""
+
+
+def wikidata_luoghi():
+    u = "https://query.wikidata.org/sparql?" + urllib.parse.urlencode({"query": Q_WIKIDATA, "format": "json"})
+    _, _, t = get(u, timeout=300, limite=200_000_000, headers={"Accept": "application/sparql-results+json"})
+    b = json.loads(t)["results"]["bindings"]
+    ris = {}
+    for x in b:
+        k = x["item"]["value"].rsplit("/", 1)[-1]
+        r = ris.setdefault(k, {"k": k, "nome": x["itemLabel"]["value"], "lat": float(x["lat"]["value"]), "lon": float(x["lon"]["value"]),
+                               "ig": "", "fb": "", "web": "", "cap": "", "tipi": []})
+        for f in ("ig", "fb", "web", "cap"):
+            if f in x and not r[f]: r[f] = x[f]["value"]
+        tl = x.get("tipoLabel", {}).get("value")
+        if tl and tl not in r["tipi"]: r["tipi"].append(tl)
+    el = list(ris.values())
+    url = lambda e: e["web"]
+    con_sito = [e for e in el if e["web"]]
+    with cf.ThreadPoolExecutor(24) as ex:
+        for e, p in zip(con_sito, ex.map(lambda e: parole_sito(e["web"]), con_sito)):
+            e["parole"] = p
+    for e in el:
+        try:
+            _, _, t = get(f"https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&addressdetails=1&lat={e['lat']}&lon={e['lon']}", timeout=30)
+            e["rev"] = json.loads(t).get("address", {})
+        except Exception as ex:
+            e["rev_err"] = str(ex)[:80]
+        time.sleep(1.1)
+    (OUT / "wikidata.json").write_text(json.dumps(el, ensure_ascii=False), encoding="utf-8")
+    print("wikidata luoghi", len(el), "con instagram", sum(1 for e in el if e["ig"]), flush=True)
+
+
+def cerca_social():
+    """env DATI = righe 'id|nome|città' separate da ';;'"""
+    voci = [v.split("|") for v in os.environ.get("DATI", "").split(";;") if v.strip()]
+    ris = {}
+    for k, nome, citta in voci:
+        r = {}
+        for q in (f"{nome} {citta} instagram", f"{nome} {citta} facebook"):
+            try:
+                mot, res = cerca_web(q); r.setdefault("motore", mot); r.setdefault("ris", []).extend(res)
+            except Exception as ex:
+                r["err"] = str(ex)[:150]
+            time.sleep(1.5)
+            if any("instagram.com/" in u for u, _ in r.get("ris", [])): break
+        ris[k] = r
+        if len(ris) % 20 == 0: print("cerca_social", len(ris), MOTORI_KO, flush=True)
+    (OUT / "social.json").write_text(json.dumps(ris, ensure_ascii=False), encoding="utf-8")
+    print("fatto", len(ris), "con risultati", sum(1 for v in ris.values() if v.get("ris")), MOTORI_KO, flush=True)
+
+
 def dettagli():
     ids = os.environ.get("DATI", "").split()
     tipi = {"n": "node", "w": "way", "r": "relation"}
@@ -243,4 +336,5 @@ def dettagli():
 
 
 if __name__ == "__main__":
-    {"raccolta": raccolta, "dettagli": dettagli, "foglio": foglio}[sys.argv[1]]()
+    {"raccolta": raccolta, "dettagli": dettagli, "foglio": foglio, "wikidata": wikidata_luoghi,
+     "social": cerca_social}[sys.argv[1]]()
