@@ -139,7 +139,9 @@ def raccolta():
     for reg in ([solo] if solo else REGIONI):
         try:
             q = Q_RACCOLTA.replace("{reg}", reg)
-            if reg.startswith("nome:"):  # regioni il cui confine OSM non ha il codice ISO
+            if reg.startswith("bbox:"):  # riquadro sud,ovest,nord,est (il comune giusto si assegna dopo)
+                q = q.replace(f'area["ISO3166-2"="{reg}"]["admin_level"="4"]->.it;', "").replace("(area.it)", f"({reg[5:]})")
+            elif reg.startswith("nome:"):  # regioni il cui confine OSM non ha il codice ISO
                 q = q.replace(f'area["ISO3166-2"="{reg}"]["admin_level"="4"]', f'area["name"="{reg[5:]}"]["admin_level"="4"]["boundary"="administrative"]')
             d = overpass(q)
         except Exception as ex:
@@ -169,7 +171,7 @@ def raccolta():
     for e in el:
         k = f'{e["type"][0]}{e["id"]}'
         e["k"] = k; e["sito"] = siti.get(k); e["wd"] = wd.get(e["tags"].get("wikidata", "").split(";")[0].strip())
-    nome = f"candidati_{solo.replace(':', '_').replace(' ', '_')}.json" if solo else "candidati.json"
+    nome = f"candidati_{re.sub(r'[^A-Za-z0-9-]', '_', solo)}.json" if solo else "candidati.json"
     (OUT / nome).write_text(json.dumps(el, ensure_ascii=False), encoding="utf-8")
     print("fatto", len(el), flush=True)
 
@@ -183,6 +185,24 @@ def ddg(q):
         uq = urllib.parse.parse_qs(urllib.parse.urlparse(href).query).get("uddg")
         ris.append([uq[0] if uq else href, re.sub(r"<[^>]+>", "", html.unescape(m.group(2))).strip()[:90]])
     return ris[:8]
+
+
+PAROLE = {"concerti": r"concert[io]", "live": r"\blive\b", "musica": r"musica|musicale|music\b", "jazz": r"\bjazz\b",
+          "band": r"\bband\b", "dj": r"\bdj\b|dj[ -]set", "rassegna": r"rassegna|stagione|cartellone|programma"}
+
+
+def parole_sito(url):
+    if not url: return None
+    if not re.match(r"https?://", url): url = "https://" + url.lstrip("/")
+    try:
+        st, fin, t = get(url, timeout=12)
+    except Exception as e:
+        return {"errore": str(e)[:100]}
+    testo = re.sub(r"<script.*?</script>|<style.*?</style>", " ", t, flags=re.S | re.I)
+    testo = html.unescape(re.sub(r"<[^>]+>", " ", testo)).lower()
+    r = {k: len(re.findall(v, testo)) for k, v in PAROLE.items()}
+    r.update({a: testo.count(a) for a in ("2025", "2026")}); r["stato"] = st
+    return r
 
 
 def dettagli():
@@ -209,6 +229,8 @@ def dettagli():
             except Exception as ex:
                 r["ddg_err"] = str(ex)[:100]; bloccato += 1
             time.sleep(2.5)
+        t = e["tags"]
+        r["parole"] = parole_sito(t.get("website") or t.get("contact:website") or t.get("url") or "")
         ris[k] = r
         if len(ris) % 25 == 0: print("dettagli", len(ris), flush=True)
     (OUT / "dettagli.json").write_text(json.dumps(ris, ensure_ascii=False), encoding="utf-8")
