@@ -10,6 +10,10 @@ on:
         description: "raccolta | dettagli | foglio"
         required: true
         default: raccolta
+      regioni:
+        description: "Per 'raccolta': elenco JSON di regioni (codici ISO o nome:Nome); vuoto = tutte"
+        required: false
+        default: ""
       dati:
         description: "Per 'dettagli': id OpenStreetMap separati da spazi (es. n123 w456)"
         required: false
@@ -32,7 +36,7 @@ jobs:
       fail-fast: false
       max-parallel: 10
       matrix:
-        regione: [IT-21, IT-23, IT-25, IT-32, IT-34, IT-36, IT-42, IT-45, IT-52, IT-55, IT-57, IT-62, IT-65, IT-67, IT-72, IT-75, IT-77, IT-78, IT-82, IT-88]
+        regione: ${{ fromJSON(inputs.regioni != '' && inputs.regioni || '["IT-21","IT-23","IT-25","IT-32","IT-34","IT-36","IT-42","IT-45","IT-52","IT-55","IT-57","IT-62","IT-65","IT-67","IT-72","IT-75","IT-77","IT-78","IT-82","IT-88"]') }}
     steps:
       - uses: actions/checkout@v6
       - name: Raccolta ${{ matrix.regione }}
@@ -42,7 +46,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: regione-${{ matrix.regione }}
+          name: regione-${{ strategy.job-index }}
           path: risultati/
           retention-days: 3
 

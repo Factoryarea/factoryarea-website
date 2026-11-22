@@ -138,7 +138,10 @@ def raccolta():
     el, visti = [], set()
     for reg in ([solo] if solo else REGIONI):
         try:
-            d = overpass(Q_RACCOLTA.replace("{reg}", reg))
+            q = Q_RACCOLTA.replace("{reg}", reg)
+            if reg.startswith("nome:"):  # regioni il cui confine OSM non ha il codice ISO
+                q = q.replace(f'area["ISO3166-2"="{reg}"]["admin_level"="4"]', f'area["name"="{reg[5:]}"]["admin_level"="4"]["boundary"="administrative"]')
+            d = overpass(q)
         except Exception as ex:
             print("regione", reg, "NON riuscita", ex, flush=True); continue
         n = 0
@@ -166,7 +169,7 @@ def raccolta():
     for e in el:
         k = f'{e["type"][0]}{e["id"]}'
         e["k"] = k; e["sito"] = siti.get(k); e["wd"] = wd.get(e["tags"].get("wikidata", "").split(";")[0].strip())
-    nome = f"candidati_{solo}.json" if solo else "candidati.json"
+    nome = f"candidati_{solo.replace(':', '_').replace(' ', '_')}.json" if solo else "candidati.json"
     (OUT / nome).write_text(json.dumps(el, ensure_ascii=False), encoding="utf-8")
     print("fatto", len(el), flush=True)
 
