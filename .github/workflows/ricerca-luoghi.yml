@@ -1,0 +1,42 @@
+# Ricerca di luoghi con musica dal vivo per la mappa interna (factoryarea.it/mappa).
+# Si avvia solo a mano (o da Claude). Non pubblica niente: i risultati restano come file
+# scaricabili ("artifact") per 7 giorni. Vedi sorgente/mappa/ricerca_osm.py.
+name: Ricerca luoghi per la mappa
+
+on:
+  workflow_dispatch:
+    inputs:
+      comando:
+        description: "raccolta | dettagli | foglio"
+        required: true
+        default: raccolta
+      dati:
+        description: "Per 'dettagli': id OpenStreetMap separati da spazi (es. n123 w456)"
+        required: false
+        default: ""
+      cerca_social:
+        description: "Per 'dettagli': 1 = cerca anche i profili social sul web"
+        required: false
+        default: "0"
+
+permissions:
+  contents: read
+
+jobs:
+  ricerca:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v6
+      - name: Ricerca
+        env:
+          COMANDO: ${{ inputs.comando }}
+          DATI: ${{ inputs.dati }}
+          CERCA_SOCIAL: ${{ inputs.cerca_social }}
+        run: python3 sorgente/mappa/ricerca_osm.py "$COMANDO"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: risultati
+          path: risultati/
+          retention-days: 7
