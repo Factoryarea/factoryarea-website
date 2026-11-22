@@ -17,8 +17,11 @@ from pathlib import Path
 ID_FOGLIO = "1HKYIkrxkkWEHDjdLtpI4rs3qxXiPGcZYhkiXdHBnwrA"
 UA = "FactoryAreaMappa/1.0 (mappa interna di Factory+ ETS; https://factoryarea.it/mappa/)"
 OUT = Path("risultati"); OUT.mkdir(exist_ok=True)
-OVERPASS = ["https://overpass-api.de/api/interpreter", "https://overpass.private.coffee/api/interpreter",
-            "https://maps.mail.ru/osm/tools/overpass/api/interpreter"]
+OVERPASS = ["https://overpass-api.de/api/interpreter", "https://lz4.overpass-api.de/api/interpreter",
+            "https://z.overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter",
+            "https://overpass.private.coffee/api/interpreter"]
+REGIONI = ["IT-21", "IT-23", "IT-25", "IT-32", "IT-34", "IT-36", "IT-42", "IT-45", "IT-52", "IT-55", "IT-57",
+           "IT-62", "IT-65", "IT-67", "IT-72", "IT-75", "IT-77", "IT-78", "IT-82", "IT-88"]
 
 
 def get(url, data=None, timeout=30, limite=1_500_000, headers=None):
@@ -29,19 +32,23 @@ def get(url, data=None, timeout=30, limite=1_500_000, headers=None):
         return r.status, r.geturl(), r.read(limite).decode("utf-8", "replace")
 
 
-def overpass(q):
-    for url in OVERPASS:
-        for tentativo in range(2):
+def overpass(q, timeout=420):
+    for giro in range(3):
+        for url in OVERPASS:
             try:
-                _, _, t = get(url, data=urllib.parse.urlencode({"data": q}).encode(), timeout=900, limite=200_000_000)
-                return json.loads(t)
+                _, _, t = get(url, data=urllib.parse.urlencode({"data": q}).encode(), timeout=timeout, limite=300_000_000)
+                d = json.loads(t)
+                if d.get("remark") and "error" in d["remark"].lower():
+                    raise RuntimeError(d["remark"][:150])
+                return d
             except Exception as e:
-                print("overpass", url, tentativo, e, flush=True); time.sleep(20)
-    raise SystemExit("Overpass non raggiungibile")
+                print("overpass", url, giro, str(e)[:150], flush=True); time.sleep(5)
+        time.sleep(30)
+    raise RuntimeError("Overpass non raggiungibile")
 
 
-Q_RACCOLTA = """[out:json][timeout:900];
-area["ISO3166-1"="IT"][admin_level=2]->.it;
+Q_RACCOLTA = """[out:json][timeout:400];
+area["ISO3166-2"="{reg}"]["admin_level"="4"]->.it;
 (
   nwr["amenity"="music_venue"](area.it);
   nwr["amenity"="concert_hall"](area.it);
@@ -127,8 +134,18 @@ def foglio():
 
 def raccolta():
     foglio()
-    d = overpass(Q_RACCOLTA)
-    el = [e for e in d["elements"] if e.get("tags", {}).get("name")]
+    el, visti = [], set()
+    for reg in REGIONI:
+        try:
+            d = overpass(Q_RACCOLTA.replace("{reg}", reg))
+        except Exception as ex:
+            print("regione", reg, "NON riuscita", ex, flush=True); continue
+        n = 0
+        for e in d["elements"]:
+            k = (e["type"], e["id"])
+            if e.get("tags", {}).get("name") and k not in visti:
+                visti.add(k); el.append(e); n += 1
+        print("regione", reg, n, flush=True)
     print("elementi con nome", len(el), flush=True)
     for e in el:
         e["lat"] = e.get("lat") or e.get("center", {}).get("lat")

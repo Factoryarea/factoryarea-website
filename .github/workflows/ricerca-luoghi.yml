@@ -1,6 +1,7 @@
 # Ricerca di luoghi con musica dal vivo per la mappa interna (factoryarea.it/mappa).
-# Si avvia solo a mano (o da Claude). Non pubblica niente: i risultati restano come file
-# scaricabili ("artifact") per 7 giorni. Vedi sorgente/mappa/ricerca_osm.py.
+# Si avvia solo a mano (o da Claude). Non pubblica niente sul sito: i risultati vanno nel ramo
+# "risultati-ricerca" del repository (sovrascritto a ogni esecuzione) e come file scaricabili
+# ("artifact") per 7 giorni. Vedi sorgente/mappa/ricerca_osm.py.
 name: Ricerca luoghi per la mappa
 
 on:
@@ -20,7 +21,7 @@ on:
         default: "0"
 
 permissions:
-  contents: read
+  contents: write   # solo per il ramo risultati-ricerca
 
 jobs:
   ricerca:
@@ -34,6 +35,18 @@ jobs:
           DATI: ${{ inputs.dati }}
           CERCA_SOCIAL: ${{ inputs.cerca_social }}
         run: python3 sorgente/mappa/ricerca_osm.py "$COMANDO"
+      - name: Salva i risultati nel ramo risultati-ricerca
+        if: always()
+        run: |
+          cd risultati
+          git init -q -b risultati-ricerca
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Risultati: $COMANDO" || exit 0
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" risultati-ricerca
+        env:
+          COMANDO: ${{ inputs.comando }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
