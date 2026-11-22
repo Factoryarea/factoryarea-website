@@ -238,24 +238,37 @@ def cerca_web(q):
 
 MOTORI_KO = {}
 
-Q_WIKIDATA = """SELECT ?item ?itemLabel ?lat ?lon ?ig ?fb ?web ?cap ?tipoLabel WHERE {
-  hint:Query hint:optimizer "None" .
+Q_WIKIDATA = """PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?item ?itemLabel ?coord ?ig ?fb ?web ?cap ?tipo WHERE {
   VALUES ?tipo { wd:Q24354 wd:Q153562 wd:Q1060829 wd:Q8719053 wd:Q622425 wd:Q57660343 wd:Q2338524 wd:Q1137809 wd:Q641226 wd:Q15206070 wd:Q29351369 }
   ?item wdt:P31 ?tipo .
   ?item wdt:P17 wd:Q38 .
-  ?item p:P625/psv:P625 [ wikibase:geoLatitude ?lat ; wikibase:geoLongitude ?lon ] .
+  ?item wdt:P625 ?coord .
+  ?item rdfs:label ?itemLabel . FILTER(LANG(?itemLabel) = "it")
   OPTIONAL { ?item wdt:P2003 ?ig } OPTIONAL { ?item wdt:P2013 ?fb }
   OPTIONAL { ?item wdt:P856 ?web } OPTIONAL { ?item wdt:P1083 ?cap }
-  OPTIONAL { ?item wdt:P576 ?fine }
-  FILTER(!BOUND(?fine))
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "it,en". }
+  MINUS { ?item wdt:P576 ?fine }
 }"""
 
 
 def wikidata_luoghi():
-    u = "https://query.wikidata.org/sparql?" + urllib.parse.urlencode({"query": Q_WIKIDATA, "format": "json"})
-    _, _, t = get(u, timeout=300, limite=200_000_000, headers={"Accept": "application/sparql-results+json"})
-    b = json.loads(t)["results"]["bindings"]
+    b = None
+    for endpoint in ("https://qlever.dev/api/wikidata", "https://qlever.cs.uni-freiburg.de/api/wikidata", "https://query.wikidata.org/sparql"):
+        try:
+            _, _, t = get(endpoint, data=urllib.parse.urlencode({"query": Q_WIKIDATA}).encode(), timeout=300, limite=200_000_000,
+                          headers={"Accept": "application/sparql-results+json", "Content-Type": "application/x-www-form-urlencoded"})
+            b = json.loads(t)["results"]["bindings"]; print("wikidata da", endpoint, len(b), flush=True); break
+        except Exception as ex:
+            print("wikidata", endpoint, str(ex)[:120], flush=True)
+    if b is None: raise SystemExit("Wikidata non raggiungibile")
+    for x in b:   # QLever e WDQS: coordinate come "Point(lon lat)"
+        if "coord" in x:
+            m = re.match(r"Point\(([-\d.]+) ([-\d.]+)\)", x["coord"]["value"])
+            if m: x["lon"], x["lat"] = {"value": m.group(1)}, {"value": m.group(2)}
+        if "itemLabel" not in x: x["itemLabel"] = {"value": x["item"]["value"].rsplit("/", 1)[-1]}
+    b = [x for x in b if "lat" in x]
     ris = {}
     for x in b:
         k = x["item"]["value"].rsplit("/", 1)[-1]
@@ -263,7 +276,7 @@ def wikidata_luoghi():
                                "ig": "", "fb": "", "web": "", "cap": "", "tipi": []})
         for f in ("ig", "fb", "web", "cap"):
             if f in x and not r[f]: r[f] = x[f]["value"]
-        tl = x.get("tipoLabel", {}).get("value")
+        tl = (x.get("tipoLabel") or x.get("tipo") or {}).get("value", "").rsplit("/", 1)[-1]
         if tl and tl not in r["tipi"]: r["tipi"].append(tl)
     el = list(ris.values())
     url = lambda e: e["web"]
