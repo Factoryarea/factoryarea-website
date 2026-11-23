@@ -7,7 +7,7 @@
 const CONFIG = {
   ID_FOGLIO: "1HKYIkrxkkWEHDjdLtpI4rs3qxXiPGcZYhkiXdHBnwrA",
   NOME_SCHEDA: "Luoghi",
-  DATA_COPIA: "22/11/2026",
+  DATA_COPIA: "23/11/2026",
   SITO: true,       /* true nella versione pubblicata su factoryarea.it: niente lettura via script esterno */
   EMAIL: false      /* false sul sito: niente indirizzi email (regola del sito per Google for Nonprofits) */
 };
